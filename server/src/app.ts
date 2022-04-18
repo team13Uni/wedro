@@ -1,16 +1,11 @@
-import express, {
-  Request,
-  ErrorRequestHandler,
-  Response,
-  NextFunction,
-} from "express";
+import express from "express";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import cors from "cors";
 import cron from "./cron";
 
-import ErrorCodes from "./types/errorCodes";
+import { errorMiddleware } from "./middlewares";
 
 require("dotenv").config();
 
@@ -33,27 +28,10 @@ mongoose
     process.exit(1);
   });
 
-require("./routes/index.routes")(app);
+require("./routes")(app);
 
 // Handle 404 errors
-app.use(function (
-  err: ErrorRequestHandler,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  if (err instanceof ValidationError) {
-    return res.status(err.statusCode).json(err);
-  }
-
-  res.status(404).send({
-    messages: {
-      cs: "Cesta kterou jste zadali nebyla nelezena!",
-      en: "Unable to find the requested resource!",
-    },
-    code: ErrorCodes.ROUTE_NOT_FOUND,
-  });
-});
+app.use(errorMiddleware);
 
 app.listen(app.get("port"), () => {
   console.log(`✅ Server is running on port ${app.get("port")}`);
