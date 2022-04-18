@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { ValidationError } from "express-validation";
+import cron from "./cron";
 
 import ErrorCodes from "./types/errorCodes";
 
@@ -16,6 +16,7 @@ require("dotenv").config();
 
 const app = express();
 
+cron();
 app.set("port", process.env.PORT);
 app.use(morgan("combined"));
 app.use(bodyParser.json());
