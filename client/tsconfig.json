@@ -27,7 +27,7 @@
       ]
     },
     "typeRoots": [
-      "./types"
+      "./lib/types"
     ],
     "incremental": true
   },

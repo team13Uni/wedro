@@ -23,6 +23,12 @@ export const TRANSLATIONS = {
 			en: 'Username',
 		},
 	},
+	LOCATION_LIST: {
+		title: {
+			cs: 'Lokace',
+			en: 'Locations',
+		}
+	},
 	LOGIN: {
 		title: {
 			cs: 'Přihlášení',
@@ -105,6 +111,16 @@ export const TRANSLATIONS = {
 		email: {
 			cs: 'Email',
 			en: 'Email',
+		},
+		role: {
+			user: {
+				cs: 'Uživatel',
+				en: 'User'
+			},
+			admin: {
+				cs: 'Administrátor',
+				en: 'Admin'
+			}
 		},
 		phone: {
 			cs: 'Telefon',

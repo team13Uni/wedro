@@ -2,7 +2,6 @@ import { format, formatDistanceToNow, isSameHour } from 'date-fns';
 
 /**
  * Returns formatted date range as string
- * @author tomaslonsky
  * @param {Date | number} startDate //?
  * @return {string}
  */

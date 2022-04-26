@@ -3,7 +3,6 @@ import { isBefore, isSameDay, isSameMonth, isSameYear } from 'date-fns';
 
 /**
  * Returns formatted date range as string
- * @author filipditrich
  * @param {Date | number} startDate
  * @param {Date | number} endDate
  * @param {FormatDateOptions} formatDateOptions
