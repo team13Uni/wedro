@@ -125,7 +125,7 @@ export const Header: NextComponentType = () => {
 									>
 										<MenuItem>
 											<Link href="/profile">
-												<ListItemText primary={session.account.name} secondary={session.account.email} />
+												<ListItemText primary={session.account.name} secondary={session.account.username} />
 											</Link>
 										</MenuItem>
 										<Divider />

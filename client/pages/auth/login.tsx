@@ -26,7 +26,7 @@ const LoginPage: NextPageWithAuth = (props) => {
 	 * @type {LoginDtoIn}
 	 */
 	const initialValues: LoginDtoIn = {
-		email: isDefined(router.query.email) ? decodeURIComponent(router.query.email?.toString()) : '',
+		username: isDefined(router.query.username) ? decodeURIComponent(router.query.username?.toString()) : '',
 		password: '',
 	};
 
@@ -37,7 +37,7 @@ const LoginPage: NextPageWithAuth = (props) => {
 	 */
 	const loginSubmitHandler: FormikConfig<typeof initialValues>['onSubmit'] = async (values, { setFieldError }) => {
 		const loginRes = await signIn<'credentials'>('credentials', {
-			email: values.email,
+			username: values.username,
 			password: values.password,
 			callbackUrl: `${window.location.origin}`,
 			redirect: false,
@@ -45,10 +45,10 @@ const LoginPage: NextPageWithAuth = (props) => {
 
 		if (isDefined(loginRes) && isDefined(loginRes?.error)) {
 			if (!isEmpty(loginRes.error)) {
-				if (/email|user/gi.test(loginRes.error)) setFieldError('email', translate(loginRes.error));
+				if (/username|user/gi.test(loginRes.error)) setFieldError('username', translate(loginRes.error));
 				else setFieldError('password', translate(loginRes.error));
 			} else {
-				setFieldError('email', ' ');
+				setFieldError('username', ' ');
 				setFieldError('password', ' ');
 			}
 		} else if (loginRes?.ok) {
@@ -77,16 +77,16 @@ const LoginPage: NextPageWithAuth = (props) => {
 				<Formik initialValues={initialValues} validationSchema={loginFormSchema} onSubmit={loginSubmitHandler}>
 					{({ isSubmitting, isValid, dirty, values }) => (
 						<Grid container component={FormikWrapper} spacing={3} processing={isSubmitting}>
-							{/* email input */}
+							{/* username input */}
 							<Grid item xs={12}>
 								<FormikFieldMui
 									FieldInput={TextField}
 									fullWidth
-									label={translate(TRANSLATIONS.AUTH.email)}
-									autoComplete="email"
+									label={translate(TRANSLATIONS.AUTH.username)}
+									autoComplete="username"
 									autoFocus
 									type="text"
-									name="email"
+									name="username"
 									variant="outlined"
 								/>
 							</Grid>
@@ -124,9 +124,9 @@ const LoginPage: NextPageWithAuth = (props) => {
 								<Link
 									href={{
 										pathname: '/register',
-										query: !isEmpty(values.email)
+										query: !isEmpty(values.username)
 											? {
-													email: encodeURIComponent(values.email),
+													username: encodeURIComponent(values.username),
 											  }
 											: undefined,
 									}}
@@ -150,7 +150,7 @@ LoginPage.denyLogged = true;
  * Login form schema
  */
 const loginFormSchema = Yup.object().shape<LoginDtoIn>({
-	email: Yup.string().email().required(),
+	username: Yup.string().required(),
 	password: Yup.string().required(),
 });
 
@@ -158,7 +158,7 @@ const loginFormSchema = Yup.object().shape<LoginDtoIn>({
  * Login DtoIn type
  */
 export type LoginDtoIn = {
-	email: string;
+	username: string;
 	password: string;
 };
 

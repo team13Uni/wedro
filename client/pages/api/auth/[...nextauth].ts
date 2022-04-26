@@ -15,7 +15,7 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
 		providers: [
 			CredentialsProvider({
 				name: 'Credentials',
-				credentials: { email: {}, password: {} } as any,
+				credentials: { username: {}, password: {} } as any,
 				authorize: async (credentials) => {
 					if (!isDefined(credentials)) throw new APIClientError('missing_credentials', 'Credentials are missing', 500);
 
@@ -24,7 +24,7 @@ export default (req: NextApiRequest, res: NextApiResponse) =>
 						url: '/api/auth/login',
 						data: {
 							password: credentials.password,
-							email: credentials.email,
+							username: credentials.username,
 						},
 						method: 'POST',
 					});

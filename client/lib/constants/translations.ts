@@ -18,6 +18,10 @@ export const TRANSLATIONS = {
 			cs: 'Heslo',
 			en: 'Password',
 		},
+		username: {
+			cs: 'Username',
+			en: 'Username',
+		},
 	},
 	LOGIN: {
 		title: {
@@ -34,7 +38,7 @@ export const TRANSLATIONS = {
 		},
 		registerCta: {
 			cs: 'Ještě nemáte účet?',
-			en: "Don' have an account yet?",
+			en: 'Don\' have an account yet?',
 		},
 	},
 	ERRORS: {
@@ -56,9 +60,9 @@ export const TRANSLATIONS = {
 			cs: 'Nebo již máte účet?',
 			en: 'Already have an account?',
 		},
-		emailInUse: {
-			cs: 'Email je již zabraný',
-			en: 'Email already exists',
+		usernameInUse: {
+			cs: 'Username je již zabraný',
+			en: 'Username already exists',
 		},
 		invalidCredentials: {
 			cs: 'Nesprávné údaje',

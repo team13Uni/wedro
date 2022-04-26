@@ -17,9 +17,9 @@ export declare module 'next-auth' {
 		accessToken: string;
 		account: {
 			id: string;
-		} & Pick<WedroUser, 'email' | 'role' | 'name'>;
+		} & Pick<WedroUser, 'username' | 'role' | 'name'>;
 		image?: never;
 		name?: never;
-		email?: never;
+		username?: never;
 	}
 }
