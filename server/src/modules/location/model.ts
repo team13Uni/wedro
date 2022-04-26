@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import type { ObjectId } from "mongoose";
 import type { Location } from "./types";
 
@@ -8,7 +8,7 @@ export const locationSchema = new Schema<Location>({
     required: true,
   },
   nodeId: {
-    type: String,
+    type: Types.ObjectId,
     ref: "weather-station",
   },
   state: {
