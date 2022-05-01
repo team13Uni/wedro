@@ -27,7 +27,7 @@ export const LANGUAGES: Record<Language, LocaleText> = {
 export type User = {
 	_id: string;
 	name: string;
-	email: string;
+	username: string;
 	role: USER_ROLE;
 };
 

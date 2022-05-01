@@ -1,4 +1,4 @@
-import { User as WedroUser } from './entities';
+import { WedroUser } from './entities';
 
 export declare module 'next-auth' {
 	/**
@@ -8,7 +8,7 @@ export declare module 'next-auth' {
 		account: User['account'];
 		accessToken: string;
 	}
-
+	
 	/**
 	 * The shape of the user object returned to the OAuth providers' `profile` callback,
 	 * or the second parameter of the `session` callback, when using a database.
@@ -17,9 +17,9 @@ export declare module 'next-auth' {
 		accessToken: string;
 		account: {
 			id: string;
-		} & Pick<WedroUser, 'email' | 'role' | 'name'>;
+		} & Pick<WedroUser, 'username' | 'role'>;
 		image?: never;
 		name?: never;
-		email?: never;
+		username?: never;
 	}
 }

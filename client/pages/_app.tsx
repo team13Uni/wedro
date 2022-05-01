@@ -30,9 +30,9 @@ const CustomApp: FunctionComponent<CustomAppProps> = (props) => {
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
 				<SessionProvider session={props.pageProps.session}>
-					{/*<AuthGuard {...pickFrom(Component, 'denyLogged', 'requiresAuth')}>*/}
+					<AuthGuard {...pickFrom(Component, 'denyLogged', 'requiresAuth')}>
 						<Component {...pageProps} />
-					{/*</AuthGuard>*/}
+					</AuthGuard>
 				</SessionProvider>
 			</ThemeProvider>
 		</CacheProvider>

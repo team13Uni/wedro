@@ -18,6 +18,16 @@ export const TRANSLATIONS = {
 			cs: 'Heslo',
 			en: 'Password',
 		},
+		username: {
+			cs: 'Username',
+			en: 'Username',
+		},
+	},
+	LOCATION_LIST: {
+		title: {
+			cs: 'Lokace',
+			en: 'Locations',
+		}
 	},
 	LOGIN: {
 		title: {
@@ -34,7 +44,7 @@ export const TRANSLATIONS = {
 		},
 		registerCta: {
 			cs: 'Ještě nemáte účet?',
-			en: "Don' have an account yet?",
+			en: 'Don\' have an account yet?',
 		},
 	},
 	ERRORS: {
@@ -56,9 +66,9 @@ export const TRANSLATIONS = {
 			cs: 'Nebo již máte účet?',
 			en: 'Already have an account?',
 		},
-		emailInUse: {
-			cs: 'Email je již zabraný',
-			en: 'Email already exists',
+		usernameInUse: {
+			cs: 'Username je již zabraný',
+			en: 'Username already exists',
 		},
 		invalidCredentials: {
 			cs: 'Nesprávné údaje',
@@ -101,6 +111,16 @@ export const TRANSLATIONS = {
 		email: {
 			cs: 'Email',
 			en: 'Email',
+		},
+		role: {
+			user: {
+				cs: 'Uživatel',
+				en: 'User'
+			},
+			admin: {
+				cs: 'Administrátor',
+				en: 'Admin'
+			}
 		},
 		phone: {
 			cs: 'Telefon',

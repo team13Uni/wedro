@@ -36,7 +36,7 @@ export const useTranslate = () => {
  * Returns language from provided locale string
  * @param locale
  */
-const getLanguageFromLocale = (locale: string | undefined): Language => {
+export const getLanguageFromLocale = (locale: string | undefined): Language => {
 	if (locale === 'en') return 'en';
 	// default language is 'cs'
 	return 'cs';

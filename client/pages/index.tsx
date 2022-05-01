@@ -82,7 +82,7 @@ const IndexPage: NextPageWithAuth = () => {
 						{
 							// shuffle the authors array so nobody is always the first
 							shuffleArray(AUTHORS).map((author) => (
-								<Grid item xs={6} lg={4}>
+								<Grid item xs={6} lg={4} key={author.email}>
 									<Card>
 										<CardContent sx={{ textAlign: 'center' }}>
 											<Avatar
