@@ -177,9 +177,9 @@
         "tls": "",
         "persist": false,
         "proxy": "",
-        "authType": "",
+        "authType": "basic",
         "senderr": false,
-        "x": 940,
+        "x": 960,
         "y": 760,
         "wires": [
             [
@@ -198,7 +198,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 980,
+        "x": 1000,
         "y": 820,
         "wires": [
             [
@@ -222,8 +222,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1240,
-        "y": 320,
+        "x": 1220,
+        "y": 600,
         "wires": []
     },
     {
@@ -252,7 +252,7 @@
         "upsert": false,
         "multi": false,
         "operation": "update",
-        "x": 1220,
+        "x": 1240,
         "y": 860,
         "wires": []
     },
@@ -293,7 +293,7 @@
         "type": "function",
         "z": "1cfbc17a33440ce4",
         "name": "Create query",
-        "func": "msg.payload = { Timestamp: { $gt: msg.payload[0].Timestamp } };\nreturn msg;",
+        "func": "msg.payload = {  Timestamp: { $gt: msg.payload[0].Timestamp } };\nmsg.projection = { _id:0}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -318,7 +318,7 @@
         "upsert": false,
         "multi": false,
         "operation": "delete",
-        "x": 1210,
+        "x": 1230,
         "y": 780,
         "wires": []
     },
