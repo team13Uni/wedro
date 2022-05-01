@@ -8,7 +8,7 @@
     "start": "node dist/src/app.js",
     "postinstall": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "git add . && git commit -m \" Heroku \" && git push heroku master"
+    "deploy": "tsc && git add . && git commit -m \" Heroku \" && git push heroku master"
   },
   "author": "",
   "engines": { "node": "12.16.3" },
