@@ -5,10 +5,10 @@
   "main": "app.ts",
   "scripts": {
     "dev": "nodemon src/app.ts",
-    "start": "node /dist/src/app.js",
+    "start": "node dist/src/app.js",
     "postinstall": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "git push heroku master"
+    "deploy": "git add . && git commit -m \" Heroku \" && git push heroku master"
   },
   "author": "",
   "engines": { "node": "12.16.3" },
