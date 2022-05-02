@@ -6,7 +6,7 @@ export type WeatherStation = {
   secret: string;
   unavailable: boolean;
   active: boolean;
-  lastActiveAt: string;
+  lastActiveAt: Date;
 };
 
 export type CreateWeatherStationRequestBody = {

@@ -20,7 +20,7 @@ export const weatherStationSchema = new Schema<WeatherStation>({
     default: true,
   },
   lastActiveAt: {
-    type: String,
+    type: Date,
   },
 });
 
@@ -36,7 +36,7 @@ export const updateWeatherStationById = async (
 ) => await WeatherStationModel.findByIdAndUpdate(id, updateBody, options);
 
 export const findWeatherStationById = async (id: string | ObjectId) =>
-  await WeatherStationModel.findById(id);
+  await WeatherStationModel.findById<WeatherStation>(id);
 
 export const findAllWeatherStations = async (
   filter: FilterQuery<WeatherStation>
