@@ -24,6 +24,7 @@ import {
   updateWeatherStationById,
 } from "../weather-station/model";
 import type { CreateMeasurementRequestBody } from "./types";
+import { findLocationByNodeId } from "../location/model";
 
 export const create = async (
   req: RequestWithNodeId<
@@ -37,6 +38,10 @@ export const create = async (
     const { body } = req;
 
     if (!req.nodeId) return res.json({ success: false });
+
+    const location = await findLocationByNodeId(req.nodeId);
+
+    if (!location) return res.json({ success: false });
 
     for (const bodyItem of body) {
       const weatherStation = await findWeatherStationById(req.nodeId);
@@ -56,6 +61,7 @@ export const create = async (
         ...bodyItem,
         type: "hour",
         nodeId: req.nodeId,
+        locationId: location.id,
       });
       await newMeasurement.save();
     }

@@ -23,6 +23,9 @@ export const LocationModel = model<Location>("location", locationSchema);
 export const findLocationById = async (id: ObjectId | string) =>
   await LocationModel.findById<Location>(id);
 
+export const findLocationByNodeId = async (nodeId: ObjectId | string) =>
+  await LocationModel.findOne<Location>({ nodeId });
+
 export const updateLocationById = async (
   id: ObjectId | string,
   updateBody: Partial<Location>

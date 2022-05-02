@@ -15,10 +15,14 @@ const types_1 = require("../../types");
 const model_1 = require("./model");
 const exceptions_1 = require("../../exceptions");
 const model_2 = require("../weather-station/model");
+const model_3 = require("../location/model");
 const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req;
         if (!req.nodeId)
+            return res.json({ success: false });
+        const location = yield (0, model_3.findLocationByNodeId)(req.nodeId);
+        if (!location)
             return res.json({ success: false });
         for (const bodyItem of body) {
             const weatherStation = yield (0, model_2.findWeatherStationById)(req.nodeId);
@@ -32,7 +36,7 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     },
                 });
             }
-            const newMeasurement = new model_1.MeasurementModel(Object.assign(Object.assign({}, bodyItem), { type: "hour", nodeId: req.nodeId }));
+            const newMeasurement = new model_1.MeasurementModel(Object.assign(Object.assign({}, bodyItem), { type: "hour", nodeId: req.nodeId, locationId: location.id }));
             yield newMeasurement.save();
         }
         yield (0, model_2.updateWeatherStationById)(req.nodeId, {
