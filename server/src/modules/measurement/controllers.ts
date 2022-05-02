@@ -41,8 +41,6 @@ export const create = async (
 
     const location = await findLocationByNodeId(req.nodeId);
 
-    if (!location) return res.json({ success: false });
-
     for (const bodyItem of body) {
       const weatherStation = await findWeatherStationById(req.nodeId);
 
@@ -61,7 +59,7 @@ export const create = async (
         ...bodyItem,
         type: "hour",
         nodeId: req.nodeId,
-        locationId: location.id,
+        locationId: location ? location.id : undefined,
       });
       await newMeasurement.save();
     }

@@ -22,8 +22,6 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!req.nodeId)
             return res.json({ success: false });
         const location = yield (0, model_3.findLocationByNodeId)(req.nodeId);
-        if (!location)
-            return res.json({ success: false });
         for (const bodyItem of body) {
             const weatherStation = yield (0, model_2.findWeatherStationById)(req.nodeId);
             if (!weatherStation) {
@@ -36,7 +34,7 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     },
                 });
             }
-            const newMeasurement = new model_1.MeasurementModel(Object.assign(Object.assign({}, bodyItem), { type: "hour", nodeId: req.nodeId, locationId: location.id }));
+            const newMeasurement = new model_1.MeasurementModel(Object.assign(Object.assign({}, bodyItem), { type: "hour", nodeId: req.nodeId, locationId: location ? location.id : undefined }));
             yield newMeasurement.save();
         }
         yield (0, model_2.updateWeatherStationById)(req.nodeId, {
