@@ -1,3 +1,4 @@
+import { HttpException } from "../../exceptions";
 import {
   ErrorCode,
   IdParam,
@@ -5,11 +6,8 @@ import {
   ResponseWithError,
   StatusCode,
 } from "../../types";
-import {
-  CreateLocationRequestBody,
-  DeleteLocationResponse,
-  Location,
-} from "./types";
+import { findWeatherStationById } from "../weather-station/model";
+import { WeatherStation } from "../weather-station/types";
 import {
   deleteLocationById,
   findAllLocations,
@@ -17,7 +15,11 @@ import {
   LocationModel,
   updateLocationById,
 } from "./model";
-import { HttpException } from "../../exceptions";
+import {
+  CreateLocationRequestBody,
+  DeleteLocationResponse,
+  Location,
+} from "./types";
 
 export const create = async (
   req: RequestWithUser<
@@ -92,13 +94,17 @@ export const update = async (
   }
 };
 
+type FindAllDtoOut = Omit<Location, 'nodeId'> & {
+  weatherStation: WeatherStation;
+}
 export const findAll = async (
-  req: RequestWithUser<Record<string, string>, Location[], Partial<Location>>,
-  res: ResponseWithError<Location[]>
+  req: RequestWithUser<Record<string, string>, FindAllDtoOut[], Partial<Location>>,
+  res: ResponseWithError<FindAllDtoOut[]>
 ) => {
   try {
-    const locations = await findAllLocations(req.body);
-    res.send(locations);
+    const locations = await LocationModel.find().populate<{ nodeId: WeatherStation }>("nodeId");
+    const mappedLocations: FindAllDtoOut[] = locations.map((location) => ({ ...location.toJSON(), weatherStation: location.nodeId }));
+    res.send(mappedLocations);
   } catch (err) {
     if (err instanceof HttpException) {
       res.status(500).json({
