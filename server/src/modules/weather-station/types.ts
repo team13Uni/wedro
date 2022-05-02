@@ -20,3 +20,11 @@ export type CreateWeatherStationRequestBody = {
 export type DeleteWeatherStationResponse = {
   success: boolean;
 };
+
+export type AuthorizeWeatherStationBody = {
+  secret: string;
+};
+
+export type AuthorizeWeatherStationResponse = {
+  token: string;
+};

@@ -4,6 +4,7 @@ export enum StatusCode {
   RECORD_NOT_FOUND = 404,
   SERVER_ERROR = 500,
   NOT_AUTHORIZED = 403,
+  BAD_REQUEST = 400,
 }
 
 export enum ErrorCode {
@@ -12,4 +13,5 @@ export enum ErrorCode {
   NOT_FOUND = "not_found",
   NOT_AUTHORIZED = "not_authorized",
   ALREADY_EXISTS = "already_exists",
+  BAD_REQUEST = "bad_request",
 }

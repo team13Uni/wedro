@@ -1,8 +1,13 @@
 import { Router } from "express";
 import { validate } from "express-validation";
-import { validateAdminJWT, validateJWT } from "../../middlewares";
+import {
+  validateAdminJWT,
+  validateNodeJWT,
+  validateJWT,
+} from "../../middlewares";
 import { objectIdValidator } from "../../validators";
 import {
+  authorizeWeatherStationValidator,
   createWeatherStationValidator,
   updateWeatherStationValidator,
 } from "./validators";
@@ -31,6 +36,12 @@ router.get(
   validateJWT,
   validate(objectIdValidator),
   Controllers.findOne
+);
+
+router.post(
+  "/authorize",
+  validate(authorizeWeatherStationValidator),
+  Controllers.authorizeWeatherStation
 );
 
 router.delete(

@@ -28,3 +28,9 @@ export const updateWeatherStationValidator = {
     active: validators.active,
   }),
 };
+
+export const authorizeWeatherStationValidator = {
+  body: Joi.object({
+    secret: validators.secret,
+  }),
+};

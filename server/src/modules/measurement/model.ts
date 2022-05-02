@@ -24,10 +24,6 @@ export const measurementSchema = new Schema<Measurement>({
     type: Types.ObjectId,
     ref: "weather-station",
   },
-  locationId: {
-    type: Types.ObjectId,
-    ref: "location",
-  },
 });
 
 export const MeasurementModel = model<Measurement>(

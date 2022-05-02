@@ -7,9 +7,12 @@ export type Measurement = {
   humidity: number;
   measuredAt: Date;
   nodeId: ObjectId;
-  locationId: ObjectId;
   type: MeasurementType;
 };
+
+export type CreateMeasurementRequestBody = Array<
+  Omit<Measurement, "nodeId" | "type">
+>;
 
 export type DeleteMeasurementResponse = {
   success: boolean;

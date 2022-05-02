@@ -4,175 +4,78 @@ import {
   eachMonthOfInterval,
   eachYearOfInterval,
   isEqual,
-  set,
 } from "date-fns";
-import { HttpException } from "../../exceptions";
+import { ErrorCode, RequestWithNodeId, StatusCode } from "../../types";
 import type { IdParam, RequestWithUser, ResponseWithError } from "../../types";
-import { ErrorCode, StatusCode } from "../../types";
-import { findLocationById } from "../location/model";
-import {
-  findWeatherStationById,
-  updateWeatherStationById,
-} from "../weather-station/model";
-import {
-  deleteMeasurementById,
-  findAllMeasurements,
-  findMeasurementById,
-  MeasurementModel,
-  updateMeasurementById,
-} from "./model";
 import type {
   DeleteMeasurementResponse,
   Measurement,
   MeasurementType,
 } from "./types";
+import {
+  deleteMeasurementById,
+  findAllMeasurements,
+  findMeasurementById,
+  MeasurementModel,
+} from "./model";
+import { HttpException } from "../../exceptions";
+import {
+  findWeatherStationById,
+  updateWeatherStationById,
+} from "../weather-station/model";
+import type { CreateMeasurementRequestBody } from "./types";
 
-/**
- * Creates a new measurement
- */
 export const create = async (
-  req: RequestWithUser<Record<string, string>, Measurement, Measurement>,
-  res: ResponseWithError<Measurement>
+  req: RequestWithNodeId<
+    Record<string, string>,
+    undefined,
+    CreateMeasurementRequestBody
+  >,
+  res: ResponseWithError<{ success: boolean }>
 ) => {
   try {
     const { body } = req;
 
-    /** find location */
-    const location = await findLocationById(body.locationId);
-    if (!location) {
-      return res.status(StatusCode.RECORD_NOT_FOUND).json({
-        error: {
-          message: `Location doesn't exist`,
-          status: StatusCode.RECORD_NOT_FOUND,
-          code: ErrorCode.NOT_FOUND,
-        },
-      });
-    }
+    if (!req.nodeId) return res.json({ success: false });
 
-    /** find weather station (redundant, remove locationId or nodeId from measurement as location-node is a 1:1 relation) */
-    const weatherStation = await findWeatherStationById(body.nodeId);
-    if (!weatherStation) {
-      return res.status(StatusCode.RECORD_NOT_FOUND).json({
-        error: {
-          message: `Weather station doesn't exist`,
-          status: StatusCode.RECORD_NOT_FOUND,
-          code: ErrorCode.NOT_FOUND,
-        },
-      });
-    }
+    for (const bodyItem of body) {
+      const weatherStation = await findWeatherStationById(req.nodeId);
 
-    const getInputData = () => {
-      let measuredAt = new Date(body.measuredAt);
-
-      /**
-       * TODO: check if this makes sense
-       * Set date-time values to 0 depending on the type of measurement.
-       * This ensures that measurement with e.g. type 'hour' will be saved as "2022-05-02T18:00:00.000Z" and not "2022-05-02T18:48:44.122Z"
-       */
-      switch (req.body.type) {
-        case "hour":
-          set(measuredAt, { minutes: 0, seconds: 0, milliseconds: 0 });
-          break;
-        case "day":
-          set(measuredAt, {
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          });
-          break;
-        case "month":
-          set(measuredAt, {
-            date: 0,
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          });
-          break;
-        case "year":
-          set(measuredAt, {
-            month: 0,
-            date: 0,
-            hours: 0,
-            minutes: 0,
-            seconds: 0,
-            milliseconds: 0,
-          });
-          break;
+      if (!weatherStation) {
+        return res.status(StatusCode.RECORD_NOT_FOUND).json({
+          success: false,
+          error: {
+            message: "Weather station doesn't exist",
+            status: StatusCode.RECORD_NOT_FOUND,
+            code: ErrorCode.NOT_FOUND,
+          },
+        });
       }
 
-      return {
-        ...req.body,
-        measuredAt,
-      };
-    };
+      const newMeasurement = new MeasurementModel({
+        ...bodyItem,
+        type: "hour",
+        nodeId: req.nodeId,
+      });
+      await newMeasurement.save();
+    }
 
-    /** create and save new measurement */
-    const newMeasurement = new MeasurementModel(getInputData());
-    const result = await newMeasurement.save();
-
-    /** update weather station `lastActiveAt` field */
-    await updateWeatherStationById(body.nodeId, {
-      lastActiveAt: body.measuredAt,
+    await updateWeatherStationById(req.nodeId, {
+      lastActiveAt: body[body.length - 1].measuredAt,
     });
-
-    res.json(result);
+    res.json({ success: true });
   } catch (err) {
     if (err instanceof HttpException) {
       res.status(err.status).json({
+        success: false,
         error: {
           message: err.message,
           status: StatusCode.SERVER_ERROR,
           code: ErrorCode.SERVER_ERROR,
         },
       });
-    }
-  }
-};
-
-export const update = async (
-  req: RequestWithUser<IdParam, Measurement, Partial<Measurement>>,
-  res: ResponseWithError<Measurement>
-) => {
-  try {
-    const { id } = req.params;
-
-    const measurement = await findMeasurementById(id);
-
-    if (!measurement) {
-      return res.status(StatusCode.RECORD_NOT_FOUND).json({
-        error: {
-          message: "Measurement not found",
-          status: StatusCode.RECORD_NOT_FOUND,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
-
-    const updatedMeasurement = await updateMeasurementById(id, req.body);
-
-    if (!updatedMeasurement) {
-      return res.status(StatusCode.SERVER_ERROR).json({
-        error: {
-          message:
-            "Error occurred when updating the measurement, please try again later",
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
-
-    res.send(updatedMeasurement);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
+    } else {
+      res.status(StatusCode.SERVER_ERROR).json({ success: false });
     }
   }
 };
@@ -321,6 +224,7 @@ export const downscaleData = async (type: Exclude<MeasurementType, "hour">) => {
 
     let numbers: Record<string, TransformedDataType> = {};
     for (const measurement of measurements) {
+      // @ts-ignore
       const locationId = String(measurement.locationId);
 
       if (!numbers[locationId])
@@ -397,7 +301,7 @@ export const getBuckets = async (
 
     /** map or fill empty buckets */
     const data: GeBucketsDtoOut = buckets.map(
-      (bucketDate, index, mappedBuckets) => {
+      (bucketDate) => {
         const measurement = measurements.find((m) =>
           isEqual(new Date(m.toJSON().measuredAt), bucketDate)
         );

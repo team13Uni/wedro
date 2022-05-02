@@ -1,4 +1,6 @@
 import type {
+  AuthorizeWeatherStationBody,
+  AuthorizeWeatherStationResponse,
   CreateWeatherStationRequestBody,
   DeleteWeatherStationResponse,
   WeatherStation,
@@ -9,11 +11,12 @@ import {
   deleteWeatherStationById,
   findAllWeatherStations,
   findWeatherStationById,
+  findWeatherStationBySecret,
   updateWeatherStationById,
   WeatherStationModel,
 } from "./model";
 import { HttpException } from "../../exceptions";
-import { updateLocationById } from "../location/model";
+import { sign } from "jsonwebtoken";
 
 export const create = async (
   req: RequestWithUser<
@@ -186,6 +189,54 @@ export const deleteWeatherStation = async (
         },
       });
     }
+  }
+};
+
+export const authorizeWeatherStation = async (
+  req: RequestWithUser<
+    Record<string, string>,
+    AuthorizeWeatherStationResponse,
+    AuthorizeWeatherStationBody
+  >,
+  res: ResponseWithError<AuthorizeWeatherStationResponse>
+) => {
+  try {
+    const { secret } = req.body;
+
+    const station = await findWeatherStationBySecret(secret);
+
+    if (station) {
+      const token = sign(
+        { nodeId: station.id },
+        process.env.JWT_SECRET as string,
+        {
+          expiresIn: 120, // in two hours
+        }
+      );
+
+      return res.status(200).json({
+        token,
+      });
+    } else {
+      res.status(400).json({
+        error: {
+          message: "You either send a wrong code or the station doesn't exist",
+          status: StatusCode.WRONG_INPUT,
+          code: ErrorCode.BAD_REQUEST,
+        },
+      });
+    }
+  } catch (err) {
+    if (err instanceof HttpException) {
+      res.status(err.status).json({
+        error: {
+          message: err.message,
+          status: StatusCode.SERVER_ERROR,
+          code: ErrorCode.SERVER_ERROR,
+        },
+      });
+    }
+    throw err;
   }
 };
 

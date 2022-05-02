@@ -1,9 +1,9 @@
 import { Joi } from "express-validation";
 
 const validators = {
-  name: Joi.string(),
-  username: Joi.string(),
-  password: Joi.string(),
+  name: Joi.string().max(128),
+  username: Joi.string().max(256),
+  password: Joi.string().min(8).max(64),
 };
 
 export const loginValidator = {

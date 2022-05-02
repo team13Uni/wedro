@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import type { Query } from "express-serve-static-core";
 import type { User } from "../modules/user";
+import type { ObjectId } from "mongoose";
 import type { StatusCode, ErrorCode } from "./errors";
 
 export type Error = {
@@ -21,6 +22,16 @@ export type RequestWithUser<
   ReqQuery = Query,
   Locals extends Record<string, any> = Record<string, any>
 > = Request<P, ResBody, ReqBody, ReqQuery, Locals> & { user?: User };
+
+export type RequestWithNodeId<
+  P extends Record<string, string> = Record<string, string>,
+  ResBody = any,
+  ReqBody = any,
+  ReqQuery = Query,
+  Locals extends Record<string, any> = Record<string, any>
+> = Request<P, ResBody, ReqBody, ReqQuery, Locals> & {
+  nodeId?: string | ObjectId;
+};
 
 export type IdParam = {
   id: string;

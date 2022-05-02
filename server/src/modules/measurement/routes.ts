@@ -1,28 +1,22 @@
 import { Router } from "express";
 import { validate } from "express-validation";
-import { validateAdminJWT, validateJWT } from "../../middlewares";
-import { objectIdValidator } from "../../validators";
+import {
+  validateAdminJWT,
+  validateNodeJWT,
+  validateJWT,
+} from "../../middlewares";
 
 import * as Controllers from "./controllers";
-import {
-  createMeasurementValidator,
-  updateMeasurementValidator,
-} from "./validators";
+import { createMeasurementValidator } from "./validators";
+import { objectIdValidator } from "../../validators";
 
 const router = Router();
 
 router.post(
   "/",
-  validateAdminJWT,
+  validateNodeJWT,
   validate(createMeasurementValidator),
   Controllers.create
-);
-
-router.put(
-  "/:id",
-  validateAdminJWT,
-  validate(updateMeasurementValidator),
-  Controllers.update
 );
 
 router.get("/", validateJWT, Controllers.findAll);
