@@ -219,6 +219,17 @@ export const WeatherStationCard: FC<WeatherStationCardProps> = ({ location }) =>
 								<CartesianGrid stroke="#F5F5F5" />
 								{/* FIXME: x axis */}
 								<XAxis dataKey="date" tickFormatter={(v, i) => format.date(new Date(v), 'p')} />
+								<XAxis
+									dataKey="date"
+									tickFormatter={(v, i) => {
+										try {
+											return format.date(new Date(v), 'p');
+										} catch (e) {
+											console.warn(e);
+											return '';
+										}
+									}}
+								/>
 								{/* tooltip */}
 								<Tooltip
 									formatter={(value: number, key: keyof WeatherStationData) => {
@@ -237,7 +248,13 @@ export const WeatherStationCard: FC<WeatherStationCardProps> = ({ location }) =>
 												return [null, null];
 										}
 									}}
-									labelFormatter={(date) => <span>{format.date(new Date(date), 'Pp')}</span>}
+									labelFormatter={(date) => {
+										try {
+											return <span>{format.date(new Date(date), 'Pp')}</span>;
+										} catch (e) {
+											return '';
+										}
+									}}
 								/>
 
 								{/* charts */}
