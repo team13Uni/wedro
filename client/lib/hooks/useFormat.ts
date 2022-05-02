@@ -6,15 +6,7 @@ import {
 	formatNumber as formatNumberUtil,
 	isDefined,
 } from '@wedro/utils';
-import {
-	formatDistance,
-	formatDuration as formatDurationUtil,
-	formatRelative,
-	intervalToDuration,
-	isSameWeek,
-	Locale,
-	parse,
-} from 'date-fns';
+import { formatDistance, formatDuration as formatDurationUtil, formatRelative, intervalToDuration, isSameWeek, Locale, parse } from 'date-fns';
 import { cs, de, enGB, sk } from 'date-fns/locale';
 import { useRouter } from 'next/router';
 
@@ -26,7 +18,7 @@ import { useRouter } from 'next/router';
 export const getDateFnsLocale = (language: string): Locale => {
 	// supported date locales (+ en, cs)
 	const dateLocales = { de, sk };
-	
+
 	let locale: Locale = cs;
 	switch (language) {
 		case 'cs':
@@ -51,10 +43,10 @@ export const useFormat = () => {
 	const { locale } = useRouter();
 	const language = getLanguageFromLocale(locale);
 	const dateFnsLocale = getDateFnsLocale(language);
-	
+
 	// set fixed timezone to 'Europe/Prague'
 	const timezone = 'Europe/Prague';
-	
+
 	/**
 	 * Localized number formatter
 	 * @param {number} value
@@ -62,7 +54,7 @@ export const useFormat = () => {
 	 * @return {any}
 	 */
 	const formatNumber = (value: number | bigint, settings?: Intl.NumberFormatOptions) => formatNumberUtil(value, language, settings);
-	
+
 	/**
 	 * Localized percent formatter
 	 * @param {number} value
@@ -75,7 +67,7 @@ export const useFormat = () => {
 			...settings,
 			style: 'percent',
 		});
-	
+
 	/**
 	 * Localized date formatter
 	 * @param {Date | number} date
@@ -89,7 +81,7 @@ export const useFormat = () => {
 			...options,
 		});
 	};
-	
+
 	/**
 	 * Localized interval duration formatter
 	 * @param {{start: Date | number, end: Date | number}} interval
@@ -112,7 +104,7 @@ export const useFormat = () => {
 			...options,
 		});
 	};
-	
+
 	/**
 	 * Localized duration formatter
 	 * @param {Duration} duration
@@ -134,7 +126,7 @@ export const useFormat = () => {
 			...options,
 		});
 	};
-	
+
 	/**
 	 * Parses localized date to Date object
 	 * @param {string} dateString
@@ -148,7 +140,7 @@ export const useFormat = () => {
 			...options,
 		});
 	};
-	
+
 	/**
 	 * Localized date range formatted
 	 * @param {Date | number} startDate
@@ -162,7 +154,7 @@ export const useFormat = () => {
 			...options,
 		});
 	};
-	
+
 	/**
 	 * Localized relative date
 	 * @param {Date | number} date
@@ -175,10 +167,10 @@ export const useFormat = () => {
 		if (isSameWeek(now, date)) {
 			return formatRelative(date, now, { locale: dateFnsLocale, ...options });
 		}
-		
+
 		return formatDate(date, dateFormat, options);
 	};
-	
+
 	/**
 	 * Localized relative date
 	 * @param {Date | number} date
@@ -190,7 +182,7 @@ export const useFormat = () => {
 		const now = new Date();
 		return formatDistance(date, now, { locale: dateFnsLocale, includeSeconds: true, addSuffix: true, ...options });
 	};
-	
+
 	return {
 		number: formatNumber,
 		percent: formatPercent,
