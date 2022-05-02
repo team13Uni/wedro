@@ -218,14 +218,12 @@ export const WeatherStationCard: FC<WeatherStationCardProps> = ({ location }) =>
 								{/* grid */}
 								<CartesianGrid stroke="#F5F5F5" />
 								{/* FIXME: x axis */}
-								<XAxis dataKey="date" tickFormatter={(v, i) => format.date(new Date(v), 'p')} />
 								<XAxis
 									dataKey="date"
 									tickFormatter={(v, i) => {
 										try {
 											return format.date(new Date(v), 'p');
 										} catch (e) {
-											console.warn(e);
 											return '';
 										}
 									}}
