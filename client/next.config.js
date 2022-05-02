@@ -7,7 +7,7 @@ module.exports = {
 	},
 	serializeConfig: false,
 	i18n: {
-		locales: [ 'cs', 'en' ],
+		locales: ['cs', 'en'],
 		defaultLocale: 'cs',
 		localeDetection: true,
 	},

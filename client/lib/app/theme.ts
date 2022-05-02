@@ -18,4 +18,11 @@ export const theme = createTheme({
 			main: red.A400,
 		},
 	},
+	components: {
+		MuiContainer: {
+			defaultProps: {
+				maxWidth: 'xl',
+			},
+		},
+	},
 });

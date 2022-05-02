@@ -1,4 +1,6 @@
 import { CacheProvider, EmotionCache } from '@emotion/react';
+import { LocalizationProvider } from '@mui/lab';
+import DateFnsAdapter from '@mui/lab/AdapterDateFns';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { createEmotionCache, theme } from '@wedro/app';
@@ -22,20 +24,22 @@ const CustomApp: FunctionComponent<CustomAppProps> = (props) => {
 	const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
 	return (
-		<CacheProvider value={emotionCache}>
-			<Head>
-				<title>Wedro</title>
-				<meta name="viewport" content="initial-scale=1, width=device-width" />
-			</Head>
-			<ThemeProvider theme={theme}>
-				<CssBaseline />
-				<SessionProvider session={props.pageProps.session}>
-					<AuthGuard {...pickFrom(Component, 'denyLogged', 'requiresAuth')}>
-						<Component {...pageProps} />
-					</AuthGuard>
-				</SessionProvider>
-			</ThemeProvider>
-		</CacheProvider>
+		<LocalizationProvider dateAdapter={DateFnsAdapter}>
+			<CacheProvider value={emotionCache}>
+				<Head>
+					<title>Wedro</title>
+					<meta name="viewport" content="initial-scale=1, width=device-width" />
+				</Head>
+				<ThemeProvider theme={theme}>
+					<CssBaseline />
+					<SessionProvider session={props.pageProps.session}>
+						<AuthGuard {...pickFrom(Component, 'denyLogged', 'requiresAuth')}>
+							<Component {...pageProps} />
+						</AuthGuard>
+					</SessionProvider>
+				</ThemeProvider>
+			</CacheProvider>
+		</LocalizationProvider>
 	);
 };
 

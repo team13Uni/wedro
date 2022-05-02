@@ -25,8 +25,8 @@ export const TRANSLATIONS = {
 	},
 	LOCATION_LIST: {
 		title: {
-			cs: 'Lokace',
-			en: 'Locations',
+			cs: 'Měřící stanice',
+			en: 'Weather stations',
 		}
 	},
 	LOGIN: {
@@ -45,6 +45,20 @@ export const TRANSLATIONS = {
 		registerCta: {
 			cs: 'Ještě nemáte účet?',
 			en: 'Don\' have an account yet?',
+		},
+	},
+	WEATHER_STATION_CARD: {
+		currentTemperature: {
+			cs: 'Aktuální teplota',
+			en: 'Current temperature',
+		},
+		currentHumidity: {
+			cs: 'Aktuální vlhkost',
+			en: 'Current humidity',
+		},
+		dayHighsLows: {
+			cs: 'Hi/Lo 24h',
+			en: 'Hi/Lo 24h',
 		},
 	},
 	ERRORS: {
@@ -108,6 +122,22 @@ export const TRANSLATIONS = {
 		},
 	},
 	GENERAL: {
+		active: {
+			cs: 'Aktivní',
+			en: 'Active',
+		},
+		inactive: {
+			cs: 'Neaktivní',
+			en: 'Inactive',
+		},
+		temperature: {
+			cs: 'Teplota',
+			en: 'Temperature',
+		},
+		humidity: {
+			cs: 'Vlhkost',
+			en: 'Humidity',
+		},
 		email: {
 			cs: 'Email',
 			en: 'Email',

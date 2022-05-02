@@ -8,7 +8,7 @@ export declare module 'next-auth' {
 		account: User['account'];
 		accessToken: string;
 	}
-	
+
 	/**
 	 * The shape of the user object returned to the OAuth providers' `profile` callback,
 	 * or the second parameter of the `session` callback, when using a database.

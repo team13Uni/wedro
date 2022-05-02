@@ -22,10 +22,10 @@ import * as Yup from 'yup';
  */
 const RegisterPage: NextPageWithAuth = () => {
 	const router = useRouter();
-	const [ showPassword, setShowPassword ] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 	const { data: session, status } = useSession();
 	const { translate } = useTranslate();
-	
+
 	/**
 	 * Form initial values
 	 */
@@ -34,27 +34,24 @@ const RegisterPage: NextPageWithAuth = () => {
 		name: '',
 		password: '',
 	};
-	
+
 	/**
 	 * Form submit handler
 	 * @param {RegisterInputDto} values
 	 * @param {(field: string, message: (string | undefined)) => void} setFieldError
 	 * @return {Promise<void>}
 	 */
-	const registerSubmitHandler: FormikConfig<typeof initialValues>['onSubmit'] = async (values, {
-		setFieldError,
-		setStatus,
-	}) => {
+	const registerSubmitHandler: FormikConfig<typeof initialValues>['onSubmit'] = async (values, { setFieldError, setStatus }) => {
 		try {
 			const { data } = await apiClient({ url: '/api/auth/register', data: values, method: 'POST' });
-			
+
 			// redirect to login with prefilled username
 			await router.push({
 				pathname: '/login',
 				query: !isEmpty(data.user.username)
 					? {
-						username: encodeURIComponent(data.user.username),
-					}
+							username: encodeURIComponent(data.user.username),
+					  }
 					: undefined,
 			});
 		} catch (exception: Error | any) {
@@ -74,113 +71,110 @@ const RegisterPage: NextPageWithAuth = () => {
 			}
 		}
 	};
-	
+
 	return (
-		<Layout title={ translate(TRANSLATIONS.REGISTER.title) }
-		        isLoading={ status === 'authenticated' || status === 'loading' }>
-			<Container component='main' maxWidth='xs' sx={ { m: 'auto', textAlign: 'center' } }>
-				{/* Wedro logo */ }
+		<Layout title={translate(TRANSLATIONS.REGISTER.title)} isLoading={status === 'authenticated' || status === 'loading'}>
+			<Container component="main" maxWidth="xs" sx={{ m: 'auto', textAlign: 'center' }}>
+				{/* Wedro logo */}
 				<Typography
-					variant='h4'
-					sx={ {
+					variant="h4"
+					sx={{
 						fontWeight: 'bold',
 						cursor: 'pointer',
 						marginBottom: ({ spacing }) => spacing(4),
-					} }
+					}}
 				>
 					Wedro
 				</Typography>
-				
-				{/* form */ }
-				<Formik initialValues={ initialValues }
-				        validationSchema={ registerFormSchema }
-				        onSubmit={ registerSubmitHandler }>
-					{ ({ isSubmitting, isValid, dirty, values }) => (
-						<Grid container component={ FormikWrapper } spacing={ 3 } processing={ isSubmitting }>
-							{/* full name */ }
-							<Grid item xs={ 12 }>
+
+				{/* form */}
+				<Formik initialValues={initialValues} validationSchema={registerFormSchema} onSubmit={registerSubmitHandler}>
+					{({ isSubmitting, isValid, dirty, values }) => (
+						<Grid container component={FormikWrapper} spacing={3} processing={isSubmitting}>
+							{/* full name */}
+							<Grid item xs={12}>
 								<FormikFieldMui
-									FieldInput={ TextField }
+									FieldInput={TextField}
 									fullWidth
-									label={ translate({ cs: 'Jméno', en: 'Name' }) }
-									type='text'
-									name='name'
-									variant='outlined'
+									label={translate({ cs: 'Jméno', en: 'Name' })}
+									type="text"
+									name="name"
+									variant="outlined"
 								/>
 							</Grid>
-							
-							{/* username input */ }
-							<Grid item xs={ 12 }>
+
+							{/* username input */}
+							<Grid item xs={12}>
 								<FormikFieldMui
-									FieldInput={ TextField }
+									FieldInput={TextField}
 									fullWidth
-									label={ translate({ cs: 'Username', en: 'Username' }) }
-									type='text'
-									name='username'
-									variant='outlined'
+									label={translate({ cs: 'Username', en: 'Username' })}
+									type="text"
+									name="username"
+									variant="outlined"
 								/>
 							</Grid>
-							
-							{/* password input */ }
-							<Grid item xs={ 12 }>
+
+							{/* password input */}
+							<Grid item xs={12}>
 								<FormikFieldMui
 									required
 									fullWidth
-									FieldInput={ TextField }
-									InputProps={ {
+									FieldInput={TextField}
+									InputProps={{
 										endAdornment: (
-											<InputAdornment position='end'>
+											<InputAdornment position="end">
 												<IconButton
-													onClick={ () => {
+													onClick={() => {
 														setShowPassword(!showPassword);
-													} }
-													edge='end'
+													}}
+													edge="end"
 												>
-													{ showPassword ? <Visibility /> : <VisibilityOff /> }
+													{showPassword ? <Visibility /> : <VisibilityOff />}
 												</IconButton>
 											</InputAdornment>
 										),
-									} }
-									label={ translate(TRANSLATIONS.AUTH.password) }
-									type={ showPassword ? 'text' : 'password' }
-									name='password'
-									variant='outlined'
+									}}
+									label={translate(TRANSLATIONS.AUTH.password)}
+									type={showPassword ? 'text' : 'password'}
+									name="password"
+									variant="outlined"
 								/>
 							</Grid>
-							
-							{/* submit button */ }
-							<Grid item xs={ 12 }>
+
+							{/* submit button */}
+							<Grid item xs={12}>
 								<LoadingButton
-									loading={ isSubmitting }
-									type='submit'
+									loading={isSubmitting}
+									type="submit"
 									fullWidth
-									variant='contained'
-									color='primary'
-									size='large'
-									sx={ { mb: ({ spacing }) => spacing(2) } }
+									variant="contained"
+									color="primary"
+									size="large"
+									sx={{ mb: ({ spacing }) => spacing(2) }}
 									// disabled={!(dirty && isValid)}
 								>
-									{ translate(TRANSLATIONS.REGISTER.register) }
+									{translate(TRANSLATIONS.REGISTER.register)}
 								</LoadingButton>
 							</Grid>
-							
-							{/* login link */ }
-							<Grid item xs={ 12 }>
+
+							{/* login link */}
+							<Grid item xs={12}>
 								<Link
-									href={ {
+									href={{
 										pathname: '/login',
 										query: !isEmpty(values.username)
 											? {
-												username: encodeURIComponent(values.username),
-											}
+													username: encodeURIComponent(values.username),
+											  }
 											: undefined,
-									} }
+									}}
 								>
-									{ translate(TRANSLATIONS.REGISTER.loginCta) }
+									{translate(TRANSLATIONS.REGISTER.loginCta)}
 								</Link>
 							</Grid>
 						</Grid>
-					) }
+					)}
 				</Formik>
 			</Container>
 		</Layout>

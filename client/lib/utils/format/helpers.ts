@@ -23,7 +23,6 @@ export const NumberFormat = (locale: string, settings?: Intl.NumberFormatOptions
 export const formatNumber = (value: number | bigint, locale: string, settings?: Intl.NumberFormatOptions) =>
 	NumberFormat(locale, settings).format(value);
 
-
 /**
  * Date formatter
  * @param {Date | number} date
