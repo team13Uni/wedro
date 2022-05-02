@@ -1,10 +1,19 @@
-import { ErrorCode, StatusCode } from "../../types";
+import {
+  eachDayOfInterval,
+  eachHourOfInterval,
+  eachMonthOfInterval,
+  eachYearOfInterval,
+  isEqual,
+  set,
+} from "date-fns";
+import { HttpException } from "../../exceptions";
 import type { IdParam, RequestWithUser, ResponseWithError } from "../../types";
-import type {
-  DeleteMeasurementResponse,
-  Measurement,
-  MeasurementType,
-} from "./types";
+import { ErrorCode, StatusCode } from "../../types";
+import { findLocationById } from "../location/model";
+import {
+  findWeatherStationById,
+  updateWeatherStationById,
+} from "../weather-station/model";
 import {
   deleteMeasurementById,
   findAllMeasurements,
@@ -12,13 +21,15 @@ import {
   MeasurementModel,
   updateMeasurementById,
 } from "./model";
-import { HttpException } from "../../exceptions";
-import { findLocationById } from "../location/model";
-import {
-  findWeatherStationById,
-  updateWeatherStationById,
-} from "../weather-station/model";
+import type {
+  DeleteMeasurementResponse,
+  Measurement,
+  MeasurementType,
+} from "./types";
 
+/**
+ * Creates a new measurement
+ */
 export const create = async (
   req: RequestWithUser<Record<string, string>, Measurement, Measurement>,
   res: ResponseWithError<Measurement>
@@ -26,29 +37,82 @@ export const create = async (
   try {
     const { body } = req;
 
+    /** find location */
     const location = await findLocationById(body.locationId);
-    const weatherStation = await findWeatherStationById(body.nodeId);
-
-    if (!location || !weatherStation) {
-      let doesntExist = "";
-
-      if (!location && weatherStation) doesntExist = "Location";
-      if (location && !weatherStation) doesntExist = "Weather station";
-      if (!location && !weatherStation)
-        doesntExist = "Location and weather station";
-
+    if (!location) {
       return res.status(StatusCode.RECORD_NOT_FOUND).json({
         error: {
-          message: `${doesntExist} doesn't exist`,
+          message: `Location doesn't exist`,
           status: StatusCode.RECORD_NOT_FOUND,
           code: ErrorCode.NOT_FOUND,
         },
       });
     }
 
-    const newMeasurement = new MeasurementModel(req.body);
+    /** find weather station (redundant, remove locationId or nodeId from measurement as location-node is a 1:1 relation) */
+    const weatherStation = await findWeatherStationById(body.nodeId);
+    if (!weatherStation) {
+      return res.status(StatusCode.RECORD_NOT_FOUND).json({
+        error: {
+          message: `Weather station doesn't exist`,
+          status: StatusCode.RECORD_NOT_FOUND,
+          code: ErrorCode.NOT_FOUND,
+        },
+      });
+    }
+
+    const getInputData = () => {
+      let measuredAt = new Date(body.measuredAt);
+
+      /**
+       * TODO: check if this makes sense
+       * Set date-time values to 0 depending on the type of measurement.
+       * This ensures that measurement with e.g. type 'hour' will be saved as "2022-05-02T18:00:00.000Z" and not "2022-05-02T18:48:44.122Z"
+       */
+      switch (req.body.type) {
+        case "hour":
+          set(measuredAt, { minutes: 0, seconds: 0, milliseconds: 0 });
+          break;
+        case "day":
+          set(measuredAt, {
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+          });
+          break;
+        case "month":
+          set(measuredAt, {
+            date: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+          });
+          break;
+        case "year":
+          set(measuredAt, {
+            month: 0,
+            date: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+          });
+          break;
+      }
+
+      return {
+        ...req.body,
+        measuredAt,
+      };
+    };
+
+    /** create and save new measurement */
+    const newMeasurement = new MeasurementModel(getInputData());
     const result = await newMeasurement.save();
 
+    /** update weather station `lastActiveAt` field */
     await updateWeatherStationById(body.nodeId, {
       lastActiveAt: body.measuredAt,
     });
@@ -293,3 +357,85 @@ export const downscaleData = async (type: Exclude<MeasurementType, "hour">) => {
     throw err;
   }
 };
+
+/**
+ * Returns buckets with temperature and humidity data for specified date range and granularity (type)
+ */
+export const getBuckets = async (
+  req: RequestWithUser<
+    { weatherStationId: string },
+    GeBucketsDtoOut,
+    never,
+    { dateFrom: string; dateTo: string; type: MeasurementType }
+  >,
+  res: ResponseWithError<GeBucketsDtoOut>
+) => {
+  try {
+    const dateFrom = new Date(req.query.dateFrom);
+    const dateTo = new Date(req.query.dateTo);
+    const measurements = await MeasurementModel.find({
+      nodeId: req.params.weatherStationId,
+      measuredAt: { $gte: dateFrom, $lte: dateTo },
+      type: req.query.type,
+    });
+
+    let buckets = [];
+    switch (req.query.type) {
+      case "hour":
+        buckets = eachHourOfInterval({ start: dateFrom, end: dateTo });
+        break;
+      case "day":
+        buckets = eachDayOfInterval({ start: dateFrom, end: dateTo });
+        break;
+      case "month":
+        buckets = eachMonthOfInterval({ start: dateFrom, end: dateTo });
+        break;
+      case "year":
+        buckets = eachYearOfInterval({ start: dateFrom, end: dateTo });
+        break;
+    }
+
+    /** map or fill empty buckets */
+    const data: GeBucketsDtoOut = buckets.map(
+      (bucketDate, index, mappedBuckets) => {
+        const measurement = measurements.find((m) =>
+          isEqual(new Date(m.toJSON().measuredAt), bucketDate)
+        );
+
+        /** no measurement for the bucket, return empty bucket */
+        if (!measurement) {
+          return {
+            date: bucketDate.toISOString(),
+            /** TODO: calculate data instead of returning empty buckets */
+            temperature: 0,
+            humidity: 0,
+          };
+        }
+
+        return {
+          date: bucketDate.toISOString(),
+          temperature: measurement.temperature,
+          humidity: measurement.humidity,
+        };
+      }
+    );
+
+    /** send the data */
+    res.send(data);
+  } catch (err) {
+    if (err instanceof HttpException) {
+      res.status(err.status).json({
+        error: {
+          message: err.message,
+          status: StatusCode.SERVER_ERROR,
+          code: ErrorCode.SERVER_ERROR,
+        },
+      });
+    }
+  }
+};
+type GeBucketsDtoOut = Array<{
+  date: string;
+  temperature: number;
+  humidity: number;
+}>;

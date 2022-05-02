@@ -5,7 +5,7 @@ export type MeasurementType = "hour" | "day" | "month" | "year";
 export type Measurement = {
   temperature: number;
   humidity: number;
-  measuredAt: string;
+  measuredAt: Date;
   nodeId: ObjectId;
   locationId: ObjectId;
   type: MeasurementType;

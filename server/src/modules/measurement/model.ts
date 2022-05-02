@@ -12,7 +12,7 @@ export const measurementSchema = new Schema<Measurement>({
     required: true,
   },
   measuredAt: {
-    type: String,
+    type: Date,
     required: true,
   },
   type: {

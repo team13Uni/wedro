@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { validate } from "express-validation";
 import { validateAdminJWT, validateJWT } from "../../middlewares";
+import { objectIdValidator } from "../../validators";
 
 import * as Controllers from "./controllers";
 import {
   createMeasurementValidator,
   updateMeasurementValidator,
 } from "./validators";
-import { objectIdValidator } from "../../validators";
 
 const router = Router();
 
@@ -32,6 +32,13 @@ router.get(
   validateJWT,
   validate(objectIdValidator),
   Controllers.findOne
+);
+
+/** TODO: validate params and query */
+router.get(
+  "/:weatherStationId/buckets",
+  validateJWT,
+  Controllers.getBuckets
 );
 
 router.delete(
