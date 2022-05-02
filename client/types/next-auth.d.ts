@@ -1,4 +1,4 @@
-import { WedroUser } from './entities';
+import { WedroUser } from '@wedro/types/entities';
 
 export declare module 'next-auth' {
 	/**

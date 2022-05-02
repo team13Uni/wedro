@@ -21,7 +21,7 @@ export type Measurement = {
 };
 
 export type WedroUser = {
-	name: string;
+	username: string;
 	email: string;
 	role: WedroUserRole;
 };
