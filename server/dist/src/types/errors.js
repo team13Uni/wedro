@@ -8,6 +8,7 @@ var StatusCode;
     StatusCode[StatusCode["RECORD_NOT_FOUND"] = 404] = "RECORD_NOT_FOUND";
     StatusCode[StatusCode["SERVER_ERROR"] = 500] = "SERVER_ERROR";
     StatusCode[StatusCode["NOT_AUTHORIZED"] = 403] = "NOT_AUTHORIZED";
+    StatusCode[StatusCode["BAD_REQUEST"] = 400] = "BAD_REQUEST";
 })(StatusCode = exports.StatusCode || (exports.StatusCode = {}));
 var ErrorCode;
 (function (ErrorCode) {
@@ -16,4 +17,5 @@ var ErrorCode;
     ErrorCode["NOT_FOUND"] = "not_found";
     ErrorCode["NOT_AUTHORIZED"] = "not_authorized";
     ErrorCode["ALREADY_EXISTS"] = "already_exists";
+    ErrorCode["BAD_REQUEST"] = "bad_request";
 })(ErrorCode = exports.ErrorCode || (exports.ErrorCode = {}));

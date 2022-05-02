@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateAdminJWT = exports.validateJWT = void 0;
+exports.validateNodeJWT = exports.validateAdminJWT = exports.validateJWT = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
 const user_1 = require("../modules/user");
 const types_1 = require("../types");
@@ -78,3 +78,38 @@ const validateAdminJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.validateAdminJWT = validateAdminJWT;
+const validateNodeJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const authHeader = req.headers.authorization;
+        if (authHeader) {
+            const token = authHeader.split(" ")[1];
+            const verifiedToken = yield ((0, jsonwebtoken_1.verify)(token, process.env.JWT_SECRET));
+            if (!verifiedToken.nodeId) {
+                return res.status(types_1.StatusCode.NOT_AUTHORIZED).send({
+                    status: 403,
+                    code: types_1.ErrorCode.NOT_AUTHORIZED,
+                    message: "You are not authorized to access this endpoint!",
+                });
+            }
+            req.nodeId = verifiedToken.nodeId;
+            next();
+        }
+        else {
+            return res.status(types_1.StatusCode.NOT_AUTHORIZED).send({
+                status: 403,
+                code: types_1.ErrorCode.NOT_AUTHORIZED,
+                message: "You are not authorized to access this endpoint!",
+            });
+        }
+    }
+    catch (err) {
+        if (err instanceof Error) {
+            return res.status(types_1.StatusCode.NOT_AUTHORIZED).send({
+                status: types_1.StatusCode.NOT_AUTHORIZED,
+                code: types_1.ErrorCode.NOT_AUTHORIZED,
+                message: "JWT: " + err.message,
+            });
+        }
+    }
+});
+exports.validateNodeJWT = validateNodeJWT;

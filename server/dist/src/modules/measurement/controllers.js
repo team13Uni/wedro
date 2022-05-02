@@ -9,91 +9,54 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.downscaleData = exports.deleteMeasurement = exports.findOne = exports.findAll = exports.update = exports.create = void 0;
+exports.getBuckets = exports.downscaleData = exports.deleteMeasurement = exports.findOne = exports.findAll = exports.create = void 0;
+const date_fns_1 = require("date-fns");
 const types_1 = require("../../types");
 const model_1 = require("./model");
 const exceptions_1 = require("../../exceptions");
-const model_2 = require("../location/model");
-const model_3 = require("../weather-station/model");
+const model_2 = require("../weather-station/model");
 const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req;
-        const location = yield (0, model_2.findLocationById)(body.locationId);
-        const weatherStation = yield (0, model_3.findWeatherStationById)(body.nodeId);
-        if (!location || !weatherStation) {
-            let doesntExist = "";
-            if (!location && weatherStation)
-                doesntExist = "Location";
-            if (location && !weatherStation)
-                doesntExist = "Weather station";
-            if (!location && !weatherStation)
-                doesntExist = "Location and weather station";
-            return res.status(types_1.StatusCode.RECORD_NOT_FOUND).json({
-                error: {
-                    message: `${doesntExist} doesn't exist`,
-                    status: types_1.StatusCode.RECORD_NOT_FOUND,
-                    code: types_1.ErrorCode.NOT_FOUND,
-                },
-            });
+        if (!req.nodeId)
+            return res.json({ success: false });
+        for (const bodyItem of body) {
+            const weatherStation = yield (0, model_2.findWeatherStationById)(req.nodeId);
+            if (!weatherStation) {
+                return res.status(types_1.StatusCode.RECORD_NOT_FOUND).json({
+                    success: false,
+                    error: {
+                        message: "Weather station doesn't exist",
+                        status: types_1.StatusCode.RECORD_NOT_FOUND,
+                        code: types_1.ErrorCode.NOT_FOUND,
+                    },
+                });
+            }
+            const newMeasurement = new model_1.MeasurementModel(Object.assign(Object.assign({}, bodyItem), { type: "hour", nodeId: req.nodeId }));
+            yield newMeasurement.save();
         }
-        const newMeasurement = new model_1.MeasurementModel(req.body);
-        const result = yield newMeasurement.save();
-        yield (0, model_3.updateWeatherStationById)(body.nodeId, {
-            lastActiveAt: body.measuredAt,
+        yield (0, model_2.updateWeatherStationById)(req.nodeId, {
+            lastActiveAt: body[body.length - 1].measuredAt,
         });
-        res.json(result);
+        res.json({ success: true });
     }
     catch (err) {
         if (err instanceof exceptions_1.HttpException) {
             res.status(err.status).json({
+                success: false,
                 error: {
                     message: err.message,
                     status: types_1.StatusCode.SERVER_ERROR,
                     code: types_1.ErrorCode.SERVER_ERROR,
                 },
             });
+        }
+        else {
+            res.status(types_1.StatusCode.SERVER_ERROR).json({ success: false });
         }
     }
 });
 exports.create = create;
-const update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        const measurement = yield (0, model_1.findMeasurementById)(id);
-        if (!measurement) {
-            return res.status(types_1.StatusCode.RECORD_NOT_FOUND).json({
-                error: {
-                    message: "Measurement not found",
-                    status: types_1.StatusCode.RECORD_NOT_FOUND,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
-        const updatedMeasurement = yield (0, model_1.updateMeasurementById)(id, req.body);
-        if (!updatedMeasurement) {
-            return res.status(types_1.StatusCode.SERVER_ERROR).json({
-                error: {
-                    message: "Error occurred when updating the measurement, please try again later",
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
-        res.send(updatedMeasurement);
-    }
-    catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(err.status).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
-    }
-});
-exports.update = update;
 const findAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const measurements = yield (0, model_1.findAllMeasurements)(req.body);
@@ -208,6 +171,7 @@ const downscaleData = (type) => __awaiter(void 0, void 0, void 0, function* () {
         });
         let numbers = {};
         for (const measurement of measurements) {
+            // @ts-ignore
             const locationId = String(measurement.locationId);
             if (!numbers[locationId])
                 numbers[locationId] = {
@@ -240,3 +204,64 @@ const downscaleData = (type) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.downscaleData = downscaleData;
+/**
+ * Returns buckets with temperature and humidity data for specified date range and granularity (type)
+ */
+const getBuckets = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const dateFrom = new Date(req.query.dateFrom);
+        const dateTo = new Date(req.query.dateTo);
+        const measurements = yield model_1.MeasurementModel.find({
+            nodeId: req.params.weatherStationId,
+            measuredAt: { $gte: dateFrom, $lte: dateTo },
+            type: req.query.type,
+        });
+        let buckets = [];
+        switch (req.query.type) {
+            case "hour":
+                buckets = (0, date_fns_1.eachHourOfInterval)({ start: dateFrom, end: dateTo });
+                break;
+            case "day":
+                buckets = (0, date_fns_1.eachDayOfInterval)({ start: dateFrom, end: dateTo });
+                break;
+            case "month":
+                buckets = (0, date_fns_1.eachMonthOfInterval)({ start: dateFrom, end: dateTo });
+                break;
+            case "year":
+                buckets = (0, date_fns_1.eachYearOfInterval)({ start: dateFrom, end: dateTo });
+                break;
+        }
+        /** map or fill empty buckets */
+        const data = buckets.map((bucketDate) => {
+            const measurement = measurements.find((m) => (0, date_fns_1.isEqual)(new Date(m.toJSON().measuredAt), bucketDate));
+            /** no measurement for the bucket, return empty bucket */
+            if (!measurement) {
+                return {
+                    date: bucketDate.toISOString(),
+                    /** TODO: calculate data instead of returning empty buckets */
+                    temperature: 0,
+                    humidity: 0,
+                };
+            }
+            return {
+                date: bucketDate.toISOString(),
+                temperature: measurement.temperature,
+                humidity: measurement.humidity,
+            };
+        });
+        /** send the data */
+        res.send(data);
+    }
+    catch (err) {
+        if (err instanceof exceptions_1.HttpException) {
+            res.status(err.status).json({
+                error: {
+                    message: err.message,
+                    status: types_1.StatusCode.SERVER_ERROR,
+                    code: types_1.ErrorCode.SERVER_ERROR,
+                },
+            });
+        }
+    }
+});
+exports.getBuckets = getBuckets;

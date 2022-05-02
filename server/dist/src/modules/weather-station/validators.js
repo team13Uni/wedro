@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateWeatherStationValidator = exports.createWeatherStationValidator = void 0;
+exports.authorizeWeatherStationValidator = exports.updateWeatherStationValidator = exports.createWeatherStationValidator = void 0;
 const express_validation_1 = require("express-validation");
 const JoiObjectId_1 = require("../../validators/JoiObjectId");
 const validators = {
@@ -26,5 +26,10 @@ exports.updateWeatherStationValidator = {
         secret: validators.secret,
         unavailable: validators.unavailable,
         active: validators.active,
+    }),
+};
+exports.authorizeWeatherStationValidator = {
+    body: express_validation_1.Joi.object({
+        secret: validators.secret,
     }),
 };

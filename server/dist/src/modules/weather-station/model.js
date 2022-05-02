@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteWeatherStationById = exports.findAllWeatherStations = exports.findWeatherStationById = exports.updateWeatherStationById = exports.WeatherStationModel = exports.weatherStationSchema = void 0;
+exports.deleteWeatherStationById = exports.findAllWeatherStations = exports.findWeatherStationBySecret = exports.findWeatherStationById = exports.updateWeatherStationById = exports.WeatherStationModel = exports.weatherStationSchema = void 0;
 const mongoose_1 = require("mongoose");
 exports.weatherStationSchema = new mongoose_1.Schema({
     name: {
@@ -29,15 +29,19 @@ exports.weatherStationSchema = new mongoose_1.Schema({
         default: true,
     },
     lastActiveAt: {
-        type: String,
+        type: Date,
     },
 });
 exports.WeatherStationModel = (0, mongoose_1.model)("weather-station", exports.weatherStationSchema);
-const updateWeatherStationById = (id, updateBody, options) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.WeatherStationModel.findByIdAndUpdate(id, updateBody, options); });
+const updateWeatherStationById = (id, updateBody, options) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield exports.WeatherStationModel.findByIdAndUpdate(id, updateBody, options).select("-secret");
+});
 exports.updateWeatherStationById = updateWeatherStationById;
-const findWeatherStationById = (id) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.WeatherStationModel.findById(id); });
+const findWeatherStationById = (id) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.WeatherStationModel.findById(id).select("-secret"); });
 exports.findWeatherStationById = findWeatherStationById;
-const findAllWeatherStations = (filter) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.WeatherStationModel.find(filter); });
+const findWeatherStationBySecret = (secret) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.WeatherStationModel.findOne({ secret }); });
+exports.findWeatherStationBySecret = findWeatherStationBySecret;
+const findAllWeatherStations = (filter) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.WeatherStationModel.find(filter).select("-secret"); });
 exports.findAllWeatherStations = findAllWeatherStations;
 const deleteWeatherStationById = (id) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.WeatherStationModel.findByIdAndDelete(id); });
 exports.deleteWeatherStationById = deleteWeatherStationById;

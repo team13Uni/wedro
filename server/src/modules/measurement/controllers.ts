@@ -300,29 +300,27 @@ export const getBuckets = async (
     }
 
     /** map or fill empty buckets */
-    const data: GeBucketsDtoOut = buckets.map(
-      (bucketDate) => {
-        const measurement = measurements.find((m) =>
-          isEqual(new Date(m.toJSON().measuredAt), bucketDate)
-        );
+    const data: GeBucketsDtoOut = buckets.map((bucketDate) => {
+      const measurement = measurements.find((m) =>
+        isEqual(new Date(m.toJSON().measuredAt), bucketDate)
+      );
 
-        /** no measurement for the bucket, return empty bucket */
-        if (!measurement) {
-          return {
-            date: bucketDate.toISOString(),
-            /** TODO: calculate data instead of returning empty buckets */
-            temperature: 0,
-            humidity: 0,
-          };
-        }
-
+      /** no measurement for the bucket, return empty bucket */
+      if (!measurement) {
         return {
           date: bucketDate.toISOString(),
-          temperature: measurement.temperature,
-          humidity: measurement.humidity,
+          /** TODO: calculate data instead of returning empty buckets */
+          temperature: 0,
+          humidity: 0,
         };
       }
-    );
+
+      return {
+        date: bucketDate.toISOString(),
+        temperature: measurement.temperature,
+        humidity: measurement.humidity,
+      };
+    });
 
     /** send the data */
     res.send(data);

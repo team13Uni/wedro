@@ -36,4 +36,5 @@ router.post("/", middlewares_1.validateAdminJWT, (0, express_validation_1.valida
 router.put("/:id", middlewares_1.validateAdminJWT, (0, express_validation_1.validate)(validators_2.updateWeatherStationValidator), Controllers.update);
 router.get("/", middlewares_1.validateJWT, Controllers.findAll);
 router.get("/:id", middlewares_1.validateJWT, (0, express_validation_1.validate)(validators_1.objectIdValidator), Controllers.findOne);
+router.post("/authorize", (0, express_validation_1.validate)(validators_2.authorizeWeatherStationValidator), Controllers.authorizeWeatherStation);
 router.delete("/:id", middlewares_1.validateAdminJWT, (0, express_validation_1.validate)(validators_1.objectIdValidator), Controllers.deleteWeatherStation);

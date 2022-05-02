@@ -22,7 +22,7 @@ exports.measurementSchema = new mongoose_1.Schema({
         required: true,
     },
     measuredAt: {
-        type: String,
+        type: Date,
         required: true,
     },
     type: {
@@ -33,10 +33,6 @@ exports.measurementSchema = new mongoose_1.Schema({
     nodeId: {
         type: mongoose_2.Types.ObjectId,
         ref: "weather-station",
-    },
-    locationId: {
-        type: mongoose_2.Types.ObjectId,
-        ref: "location",
     },
 });
 exports.MeasurementModel = (0, mongoose_1.model)("measurement", exports.measurementSchema);

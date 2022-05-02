@@ -9,10 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.wellnessCheck = exports.deleteWeatherStation = exports.update = exports.findOne = exports.findAll = exports.create = void 0;
+exports.wellnessCheck = exports.authorizeWeatherStation = exports.deleteWeatherStation = exports.update = exports.findOne = exports.findAll = exports.create = void 0;
 const types_1 = require("../../types");
 const model_1 = require("./model");
 const exceptions_1 = require("../../exceptions");
+const jsonwebtoken_1 = require("jsonwebtoken");
 const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newWeatherStation = new model_1.WeatherStationModel(req.body);
@@ -156,6 +157,42 @@ const deleteWeatherStation = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.deleteWeatherStation = deleteWeatherStation;
+const authorizeWeatherStation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { secret } = req.body;
+        const station = yield (0, model_1.findWeatherStationBySecret)(secret);
+        if (station) {
+            const token = (0, jsonwebtoken_1.sign)({ nodeId: station.id }, process.env.JWT_SECRET, {
+                expiresIn: 120, // in two hours
+            });
+            return res.status(200).json({
+                token,
+            });
+        }
+        else {
+            res.status(400).json({
+                error: {
+                    message: "You either send a wrong code or the station doesn't exist",
+                    status: types_1.StatusCode.WRONG_INPUT,
+                    code: types_1.ErrorCode.BAD_REQUEST,
+                },
+            });
+        }
+    }
+    catch (err) {
+        if (err instanceof exceptions_1.HttpException) {
+            res.status(err.status).json({
+                error: {
+                    message: err.message,
+                    status: types_1.StatusCode.SERVER_ERROR,
+                    code: types_1.ErrorCode.SERVER_ERROR,
+                },
+            });
+        }
+        throw err;
+    }
+});
+exports.authorizeWeatherStation = authorizeWeatherStation;
 const wellnessCheck = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const now = new Date();
