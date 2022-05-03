@@ -1,0 +1,2098 @@
+[
+    {
+        "temperature": {
+            "$numberDouble": "10.0"
+        },
+        "humidity": {
+            "$numberDouble": "0.85"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651143600000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651147200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "9.943333333333348"
+        },
+        "humidity": {
+            "$numberDouble": "0.82"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651150800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "9.886666666666693"
+        },
+        "humidity": {
+            "$numberDouble": "0.79"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "9.830000000000041"
+        },
+        "humidity": {
+            "$numberDouble": "0.76"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651154400000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651158000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "8.523333333333369"
+        },
+        "humidity": {
+            "$numberDouble": "0.7633333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651161600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "7.216666666666697"
+        },
+        "humidity": {
+            "$numberDouble": "0.7666666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "5.910000000000025"
+        },
+        "humidity": {
+            "$numberDouble": "0.77"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651165200000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651168800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "4.8166666666666815"
+        },
+        "humidity": {
+            "$numberDouble": "0.8033333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651172400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "3.7233333333333385"
+        },
+        "humidity": {
+            "$numberDouble": "0.8366666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "2.6299999999999955"
+        },
+        "humidity": {
+            "$numberDouble": "0.87"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651176000000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651179600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "2.27666666666668"
+        },
+        "humidity": {
+            "$numberDouble": "0.8733333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651183200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "1.9233333333333653"
+        },
+        "humidity": {
+            "$numberDouble": "0.8766666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "1.57000000000005"
+        },
+        "humidity": {
+            "$numberDouble": "0.88"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651186800000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651190400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "1.4716666666667113"
+        },
+        "humidity": {
+            "$numberDouble": "0.89"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651194000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "1.3733333333333728"
+        },
+        "humidity": {
+            "$numberDouble": "0.9"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "1.275000000000034"
+        },
+        "humidity": {
+            "$numberDouble": "0.91"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651197600000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651201200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "1.664000000000025"
+        },
+        "humidity": {
+            "$numberDouble": "0.91"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651204800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "2.053000000000016"
+        },
+        "humidity": {
+            "$numberDouble": "0.91"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "2.4420000000000073"
+        },
+        "humidity": {
+            "$numberDouble": "0.91"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651208400000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651212000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "4.3663333333333485"
+        },
+        "humidity": {
+            "$numberDouble": "0.9266666666666666"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651215600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "6.29066666666669"
+        },
+        "humidity": {
+            "$numberDouble": "0.9433333333333334"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "8.215000000000032"
+        },
+        "humidity": {
+            "$numberDouble": "0.96"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651219200000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651222800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "8.960333333333361"
+        },
+        "humidity": {
+            "$numberDouble": "0.9266666666666666"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651226400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "9.705666666666692"
+        },
+        "humidity": {
+            "$numberDouble": "0.8933333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "10.451000000000022"
+        },
+        "humidity": {
+            "$numberDouble": "0.86"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651230000000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651233600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "10.27666666666668"
+        },
+        "humidity": {
+            "$numberDouble": "0.8099999999999999"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651237200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "10.10233333333334"
+        },
+        "humidity": {
+            "$numberDouble": "0.76"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "9.927999999999997"
+        },
+        "humidity": {
+            "$numberDouble": "0.71"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651240800000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651244400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "8.603666666666678"
+        },
+        "humidity": {
+            "$numberDouble": "0.7"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651248000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "7.27933333333336"
+        },
+        "humidity": {
+            "$numberDouble": "0.6900000000000001"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "5.955000000000041"
+        },
+        "humidity": {
+            "$numberDouble": "0.68"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651251600000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651255200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "4.853333333333372"
+        },
+        "humidity": {
+            "$numberDouble": "0.73"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651258800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "3.751666666666703"
+        },
+        "humidity": {
+            "$numberDouble": "0.78"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "2.650000000000034"
+        },
+        "humidity": {
+            "$numberDouble": "0.83"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651262400000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651266000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "2.4413333333333562"
+        },
+        "humidity": {
+            "$numberDouble": "0.8433333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651269600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "2.232666666666679"
+        },
+        "humidity": {
+            "$numberDouble": "0.8566666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "2.024000000000001"
+        },
+        "humidity": {
+            "$numberDouble": "0.87"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651273200000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651276800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "1.7520000000000095"
+        },
+        "humidity": {
+            "$numberDouble": "0.88"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651280400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "1.4800000000000182"
+        },
+        "humidity": {
+            "$numberDouble": "0.89"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "1.2080000000000268"
+        },
+        "humidity": {
+            "$numberDouble": "0.9"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651284000000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651287600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "0.9996666666666935"
+        },
+        "humidity": {
+            "$numberDouble": "0.8966666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651291200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "0.7913333333333601"
+        },
+        "humidity": {
+            "$numberDouble": "0.8933333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "0.5830000000000268"
+        },
+        "humidity": {
+            "$numberDouble": "0.89"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651294800000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651298400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "2.601666666666688"
+        },
+        "humidity": {
+            "$numberDouble": "0.8966666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651302000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "4.620333333333349"
+        },
+        "humidity": {
+            "$numberDouble": "0.9033333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "6.63900000000001"
+        },
+        "humidity": {
+            "$numberDouble": "0.91"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651305600000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651309200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "7.531000000000006"
+        },
+        "humidity": {
+            "$numberDouble": "0.8766666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651312800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "8.423000000000002"
+        },
+        "humidity": {
+            "$numberDouble": "0.8433333333333334"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "9.314999999999998"
+        },
+        "humidity": {
+            "$numberDouble": "0.81"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651316400000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651320000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "9.535666666666677"
+        },
+        "humidity": {
+            "$numberDouble": "0.7833333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651323600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "9.756333333333354"
+        },
+        "humidity": {
+            "$numberDouble": "0.7566666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "9.977000000000032"
+        },
+        "humidity": {
+            "$numberDouble": "0.73"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651327200000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651330800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "8.488000000000037"
+        },
+        "humidity": {
+            "$numberDouble": "0.7433333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651334400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "6.999000000000043"
+        },
+        "humidity": {
+            "$numberDouble": "0.7566666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "5.510000000000048"
+        },
+        "humidity": {
+            "$numberDouble": "0.77"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651338000000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651341600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "4.458666666666696"
+        },
+        "humidity": {
+            "$numberDouble": "0.8033333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651345200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "3.4073333333333453"
+        },
+        "humidity": {
+            "$numberDouble": "0.8366666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "2.3559999999999945"
+        },
+        "humidity": {
+            "$numberDouble": "0.87"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651348800000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651352400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "1.8383333333333287"
+        },
+        "humidity": {
+            "$numberDouble": "0.8766666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651356000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "1.3206666666666629"
+        },
+        "humidity": {
+            "$numberDouble": "0.8833333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "0.8029999999999973"
+        },
+        "humidity": {
+            "$numberDouble": "0.89"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651359600000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651363200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "0.39833333333333104"
+        },
+        "humidity": {
+            "$numberDouble": "0.89"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651366800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "-0.006333333333335189"
+        },
+        "humidity": {
+            "$numberDouble": "0.89"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "-0.41100000000000136"
+        },
+        "humidity": {
+            "$numberDouble": "0.89"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651370400000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651374000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "-0.3439999999999941"
+        },
+        "humidity": {
+            "$numberDouble": "0.8866666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651377600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "-0.2769999999999868"
+        },
+        "humidity": {
+            "$numberDouble": "0.8833333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "-0.20999999999997954"
+        },
+        "humidity": {
+            "$numberDouble": "0.88"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651381200000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651384800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "2.230666666666688"
+        },
+        "humidity": {
+            "$numberDouble": "0.8966666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651388400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "4.671333333333355"
+        },
+        "humidity": {
+            "$numberDouble": "0.9133333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "7.112000000000023"
+        },
+        "humidity": {
+            "$numberDouble": "0.93"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651392000000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651395600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "8.857666666666697"
+        },
+        "humidity": {
+            "$numberDouble": "0.8766666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651399200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "10.603333333333373"
+        },
+        "humidity": {
+            "$numberDouble": "0.8233333333333334"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "12.349000000000046"
+        },
+        "humidity": {
+            "$numberDouble": "0.77"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651402800000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651406400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "12.837666666666697"
+        },
+        "humidity": {
+            "$numberDouble": "0.7366666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651410000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "13.326333333333347"
+        },
+        "humidity": {
+            "$numberDouble": "0.7033333333333334"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "13.814999999999998"
+        },
+        "humidity": {
+            "$numberDouble": "0.67"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651413600000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651417200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "12.765000000000006"
+        },
+        "humidity": {
+            "$numberDouble": "0.67"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651420800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "11.715000000000012"
+        },
+        "humidity": {
+            "$numberDouble": "0.67"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "10.66500000000002"
+        },
+        "humidity": {
+            "$numberDouble": "0.67"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651424400000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651428000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "9.88766666666669"
+        },
+        "humidity": {
+            "$numberDouble": "0.7266666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651431600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "9.110333333333358"
+        },
+        "humidity": {
+            "$numberDouble": "0.7833333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "8.333000000000027"
+        },
+        "humidity": {
+            "$numberDouble": "0.84"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651435200000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651438800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "6.978333333333353"
+        },
+        "humidity": {
+            "$numberDouble": "0.8733333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651442400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "5.623666666666679"
+        },
+        "humidity": {
+            "$numberDouble": "0.9066666666666666"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "4.2690000000000055"
+        },
+        "humidity": {
+            "$numberDouble": "0.94"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651446000000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651449600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "3.3020000000000023"
+        },
+        "humidity": {
+            "$numberDouble": "0.9333333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651453200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "2.3349999999999986"
+        },
+        "humidity": {
+            "$numberDouble": "0.9266666666666666"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "1.367999999999995"
+        },
+        "humidity": {
+            "$numberDouble": "0.92"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651456800000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651460400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "1.1136666666666695"
+        },
+        "humidity": {
+            "$numberDouble": "0.9066666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651464000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "0.8593333333333438"
+        },
+        "humidity": {
+            "$numberDouble": "0.8933333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "0.6050000000000182"
+        },
+        "humidity": {
+            "$numberDouble": "0.88"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651467600000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651471200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "2.0393333333333508"
+        },
+        "humidity": {
+            "$numberDouble": "0.91"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651474800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "3.4736666666666833"
+        },
+        "humidity": {
+            "$numberDouble": "0.94"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "4.9080000000000155"
+        },
+        "humidity": {
+            "$numberDouble": "0.97"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651478400000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651482000000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "5.329666666666678"
+        },
+        "humidity": {
+            "$numberDouble": "0.9533333333333334"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651485600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "5.751333333333339"
+        },
+        "humidity": {
+            "$numberDouble": "0.9366666666666666"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "6.173000000000002"
+        },
+        "humidity": {
+            "$numberDouble": "0.92"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651489200000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651492800000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "6.435333333333347"
+        },
+        "humidity": {
+            "$numberDouble": "0.9166666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651496400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "6.6976666666666915"
+        },
+        "humidity": {
+            "$numberDouble": "0.9133333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "6.960000000000036"
+        },
+        "humidity": {
+            "$numberDouble": "0.91"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651500000000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651503600000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "6.739666666666703"
+        },
+        "humidity": {
+            "$numberDouble": "0.9166666666666667"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651507200000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "6.5193333333333685"
+        },
+        "humidity": {
+            "$numberDouble": "0.9233333333333333"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "temperature": {
+            "$numberDouble": "6.299000000000035"
+        },
+        "humidity": {
+            "$numberDouble": "0.93"
+        },
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651510800000"
+            }
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651514400000"
+            }
+        },
+        "temperature": {
+            "$numberDouble": "6.2473333333333585"
+        },
+        "humidity": {
+            "$numberDouble": "0.9400000000000001"
+        },
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    },
+    {
+        "measuredAt": {
+            "$date": {
+                "$numberLong": "1651518000000"
+            }
+        },
+        "temperature": 6.195666666666682,
+        "humidity": 0.95,
+        "type": "hour",
+        "nodeId": {
+            "$oid": "6253e74ae7db67b599155785"
+        },
+        "locationId": {
+            "$oid": "625416218573f8a907a89f65"
+        }
+    }
+]
