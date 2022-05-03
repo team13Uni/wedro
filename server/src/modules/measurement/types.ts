@@ -10,9 +10,11 @@ export type Measurement = {
   type: MeasurementType;
 };
 
-export type CreateMeasurementRequestBody = Array<
-  Omit<Measurement, "nodeId" | "type">
->;
+export type CreateMeasurementRequestBody = Array<{
+  temperature: number;
+  humidity: number;
+  measuredAt: number;
+}>;
 
 export type DeleteMeasurementResponse = {
   success: boolean;

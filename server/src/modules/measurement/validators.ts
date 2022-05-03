@@ -3,7 +3,7 @@ import { Joi } from "express-validation";
 const validators = {
   temperature: Joi.number().min(-80).max(80),
   humidity: Joi.number().min(0).max(1),
-  measuredAt: Joi.string().max(1024),
+  measuredAt: Joi.number(),
 };
 
 export const createMeasurementValidator = {

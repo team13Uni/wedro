@@ -55,17 +55,22 @@ export const create = async (
         });
       }
 
+      const date = new Date(bodyItem.measuredAt);
+
       const newMeasurement = new MeasurementModel({
         ...bodyItem,
         type: "hour",
         nodeId: req.nodeId,
         locationId: location ? location.id : undefined,
+        measuredAt: date.toISOString(),
       });
       await newMeasurement.save();
     }
 
+    const lastActiveAtDate = new Date(body[body.length - 1].measuredAt);
+
     await updateWeatherStationById(req.nodeId, {
-      lastActiveAt: body[body.length - 1].measuredAt,
+      lastActiveAt: lastActiveAtDate,
     });
     res.json({ success: true });
   } catch (err) {
