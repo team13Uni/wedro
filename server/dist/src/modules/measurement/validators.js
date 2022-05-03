@@ -5,7 +5,7 @@ const express_validation_1 = require("express-validation");
 const validators = {
     temperature: express_validation_1.Joi.number().min(-80).max(80),
     humidity: express_validation_1.Joi.number().min(0).max(1),
-    measuredAt: express_validation_1.Joi.string().max(1024),
+    measuredAt: express_validation_1.Joi.number(),
 };
 exports.createMeasurementValidator = {
     body: express_validation_1.Joi.array()

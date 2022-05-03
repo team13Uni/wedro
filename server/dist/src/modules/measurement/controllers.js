@@ -34,11 +34,13 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     },
                 });
             }
-            const newMeasurement = new model_1.MeasurementModel(Object.assign(Object.assign({}, bodyItem), { type: "hour", nodeId: req.nodeId, locationId: location ? location.id : undefined }));
+            const date = new Date(bodyItem.measuredAt);
+            const newMeasurement = new model_1.MeasurementModel(Object.assign(Object.assign({}, bodyItem), { type: "hour", nodeId: req.nodeId, locationId: location ? location.id : undefined, measuredAt: date.toISOString() }));
             yield newMeasurement.save();
         }
+        const lastActiveAtDate = new Date(body[body.length - 1].measuredAt);
         yield (0, model_2.updateWeatherStationById)(req.nodeId, {
-            lastActiveAt: body[body.length - 1].measuredAt,
+            lastActiveAt: lastActiveAtDate,
         });
         res.json({ success: true });
     }
