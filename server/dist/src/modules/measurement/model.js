@@ -28,7 +28,7 @@ exports.measurementSchema = new mongoose_1.Schema({
     type: {
         type: String,
         required: true,
-        enum: ["hour", "day", "month", "year"],
+        enum: ["5-minutes", "hour", "day", "month", "year"],
     },
     nodeId: {
         type: mongoose_2.Types.ObjectId,

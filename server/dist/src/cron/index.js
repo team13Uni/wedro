@@ -21,6 +21,12 @@ function default_1() {
         const updatedStations = yield (0, controllers_1.wellnessCheck)();
         console.log(updatedStations);
     }));
+    // every hour
+    node_cron_1.default.schedule("0 * * * *", () => __awaiter(this, void 0, void 0, function* () {
+        console.log("cron day");
+        const data = yield (0, measurement_1.downscaleData)("hour");
+        console.log(data);
+    }));
     // every day
     node_cron_1.default.schedule("0 0 * * *", () => __awaiter(this, void 0, void 0, function* () {
         console.log("cron day");
