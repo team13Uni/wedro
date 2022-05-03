@@ -1,4 +1,5 @@
 import { HttpException } from "../../exceptions";
+import { omitFrom } from '../../helpers/common';
 import {
   ErrorCode,
   IdParam,
@@ -6,11 +7,9 @@ import {
   ResponseWithError,
   StatusCode,
 } from "../../types";
-import { findWeatherStationById } from "../weather-station/model";
 import { WeatherStation } from "../weather-station/types";
 import {
   deleteLocationById,
-  findAllLocations,
   findLocationById,
   LocationModel,
   updateLocationById,
@@ -94,16 +93,25 @@ export const update = async (
   }
 };
 
-type FindAllDtoOut = Omit<Location, 'nodeId'> & {
+type FindAllDtoOut = Omit<Location, "nodeId"> & {
   weatherStation: WeatherStation;
-}
+};
 export const findAll = async (
-  req: RequestWithUser<Record<string, string>, FindAllDtoOut[], Partial<Location>>,
+  req: RequestWithUser<
+    Record<string, string>,
+    FindAllDtoOut[],
+    Partial<Location>
+  >,
   res: ResponseWithError<FindAllDtoOut[]>
 ) => {
   try {
-    const locations = await LocationModel.find().populate<{ nodeId: WeatherStation }>("nodeId");
-    const mappedLocations: FindAllDtoOut[] = locations.map((location) => ({ ...location.toJSON(), weatherStation: location.nodeId }));
+    const locations = await LocationModel.find().populate<{
+      nodeId: WeatherStation;
+    }>("nodeId");
+    const mappedLocations: FindAllDtoOut[] = locations.map((location) => ({
+      ...omitFrom(location.toJSON(), 'nodeId'),
+      weatherStation: location.nodeId,
+    }));
     res.send(mappedLocations);
   } catch (err) {
     if (err instanceof HttpException) {
@@ -120,12 +128,17 @@ export const findAll = async (
   }
 };
 
+type FindOneDtoOut = Omit<Location, "nodeId"> & {
+  weatherStation: WeatherStation;
+};
 export const findOne = async (
-  req: RequestWithUser<IdParam, Location, undefined>,
-  res: ResponseWithError<Location>
+  req: RequestWithUser<IdParam, FindOneDtoOut, undefined>,
+  res: ResponseWithError<FindOneDtoOut>
 ) => {
   try {
-    const location = await findLocationById(req.params.id);
+    const location = await LocationModel.findById(req.params.id).populate<{
+      nodeId: WeatherStation;
+    }>("nodeId");
 
     if (!location) {
       return res.status(404).json({
@@ -137,7 +150,7 @@ export const findOne = async (
       });
     }
 
-    res.send(location);
+    res.send({ ...omitFrom(location.toJSON(), 'nodeId'), weatherStation: location.nodeId });
   } catch (err) {
     if (err instanceof HttpException) {
       res.status(500).json({

@@ -7,6 +7,8 @@ export type WeatherStation = {
   unavailable: boolean;
   active: boolean;
   lastActiveAt: Date;
+  coordinates: number[];
+  seaLevel: number;
 };
 
 export type CreateWeatherStationRequestBody = {
