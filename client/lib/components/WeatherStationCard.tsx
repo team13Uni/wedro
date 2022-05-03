@@ -1,36 +1,16 @@
-import {
-	ArrowDownward,
-	ArrowRightAlt,
-	ArrowUpward,
-	CellWifi,
-	DeviceThermostat,
-	SignalWifiStatusbarConnectedNoInternet4,
-	Thermostat,
-	Water,
-} from '@mui/icons-material';
-import {
-	Box,
-	Button,
-	Card,
-	CardActions,
-	CardContent,
-	Chip,
-	Divider,
-	Stack,
-	ToggleButton,
-	ToggleButtonGroup,
-	Tooltip as MuiTooltip,
-	Typography,
-} from '@mui/material';
+import { ArrowDownward, ArrowRightAlt, ArrowUpward, DeviceThermostat, Thermostat, Water } from '@mui/icons-material';
+import { Box, Button, Card, CardActions, CardContent, Divider, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { apiClient } from '@wedro/app';
+import { WeatherStationStatusChip } from '@wedro/components/WeatherStationStatusChip';
 import { TRANSLATIONS } from '@wedro/constants';
 import { useTranslate } from '@wedro/hooks';
 import { useFormat } from '@wedro/hooks/useFormat';
 import { useNow } from '@wedro/hooks/useNow';
 import { Location } from '@wedro/types';
-import { isDefined } from '@wedro/utils';
+import { isDefined, pickFrom } from '@wedro/utils';
 import { subHours } from 'date-fns';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import React, { FC, useMemo, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import useSWR from 'swr';
@@ -100,21 +80,16 @@ export const WeatherStationCard: FC<WeatherStationCardProps> = ({ location }) =>
 							{location.weatherStation.name}
 						</Typography>
 						<Box mb={1.5}>
-							{!location.weatherStation.unavailable ? (
-								<Chip color="success" label="Dostupná" icon={<CellWifi />} />
-							) : (
-								// TODO: i18n
-								<MuiTooltip title={`Naposledy dostupná ${format.date(new Date(location.weatherStation.lastActiveAt), 'PPPp')}`}>
-									<Chip color="warning" label="Nedostupná" icon={<SignalWifiStatusbarConnectedNoInternet4 />} />
-								</MuiTooltip>
-							)}
+							<WeatherStationStatusChip {...pickFrom(location.weatherStation, 'unavailable', 'lastActiveAt')} />
 						</Box>
 					</div>
 
-					{/* TODO: detail button */}
-					<Button color="primary" endIcon={<ArrowRightAlt />} disabled>
-						{translate(TRANSLATIONS.GENERAL.open)}
-					</Button>
+					{/* detail button */}
+					<Link href={`/weather-stations/${location._id}`}>
+						<Button color="primary" endIcon={<ArrowRightAlt />}>
+							{translate(TRANSLATIONS.GENERAL.open)}
+						</Button>
+					</Link>
 				</Stack>
 
 				{/* current stats card stack */}
@@ -298,20 +273,22 @@ type WeatherStationCardProps = {
 };
 
 /**
+ * TODO: move elsewhere
  * WeatherStationCard component data type
- * @private
+ * @export
  */
-type WeatherStationData = {
+export type WeatherStationData = {
 	date: Date;
 	temperature: number;
 	humidity: number;
 };
 
 /**
+ * TODO: move elsewhere
  * WeatherStationCard component chart enumeration
- * @private
+ * @export
  */
-enum WeatherStationChart {
+export enum WeatherStationChart {
 	TEMPERATURE,
 	HUMIDITY,
 }
