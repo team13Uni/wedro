@@ -20,10 +20,12 @@ import {
 } from "./model";
 import type {
   CreateMeasurementRequestBody,
+  CreateMeasurementResponse,
   DeleteMeasurementResponse,
   Measurement,
   MeasurementType,
 } from "./types";
+import { findLocationByNodeId } from "../location/model";
 
 export const create = async (
   req: RequestWithNodeId<
@@ -31,19 +33,20 @@ export const create = async (
     undefined,
     CreateMeasurementRequestBody
   >,
-  res: ResponseWithError<{ success: boolean }>
+  res: ResponseWithError<CreateMeasurementResponse>
 ) => {
   try {
     const { body } = req;
 
-    if (!req.nodeId) return res.json({ success: false });
+    if (!req.nodeId) return res.status(StatusCode.NOT_AUTHORIZED);
+
+    const location = await findLocationByNodeId(req.nodeId);
 
     for (const bodyItem of body) {
       const weatherStation = await findWeatherStationById(req.nodeId);
 
       if (!weatherStation) {
         return res.status(StatusCode.RECORD_NOT_FOUND).json({
-          success: false,
           error: {
             message: "Weather station doesn't exist",
             status: StatusCode.RECORD_NOT_FOUND,
@@ -52,22 +55,36 @@ export const create = async (
         });
       }
 
+      const date = new Date(bodyItem.measuredAt);
+
       const newMeasurement = new MeasurementModel({
         ...bodyItem,
-        type: "hour",
+        type: "5-minutes",
         nodeId: req.nodeId,
+        locationId: location ? location.id : undefined,
+        measuredAt: date.toISOString(),
       });
       await newMeasurement.save();
     }
 
+    const lastActiveAtDate = new Date(body[body.length - 1].measuredAt);
+
     await updateWeatherStationById(req.nodeId, {
-      lastActiveAt: body[body.length - 1].measuredAt,
+      lastActiveAt: lastActiveAtDate,
     });
-    res.json({ success: true });
+
+    let lastSentItem;
+
+    if (body.length > 1) {
+      lastSentItem = body[body.length - 2];
+    } else {
+      lastSentItem = body[body.length - 1];
+    }
+
+    res.json(lastSentItem);
   } catch (err) {
     if (err instanceof HttpException) {
       res.status(err.status).json({
-        success: false,
         error: {
           message: err.message,
           status: StatusCode.SERVER_ERROR,
@@ -75,7 +92,7 @@ export const create = async (
         },
       });
     } else {
-      res.status(StatusCode.SERVER_ERROR).json({ success: false });
+      res.status(StatusCode.SERVER_ERROR);
     }
   }
 };
@@ -187,7 +204,9 @@ type TransformedDataType = {
   numberOfMeasurements: number;
 };
 
-export const downscaleData = async (type: Exclude<MeasurementType, "hour">) => {
+export const downscaleData = async (
+  type: Exclude<MeasurementType, "5-minutes">
+) => {
   try {
     const now = new Date();
     const minDate = new Date();
@@ -195,6 +214,13 @@ export const downscaleData = async (type: Exclude<MeasurementType, "hour">) => {
     let findType: MeasurementType;
 
     switch (type) {
+      case "hour": {
+        minDate.setHours(now.getHours() - 1);
+        min = minDate.toISOString();
+        findType = "5-minutes";
+
+        break;
+      }
       case "day": {
         minDate.setDate(now.getDate() - 1);
         min = minDate.toISOString();
@@ -283,7 +309,7 @@ export const getBuckets = async (
       type: req.query.type,
     });
 
-    let buckets = [];
+    let buckets: Date[] = [];
     switch (req.query.type) {
       case "hour":
         buckets = eachHourOfInterval({ start: dateFrom, end: dateTo });

@@ -32,8 +32,9 @@ const validators_1 = require("./validators");
 const validators_2 = require("../../validators");
 const router = (0, express_1.Router)();
 exports.router = router;
-router.post("/", middlewares_1.validateAdminJWT, (0, express_validation_1.validate)(validators_1.createMeasurementValidator), Controllers.create);
-router.put("/:id", middlewares_1.validateAdminJWT, (0, express_validation_1.validate)(validators_1.updateMeasurementValidator), Controllers.update);
+router.post("/", middlewares_1.validateNodeJWT, (0, express_validation_1.validate)(validators_1.createMeasurementValidator), Controllers.create);
 router.get("/", middlewares_1.validateJWT, Controllers.findAll);
 router.get("/:id", middlewares_1.validateJWT, (0, express_validation_1.validate)(validators_2.objectIdValidator), Controllers.findOne);
+/** TODO: validate params and query */
+router.get("/:weatherStationId/buckets", middlewares_1.validateJWT, Controllers.getBuckets);
 router.delete("/:id", middlewares_1.validateAdminJWT, (0, express_validation_1.validate)(validators_2.objectIdValidator), Controllers.deleteMeasurement);

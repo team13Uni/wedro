@@ -1,6 +1,6 @@
 import type { ObjectId } from "mongoose";
 
-export type MeasurementType = "hour" | "day" | "month" | "year";
+export type MeasurementType = "5-minutes" | "hour" | "day" | "month" | "year";
 
 export type Measurement = {
   temperature: number;
@@ -10,9 +10,15 @@ export type Measurement = {
   type: MeasurementType;
 };
 
-export type CreateMeasurementRequestBody = Array<
-  Omit<Measurement, "nodeId" | "type">
->;
+type RequestMeasurement = {
+  temperature: number;
+  humidity: number;
+  measuredAt: number;
+};
+
+export type CreateMeasurementRequestBody = Array<RequestMeasurement>;
+
+export type CreateMeasurementResponse = RequestMeasurement;
 
 export type DeleteMeasurementResponse = {
   success: boolean;

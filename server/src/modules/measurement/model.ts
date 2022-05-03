@@ -18,7 +18,7 @@ export const measurementSchema = new Schema<Measurement>({
   type: {
     type: String,
     required: true,
-    enum: ["hour", "day", "month", "year"],
+    enum: ["5-minutes", "hour", "day", "month", "year"],
   },
   nodeId: {
     type: Types.ObjectId,

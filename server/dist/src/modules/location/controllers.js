@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteLocation = exports.findOne = exports.findAll = exports.update = exports.create = void 0;
+const exceptions_1 = require("../../exceptions");
 const types_1 = require("../../types");
 const model_1 = require("./model");
-const exceptions_1 = require("../../exceptions");
 const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newLocation = new model_1.LocationModel(req.body);
@@ -74,8 +74,9 @@ const update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.update = update;
 const findAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const locations = yield (0, model_1.findAllLocations)(req.body);
-        res.send(locations);
+        const locations = yield model_1.LocationModel.find().populate("nodeId");
+        const mappedLocations = locations.map((location) => (Object.assign(Object.assign({}, location.toJSON()), { weatherStation: location.nodeId })));
+        res.send(mappedLocations);
     }
     catch (err) {
         if (err instanceof exceptions_1.HttpException) {
