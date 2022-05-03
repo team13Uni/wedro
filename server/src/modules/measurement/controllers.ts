@@ -23,7 +23,10 @@ import {
   findWeatherStationById,
   updateWeatherStationById,
 } from "../weather-station/model";
-import type { CreateMeasurementRequestBody } from "./types";
+import type {
+  CreateMeasurementRequestBody,
+  CreateMeasurementResponse,
+} from "./types";
 import { findLocationByNodeId } from "../location/model";
 
 export const create = async (
@@ -32,7 +35,7 @@ export const create = async (
     undefined,
     CreateMeasurementRequestBody
   >,
-  res: ResponseWithError<{ success: boolean }>
+  res: ResponseWithError<CreateMeasurementResponse>
 ) => {
   try {
     const { body } = req;
@@ -72,7 +75,16 @@ export const create = async (
     await updateWeatherStationById(req.nodeId, {
       lastActiveAt: lastActiveAtDate,
     });
-    res.json({ success: true });
+
+    let lastSentItem;
+
+    if (body.length > 1) {
+      lastSentItem = body[body.length - 2];
+    } else {
+      lastSentItem = body[body.length - 1];
+    }
+
+    res.json({ success: true, measurement: lastSentItem });
   } catch (err) {
     if (err instanceof HttpException) {
       res.status(err.status).json({

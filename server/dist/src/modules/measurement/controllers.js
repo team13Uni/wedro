@@ -42,7 +42,14 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, model_2.updateWeatherStationById)(req.nodeId, {
             lastActiveAt: lastActiveAtDate,
         });
-        res.json({ success: true });
+        let lastSentItem;
+        if (body.length > 1) {
+            lastSentItem = body[body.length - 2];
+        }
+        else {
+            lastSentItem = body[body.length - 1];
+        }
+        res.json({ success: true, measurement: lastSentItem });
     }
     catch (err) {
         if (err instanceof exceptions_1.HttpException) {

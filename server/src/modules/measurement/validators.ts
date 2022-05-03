@@ -13,6 +13,6 @@ export const createMeasurementValidator = {
       humidity: validators.humidity.required(),
       measuredAt: validators.measuredAt.required(),
     })
-    .max(100)
+    .max(700000)
     .min(1),
 };
