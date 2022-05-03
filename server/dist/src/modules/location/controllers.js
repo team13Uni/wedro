@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteLocation = exports.findOne = exports.findAll = exports.update = exports.create = void 0;
 const exceptions_1 = require("../../exceptions");
+const common_1 = require("../../helpers/common");
 const types_1 = require("../../types");
 const model_1 = require("./model");
 const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -75,7 +76,7 @@ exports.update = update;
 const findAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const locations = yield model_1.LocationModel.find().populate("nodeId");
-        const mappedLocations = locations.map((location) => (Object.assign(Object.assign({}, location.toJSON()), { weatherStation: location.nodeId })));
+        const mappedLocations = locations.map((location) => (Object.assign(Object.assign({}, (0, common_1.omitFrom)(location.toJSON(), 'nodeId')), { weatherStation: location.nodeId })));
         res.send(mappedLocations);
     }
     catch (err) {
@@ -96,7 +97,7 @@ const findAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.findAll = findAll;
 const findOne = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const location = yield (0, model_1.findLocationById)(req.params.id);
+        const location = yield model_1.LocationModel.findById(req.params.id).populate("nodeId");
         if (!location) {
             return res.status(404).json({
                 error: {
@@ -106,7 +107,7 @@ const findOne = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             });
         }
-        res.send(location);
+        res.send(Object.assign(Object.assign({}, (0, common_1.omitFrom)(location.toJSON(), 'nodeId')), { weatherStation: location.nodeId }));
     }
     catch (err) {
         if (err instanceof exceptions_1.HttpException) {
