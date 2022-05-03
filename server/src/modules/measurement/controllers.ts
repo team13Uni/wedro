@@ -40,7 +40,7 @@ export const create = async (
   try {
     const { body } = req;
 
-    if (!req.nodeId) return res.json({ success: false });
+    if (!req.nodeId) return res.status(StatusCode.NOT_AUTHORIZED);
 
     const location = await findLocationByNodeId(req.nodeId);
 
@@ -49,7 +49,6 @@ export const create = async (
 
       if (!weatherStation) {
         return res.status(StatusCode.RECORD_NOT_FOUND).json({
-          success: false,
           error: {
             message: "Weather station doesn't exist",
             status: StatusCode.RECORD_NOT_FOUND,
@@ -84,11 +83,10 @@ export const create = async (
       lastSentItem = body[body.length - 1];
     }
 
-    res.json({ success: true, measurement: lastSentItem });
+    res.json(lastSentItem);
   } catch (err) {
     if (err instanceof HttpException) {
       res.status(err.status).json({
-        success: false,
         error: {
           message: err.message,
           status: StatusCode.SERVER_ERROR,
@@ -96,7 +94,7 @@ export const create = async (
         },
       });
     } else {
-      res.status(StatusCode.SERVER_ERROR).json({ success: false });
+      res.status(StatusCode.SERVER_ERROR);
     }
   }
 };

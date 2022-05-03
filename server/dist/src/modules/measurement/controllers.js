@@ -20,13 +20,12 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req;
         if (!req.nodeId)
-            return res.json({ success: false });
+            return res.status(types_1.StatusCode.NOT_AUTHORIZED);
         const location = yield (0, model_3.findLocationByNodeId)(req.nodeId);
         for (const bodyItem of body) {
             const weatherStation = yield (0, model_2.findWeatherStationById)(req.nodeId);
             if (!weatherStation) {
                 return res.status(types_1.StatusCode.RECORD_NOT_FOUND).json({
-                    success: false,
                     error: {
                         message: "Weather station doesn't exist",
                         status: types_1.StatusCode.RECORD_NOT_FOUND,
@@ -49,12 +48,11 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         else {
             lastSentItem = body[body.length - 1];
         }
-        res.json({ success: true, measurement: lastSentItem });
+        res.json(lastSentItem);
     }
     catch (err) {
         if (err instanceof exceptions_1.HttpException) {
             res.status(err.status).json({
-                success: false,
                 error: {
                     message: err.message,
                     status: types_1.StatusCode.SERVER_ERROR,
@@ -63,7 +61,7 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         else {
-            res.status(types_1.StatusCode.SERVER_ERROR).json({ success: false });
+            res.status(types_1.StatusCode.SERVER_ERROR);
         }
     }
 });

@@ -18,9 +18,7 @@ type RequestMeasurement = {
 
 export type CreateMeasurementRequestBody = Array<RequestMeasurement>;
 
-export type CreateMeasurementResponse = { measurement?: RequestMeasurement } & {
-  success: boolean;
-};
+export type CreateMeasurementResponse = RequestMeasurement;
 
 export type DeleteMeasurementResponse = {
   success: boolean;
