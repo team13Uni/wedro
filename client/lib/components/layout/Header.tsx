@@ -84,9 +84,9 @@ export const Header: NextComponentType = () => {
 							{isDefined(session) && (
 								<>
 									<Grid item>
-										<Link href="/locations">
+										<Link href="/weather-stations">
 											<Button variant="text" color="inherit">
-												{translate(TRANSLATIONS.LOCATION_LIST.title)}
+												{translate(TRANSLATIONS.WEATHER_STATIONS.title)}
 											</Button>
 										</Link>
 									</Grid>

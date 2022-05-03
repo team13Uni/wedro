@@ -23,10 +23,16 @@ export const TRANSLATIONS = {
 			en: 'Username',
 		},
 	},
-	LOCATION_LIST: {
+	WEATHER_STATIONS: {
 		title: {
 			cs: 'Měřící stanice',
 			en: 'Weather stations',
+		}
+	},
+	WEATHER_STATION_DETAIL: {
+		title: {
+			cs: 'Měřící stanice {weatherStationName}',
+			en: 'Weather station {weatherStationName}',
 		}
 	},
 	LOGIN: {
@@ -48,6 +54,18 @@ export const TRANSLATIONS = {
 		},
 	},
 	WEATHER_STATION_CARD: {
+		available: {
+			cs: 'Dostupná',
+			en: 'Available',
+		},
+		unavailable: {
+			cs: 'Nedostupná',
+			en: 'Unavailable',
+		},
+		unavailableTooltip: {
+			cs: 'Naposledy dostupná {date}',
+			en: 'Last available {date}',
+		},
 		currentTemperature: {
 			cs: 'Aktuální teplota',
 			en: 'Current temperature',
@@ -99,8 +117,8 @@ export const TRANSLATIONS = {
 			en: 'Vision',
 		},
 		visionText: {
-			cs: '// TODO: VIZE',
-			en: '// TODO: VISION',
+			cs: 'Produkt Wedro poskytuje řešení monitorování teploty a vlhkosti na různých lokacích. Administrátor aplikace může přidávat a rozmísťovat měřící stanice. Tyto stanice následně posílají naměřené data do cloudové aplikace, která je spracuje. Uživatelé si pak můžou v lehko vstřebatelné podobě prohlížet.',
+			en: 'The Wedro product provides a solution for monitoring temperature and humidity at various locations. The application administrator can add and deploy measuring stations. These stations then send the measured data to the cloud application, which processes it. Users can then view in an easily digestible form.',
 		},
 		authorsTitle: {
 			cs: 'Autoři',
@@ -122,6 +140,10 @@ export const TRANSLATIONS = {
 		},
 	},
 	GENERAL: {
+		seaLevel: {
+			cs: '{seaLevel} m n.m.',
+			en: '{seaLevel} m above sea level',
+		},
 		active: {
 			cs: 'Aktivní',
 			en: 'Active',

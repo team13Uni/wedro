@@ -11,6 +11,8 @@ export type WeatherStation = {
 	unavailable: boolean;
 	active: boolean;
 	lastActiveAt: string;
+	coordinates: [number, number];
+	seaLevel: number;
 };
 
 export type Measurement = {

@@ -12,6 +12,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import * as React from 'react';
 import { FunctionComponent } from 'react';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 // client-side cache, shared for the whole session of the user in the browser
 const clientSideEmotionCache = createEmotionCache();

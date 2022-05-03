@@ -52,7 +52,7 @@ const LoginPage: NextPageWithAuth = (props) => {
 				setFieldError('password', ' ');
 			}
 		} else if (loginRes?.ok) {
-			await router.push('/locations');
+			await router.push('/weather-stations');
 		} else {
 			console.error('[loginSubmitHandler] Sign in failed.', loginRes);
 		}

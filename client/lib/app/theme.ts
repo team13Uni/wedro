@@ -24,5 +24,12 @@ export const theme = createTheme({
 				maxWidth: 'xl',
 			},
 		},
+		MuiSkeleton: {
+			styleOverrides: {
+				rectangular: {
+					borderRadius: '5px',
+				}
+			}
+		}
 	},
 });
