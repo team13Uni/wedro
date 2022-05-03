@@ -5,27 +5,25 @@ import {
   eachYearOfInterval,
   isEqual,
 } from "date-fns";
-import { ErrorCode, RequestWithNodeId, StatusCode } from "../../types";
+import { HttpException } from "../../exceptions";
 import type { IdParam, RequestWithUser, ResponseWithError } from "../../types";
-import type {
-  DeleteMeasurementResponse,
-  Measurement,
-  MeasurementType,
-} from "./types";
+import { ErrorCode, RequestWithNodeId, StatusCode } from "../../types";
+import {
+  findWeatherStationById,
+  updateWeatherStationById,
+} from "../weather-station/model";
 import {
   deleteMeasurementById,
   findAllMeasurements,
   findMeasurementById,
   MeasurementModel,
 } from "./model";
-import { HttpException } from "../../exceptions";
-import {
-  findWeatherStationById,
-  updateWeatherStationById,
-} from "../weather-station/model";
 import type {
   CreateMeasurementRequestBody,
   CreateMeasurementResponse,
+  DeleteMeasurementResponse,
+  Measurement,
+  MeasurementType,
 } from "./types";
 import { findLocationByNodeId } from "../location/model";
 
@@ -296,11 +294,11 @@ export const downscaleData = async (
 export const getBuckets = async (
   req: RequestWithUser<
     { weatherStationId: string },
-    GeBucketsDtoOut,
+    GetBucketsDtoOut,
     never,
     { dateFrom: string; dateTo: string; type: MeasurementType }
   >,
-  res: ResponseWithError<GeBucketsDtoOut>
+  res: ResponseWithError<GetBucketsDtoOut>
 ) => {
   try {
     const dateFrom = new Date(req.query.dateFrom);
@@ -327,8 +325,7 @@ export const getBuckets = async (
         break;
     }
 
-    /** map or fill empty buckets */
-    const data: GeBucketsDtoOut = buckets.map((bucketDate) => {
+    const data = buckets.map((bucketDate, index, mappedBuckets) => {
       const measurement = measurements.find((m) =>
         isEqual(new Date(m.toJSON().measuredAt), bucketDate)
       );
@@ -337,9 +334,8 @@ export const getBuckets = async (
       if (!measurement) {
         return {
           date: bucketDate.toISOString(),
-          /** TODO: calculate data instead of returning empty buckets */
-          temperature: 0,
-          humidity: 0,
+          temperature: null,
+          humidity: null,
         };
       }
 
@@ -350,8 +346,33 @@ export const getBuckets = async (
       };
     });
 
+    /** TODO: find a more performant way of doing so */
+    /** fill empty buckets */
+    const dataWithFilledBuckets = data.map((bucket, index) => {
+      if (!bucket.humidity || !bucket.temperature) {
+        const previousBucketWithTemp = data
+          .slice(0, index)
+          .reverse()
+          .find((b) => b.temperature);
+        const previousBucketWithHum = previousBucketWithTemp?.humidity
+          ? previousBucketWithTemp
+          : data
+              .slice(0, index)
+              .reverse()
+              .find((b) => b.humidity);
+        return {
+          date: bucket.date,
+          temperature:
+            bucket.temperature ?? previousBucketWithTemp?.temperature ?? 0,
+          humidity: bucket.humidity ?? previousBucketWithHum?.humidity ?? 0,
+        };
+      }
+
+      return bucket;
+    });
+
     /** send the data */
-    res.send(data);
+    res.send(dataWithFilledBuckets as GetBucketsDtoOut);
   } catch (err) {
     if (err instanceof HttpException) {
       res.status(err.status).json({
@@ -364,7 +385,7 @@ export const getBuckets = async (
     }
   }
 };
-type GeBucketsDtoOut = Array<{
+type GetBucketsDtoOut = Array<{
   date: string;
   temperature: number;
   humidity: number;
