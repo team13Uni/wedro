@@ -1,6 +1,6 @@
 import type { ObjectId } from "mongoose";
 
-export type MeasurementType = "hour" | "day" | "month" | "year";
+export type MeasurementType = "5-minutes" | "hour" | "day" | "month" | "year";
 
 export type Measurement = {
   temperature: number;

@@ -61,7 +61,7 @@ export const create = async (
 
       const newMeasurement = new MeasurementModel({
         ...bodyItem,
-        type: "hour",
+        type: "5-minutes",
         nodeId: req.nodeId,
         locationId: location ? location.id : undefined,
         measuredAt: date.toISOString(),
@@ -206,7 +206,9 @@ type TransformedDataType = {
   numberOfMeasurements: number;
 };
 
-export const downscaleData = async (type: Exclude<MeasurementType, "hour">) => {
+export const downscaleData = async (
+  type: Exclude<MeasurementType, "5-minutes">
+) => {
   try {
     const now = new Date();
     const minDate = new Date();
@@ -214,6 +216,13 @@ export const downscaleData = async (type: Exclude<MeasurementType, "hour">) => {
     let findType: MeasurementType;
 
     switch (type) {
+      case "hour": {
+        minDate.setHours(now.getHours() - 1);
+        min = minDate.toISOString();
+        findType = "5-minutes";
+
+        break;
+      }
       case "day": {
         minDate.setDate(now.getDate() - 1);
         min = minDate.toISOString();
@@ -302,7 +311,7 @@ export const getBuckets = async (
       type: req.query.type,
     });
 
-    let buckets = [];
+    let buckets: Date[] = [];
     switch (req.query.type) {
       case "hour":
         buckets = eachHourOfInterval({ start: dateFrom, end: dateTo });

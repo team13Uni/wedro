@@ -9,6 +9,13 @@ export default function () {
     console.log(updatedStations);
   });
 
+  // every hour
+  cron.schedule("0 * * * *", async () => {
+    console.log("cron day");
+    const data = await downscaleData("hour");
+    console.log(data);
+  });
+
   // every day
   cron.schedule("0 0 * * *", async () => {
     console.log("cron day");
