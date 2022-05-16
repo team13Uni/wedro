@@ -8,6 +8,190 @@
         "env": []
     },
     {
+        "id": "061a7eaef87305c7",
+        "type": "serial-port",
+        "serialport": "COM3",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    },
+    {
+        "id": "0e2f69c1f1d24e9c",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "wi-wu-sunny",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "baa7c407f1d3dad5",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#0eb8c0",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Wedro - Gateway dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "14e34afbafbd96d1",
+        "type": "ui_group",
+        "name": "Meteostation Dashboard",
+        "tab": "0e2f69c1f1d24e9c",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e548322708e6e913",
+        "type": "serial-port",
+        "serialport": "COM3",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    },
+    {
+        "id": "094d98e84ba5c8c9",
+        "type": "ui_group",
+        "name": "Live measurements",
+        "tab": "5544be34f66a3d62",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "71c3c34dd50e9506",
+        "type": "mongodb",
+        "hostname": "127.0.0.1",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "gatewayDB",
+        "name": ""
+    },
+    {
+        "id": "5544be34f66a3d62",
+        "type": "ui_tab",
+        "name": "Weather Station",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
         "id": "ca7857eb0c0c1698",
         "type": "serial in",
         "z": "1cfbc17a33440ce4",
@@ -53,7 +237,7 @@
         "type": "function",
         "z": "1cfbc17a33440ce4",
         "name": "Separating function",
-        "func": "const payloadArr = msg.payload.split(',')\nmsg.payload = ({Humidity : payloadArr[0], Temperature: payloadArr[1].slice(0,-2)});\nreturn msg;",
+        "func": "const payloadArr = msg.payload.split(',')\nmsg.payload = ({humidity : payloadArr[0], temperature: payloadArr[1].slice(0,-2)});\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -104,7 +288,7 @@
         "mode": "interval",
         "count": 10,
         "overlap": 0,
-        "interval": "3",
+        "interval": "10",
         "allowEmptySequence": true,
         "topics": [],
         "x": 530,
@@ -148,7 +332,7 @@
         "type": "function",
         "z": "1cfbc17a33440ce4",
         "name": "Get average",
-        "func": "const count = msg.payload.length;\nlet humAvg = 0;\nlet temAvg = 0;\nfor(let i = 0; i < count; i++){\n    if(msg.payload[i] !== null){\n        if(msg.payload[i].Humidity !== null){\n            humAvg += parseFloat(msg.payload[i].Humidity);\n        }\n        if(msg.payload[i].Temperature !== null){\n            temAvg += parseFloat(msg.payload[i].Temperature);\n        }\n    }\n    else return [null, null]\n}\nhumAvg = humAvg / count;\ntemAvg = temAvg / count;\nmsg.payload = {\n    HumidityAvg: humAvg,\n    TemperatureAvg: temAvg,\n    Timestamp: Date.now()\n}\nlet newMsg = { payload: {} };\nreturn [msg, newMsg];",
+        "func": "const count = msg.payload.length;\nlet humAvg = 0;\nlet temAvg = 0;\nfor(let i = 0; i < count; i++){\n    if(msg.payload[i] !== null){\n        if(msg.payload[i].humidity !== null){\n            humAvg += parseFloat(msg.payload[i].humidity);\n        }\n        if(msg.payload[i].Temperature !== null){\n            temAvg += parseFloat(msg.payload[i].temperature);\n        }\n    }\n    else return [null, null]\n}\nhumAvg = humAvg / count;\nhumAvg = humAvg/100;\ntemAvg = temAvg / count;\nmsg.payload = {\n    humidity: humAvg,\n    temperature: temAvg,\n    measuredAt: Date.now()\n}\nlet newMsg = { payload: {} };\nreturn [msg, newMsg];",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -173,17 +357,18 @@
         "method": "POST",
         "ret": "txt",
         "paytoqs": "ignore",
-        "url": "http://localhost:3000/",
+        "url": "https://wedro-api.herokuapp.com/api/measurement",
         "tls": "",
         "persist": false,
         "proxy": "",
-        "authType": "basic",
+        "authType": "",
         "senderr": false,
-        "x": 960,
-        "y": 760,
+        "x": 1300,
+        "y": 940,
         "wires": [
             [
-                "d514e892a9019741"
+                "d514e892a9019741",
+                "3f770e34521ef7f6"
             ]
         ]
     },
@@ -192,15 +377,18 @@
         "type": "function",
         "z": "1cfbc17a33440ce4",
         "name": "Check success",
-        "func": "if (msg.statusCode === 300)\n{\n    const measurement = JSON.parse(msg.payload)\n    const lastSuccessful = measurement.Timestamp;\n    let removeBefore = lastSuccessful - 20000//3600000;\n    let msgRemove = { payload: { Timestamp: { $lt: removeBefore} }};\n    let msgUpdate = { query: { _id: '626df2d3425fb5028aaa2944'}, payload:{ Timestamp: measurement.Timestamp}}\n    return [msgRemove, msgUpdate]\n}\nelse\n{\n    return null\n}",
-        "outputs": 2,
+        "func": "if (msg.statusCode === 200)\n{\n    const measurement = JSON.parse(msg.payload)\n    const lastSuccessful = measurement.measuredAt;\n    let removeBefore = lastSuccessful - 20000//3600000;\n    let msgRemove = { payload: { measuredAt: { $lt: removeBefore} }};\n    let msgUpdate = { query: { _id: '626df2d3425fb5028aaa2944'}, payload:{ measuredAt: measurement.measuredAt}}\n    return [null, msgRemove, msgUpdate]\n}\nelse if(msg.statusCode === 403){\n    msg.payload = {}\n    return[msg,null,null]\n}\nelse\n{\n    return null\n}",
+        "outputs": 3,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1000,
-        "y": 820,
+        "x": 1380,
+        "y": 1020,
         "wires": [
+            [
+                "3b83c05dfccf9964"
+            ],
             [
                 "246d7cb8b43e941a"
             ],
@@ -222,8 +410,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1220,
-        "y": 600,
+        "x": 1640,
+        "y": 940,
         "wires": []
     },
     {
@@ -252,8 +440,8 @@
         "upsert": false,
         "multi": false,
         "operation": "update",
-        "x": 1240,
-        "y": 860,
+        "x": 1640,
+        "y": 1100,
         "wires": []
     },
     {
@@ -268,7 +456,7 @@
         "y": 700,
         "wires": [
             [
-                "31cb7383a0ffa9a9"
+                "d4f7f28eab519d7d"
             ]
         ]
     },
@@ -293,7 +481,7 @@
         "type": "function",
         "z": "1cfbc17a33440ce4",
         "name": "Create query",
-        "func": "msg.payload = {  Timestamp: { $gt: msg.payload[0].Timestamp } };\nmsg.projection = { _id:0}\nreturn msg;",
+        "func": "msg.payload = {  measuredAt: { $gt: msg.payload[0].measuredAt } };\nmsg.projection = { _id:0};\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -318,56 +506,258 @@
         "upsert": false,
         "multi": false,
         "operation": "delete",
-        "x": 1230,
-        "y": 780,
+        "x": 1630,
+        "y": 1020,
         "wires": []
     },
     {
-        "id": "e548322708e6e913",
-        "type": "serial-port",
-        "serialport": "COM3",
-        "serialbaud": "9600",
-        "databits": "8",
-        "parity": "none",
-        "stopbits": "1",
-        "waitfor": "",
-        "dtr": "none",
-        "rts": "none",
-        "cts": "none",
-        "dsr": "none",
-        "newline": "\\n",
-        "bin": "false",
-        "out": "char",
-        "addchar": "",
-        "responsetimeout": "10000"
+        "id": "d4f7f28eab519d7d",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "Get token",
+        "func": "msg.data = msg.payload\nmsg.payload = {}\nif(msg.data.length>0){\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 760,
+        "wires": [
+            [
+                "32265ac6dbcac81b",
+                "3f770e34521ef7f6"
+            ]
+        ]
     },
     {
-        "id": "094d98e84ba5c8c9",
-        "type": "ui_group",
-        "name": "Live measurements",
-        "tab": "5544be34f66a3d62",
-        "order": 1,
-        "disp": true,
-        "width": "6",
-        "collapse": false,
-        "className": ""
+        "id": "10ec24efb04a8f12",
+        "type": "http request",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "body",
+        "url": "https://wedro-api.herokuapp.com/api/weather-station/authorize",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1590,
+        "y": 740,
+        "wires": [
+            [
+                "76b89d3caf09d0ed"
+            ]
+        ]
     },
     {
-        "id": "71c3c34dd50e9506",
-        "type": "mongodb",
-        "hostname": "127.0.0.1",
-        "topology": "direct",
-        "connectOptions": "",
-        "port": "27017",
-        "db": "gatewayDB",
-        "name": ""
+        "id": "20ffff7416988186",
+        "type": "inject",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{}",
+        "payloadType": "json",
+        "x": 1430,
+        "y": 600,
+        "wires": [
+            [
+                "3b83c05dfccf9964"
+            ]
+        ]
     },
     {
-        "id": "5544be34f66a3d62",
-        "type": "ui_tab",
-        "name": "Weather Station",
-        "icon": "dashboard",
-        "disabled": false,
-        "hidden": false
+        "id": "240a89c4a9ea2ed1",
+        "type": "mongodb out",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "71c3c34dd50e9506",
+        "name": "Save token to DB",
+        "collection": "token",
+        "payonly": false,
+        "upsert": false,
+        "multi": false,
+        "operation": "update",
+        "x": 1850,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "76b89d3caf09d0ed",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "func": "if(msg.statusCode === 200){\n    msg.query = { _id: '6270ab91425fb5028aaa2aa5'};\n    return [null,msg];\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1660,
+        "y": 800,
+        "wires": [
+            [],
+            [
+                "240a89c4a9ea2ed1"
+            ]
+        ]
+    },
+    {
+        "id": "32265ac6dbcac81b",
+        "type": "mongodb in",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "71c3c34dd50e9506",
+        "name": "Find token",
+        "collection": "token",
+        "operation": "find",
+        "x": 1050,
+        "y": 820,
+        "wires": [
+            [
+                "021fc925814054e0"
+            ]
+        ]
+    },
+    {
+        "id": "021fc925814054e0",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "Create request",
+        "func": "msg.headers = {}\nmsg.headers[\"Authorization\"] = \"Bearer \" + msg.payload[0].token\nmsg.payload = msg.data\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 880,
+        "wires": [
+            [
+                "31cb7383a0ffa9a9"
+            ]
+        ]
+    },
+    {
+        "id": "3b83c05dfccf9964",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "Add secret",
+        "func": "msg.payload = {\"secret\": \"Test123\"}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1490,
+        "y": 660,
+        "wires": [
+            [
+                "10ec24efb04a8f12"
+            ]
+        ]
+    },
+    {
+        "id": "7aded6ebfc022023",
+        "type": "inject",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 450,
+        "y": 980,
+        "wires": [
+            [
+                "7d0fedac89141f08"
+            ]
+        ]
+    },
+    {
+        "id": "7d0fedac89141f08",
+        "type": "ui_text",
+        "z": "1cfbc17a33440ce4",
+        "group": "094d98e84ba5c8c9",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Measurements in storage",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 670,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "54367ec789b4a8f3",
+        "type": "inject",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "42",
+        "payloadType": "num",
+        "x": 430,
+        "y": 1040,
+        "wires": [
+            [
+                "e6f4c3605f54b96b"
+            ]
+        ]
+    },
+    {
+        "id": "e6f4c3605f54b96b",
+        "type": "ui_gauge",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "group": "094d98e84ba5c8c9",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Storage space",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 680,
+        "y": 1040,
+        "wires": []
     }
 ]
