@@ -7,8 +7,8 @@ import {
 } from "../../middlewares";
 
 import * as Controllers from "./controllers";
-import { createMeasurementValidator } from "./validators";
 import { objectIdValidator } from "../../validators";
+import { createMeasurementValidator } from "./validators";
 
 const router = Router();
 
@@ -29,11 +29,7 @@ router.get(
 );
 
 /** TODO: validate params and query */
-router.get(
-  "/:weatherStationId/buckets",
-  validateJWT,
-  Controllers.getBuckets
-);
+router.get("/:weatherStationId/buckets", validateJWT, Controllers.getBuckets);
 
 router.delete(
   "/:id",
