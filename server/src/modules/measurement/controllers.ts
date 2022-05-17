@@ -221,7 +221,7 @@ export const getBuckets = async (
       dateFrom,
       dateTo,
       granularity: req.query.type,
-      weatherStationId: req.params.weatherStationId,
+      locationId: req.params.weatherStationId,
     });
 
     res.json(buckets);
@@ -246,7 +246,7 @@ type GetBucketsDtoOut = Array<{
  */
 export const getCurrent = async (
   req: RequestWithUser<
-    { weatherStationId: string },
+    { locationId: string },
     GetCurrentDtoOut,
     never,
     never
@@ -256,7 +256,7 @@ export const getCurrent = async (
   try {
     /** find most recent weather station measurement */
     const measurement = await MeasurementModel.findOne({
-      nodeId: req.params.weatherStationId,
+      locationId: req.params.locationId,
     }).sort({ measuredAt: -1 });
 
     /** return null as data since no measurement for the given weather station was found */
@@ -275,7 +275,7 @@ export const getCurrent = async (
       dateFrom: subHours(now, 24),
       dateTo: now,
       granularity: "hour",
-      weatherStationId: req.params.weatherStationId,
+      locationId: req.params.locationId,
     });
 
     res.json({

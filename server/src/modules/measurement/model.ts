@@ -1,5 +1,4 @@
-import { FilterQuery, model, Model, Schema } from "mongoose";
-import { Types } from "mongoose";
+import { FilterQuery, model, Schema, Types } from "mongoose";
 import type { Measurement } from "./types";
 
 export const measurementSchema = new Schema<Measurement>({
@@ -22,7 +21,13 @@ export const measurementSchema = new Schema<Measurement>({
   },
   nodeId: {
     type: Types.ObjectId,
+    required: true,
     ref: "weather-station",
+  },
+  locationId: {
+    type: Types.ObjectId,
+    required: true,
+    ref: "location",
   },
 });
 

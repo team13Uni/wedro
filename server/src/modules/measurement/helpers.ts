@@ -137,12 +137,12 @@ export const getBucketsForStation = async ({
   dateFrom,
   dateTo,
   granularity,
-  weatherStationId,
+  locationId,
 }: {
   dateFrom: Date;
   dateTo: Date;
   granularity: BucketGranularity;
-  weatherStationId: string;
+  locationId: string;
 }): Promise<BucketData[]> => {
   /** generate buckets */
   let buckets: Date[] = [];
@@ -166,7 +166,7 @@ export const getBucketsForStation = async ({
 
   /** get correct measurements */
   const measurements = await MeasurementModel.find({
-    nodeId: weatherStationId,
+    locationId: locationId,
     measuredAt: { $gte: dateFrom, $lte: dateTo },
     type: measurementTypeByGranularity,
   });

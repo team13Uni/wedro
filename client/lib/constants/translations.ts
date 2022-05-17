@@ -34,6 +34,10 @@ export const TRANSLATIONS = {
 			cs: 'Měřící stanice {weatherStationName}',
 			en: 'Weather station {weatherStationName}',
 		},
+		noNode: {
+			cs: 'Lokace nemá přiřazené žádnou měřící stanici',
+			en: 'Location has no weather station assigned',
+		},
 		chartTitle: {
 			cs: 'Graf v čase',
 			en: 'Chart in time',

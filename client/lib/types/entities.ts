@@ -1,7 +1,7 @@
 export type Location = {
 	_id: string;
 	name: string;
-	weatherStation: WeatherStation;
+	weatherStation?: WeatherStation;
 	state: 'active' | 'inactive';
 };
 
