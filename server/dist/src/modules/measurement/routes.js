@@ -36,7 +36,7 @@ router.post("/", middlewares_1.validateNodeJWT, (0, express_validation_1.validat
 router.get("/", middlewares_1.validateJWT, Controllers.findAll);
 router.get("/:id", middlewares_1.validateJWT, (0, express_validation_1.validate)(validators_1.objectIdValidator), Controllers.findOne);
 /** TODO: validate params and query */
-router.get("/:weatherStationId/buckets", middlewares_1.validateJWT, Controllers.getBuckets);
+router.get("/:locationId/buckets", middlewares_1.validateJWT, Controllers.getBuckets);
 /** TODO: validate params and query */
-router.get("/:weatherStationId/current", middlewares_1.validateJWT, Controllers.getCurrent);
+router.get("/:locationId/current", middlewares_1.validateJWT, Controllers.getCurrent);
 router.delete("/:id", middlewares_1.validateAdminJWT, (0, express_validation_1.validate)(validators_1.objectIdValidator), Controllers.deleteMeasurement);

@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.wellnessCheck = exports.authorizeWeatherStation = exports.deleteWeatherStation = exports.update = exports.findOne = exports.findAll = exports.create = void 0;
 const types_1 = require("../../types");
 const model_1 = require("./model");
-const exceptions_1 = require("../../exceptions");
 const jsonwebtoken_1 = require("jsonwebtoken");
+const model_2 = require("../location/model");
 const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newWeatherStation = new model_1.WeatherStationModel(req.body);
@@ -21,39 +21,34 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json(result);
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(err.status).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
-        else {
-            throw err;
-        }
+        res.status(err.status).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.create = create;
 const findAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const locations = yield (0, model_1.findAllWeatherStations)(req.body);
-        res.send(locations);
+        const weatherStations = yield (0, model_1.findAllWeatherStations)(req.body);
+        const finalWeatherStations = [];
+        for (const weatherStation of weatherStations) {
+            const location = yield (0, model_2.findLocationByNodeId)(weatherStation.id);
+            finalWeatherStations.push(Object.assign(Object.assign({}, weatherStation.toObject()), { hasLocation: Boolean(location) }));
+        }
+        res.send(finalWeatherStations);
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(500).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
-        else {
-            throw err;
-        }
+        res.status(500).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.findAll = findAll;
@@ -72,15 +67,13 @@ const findOne = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.send(location);
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(500).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
+        res.status(500).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.findOne = findOne;
@@ -110,15 +103,13 @@ const update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.send(updatedStation);
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(err.status).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
+        res.status(err.status).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.update = update;
@@ -148,15 +139,13 @@ const deleteWeatherStation = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.send({ success: true });
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(err.status).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
+        res.status(err.status).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.deleteWeatherStation = deleteWeatherStation;
@@ -183,16 +172,13 @@ const authorizeWeatherStation = (req, res) => __awaiter(void 0, void 0, void 0, 
         }
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(err.status).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
-        throw err;
+        res.status(err.status).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.authorizeWeatherStation = authorizeWeatherStation;

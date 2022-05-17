@@ -50,18 +50,13 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json(lastSentItem);
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(err.status).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
-        else {
-            res.status(types_1.StatusCode.SERVER_ERROR);
-        }
+        res.status(err.status).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.create = create;
@@ -74,15 +69,13 @@ const findAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.send(measurements);
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(err.status).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
+        res.status(err.status).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.findAll = findAll;
@@ -104,15 +97,13 @@ const findOne = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.send(measurement);
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(err.status).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
+        res.status(err.status).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.findOne = findOne;
@@ -235,7 +226,7 @@ const downscaleData = (type) => __awaiter(void 0, void 0, void 0, function* () {
         while (nextDate <= now.getTime()) {
             const stepValues = yield (0, model_3.findAllMeasurements)({
                 type: findType,
-                measuredAt: { $gt: lastDateTime, $lte: nextDate },
+                measuredAt: { $gte: lastDateTime, $lte: nextDate },
             });
             let condition = stepValues.length > 1 && stepValues.length < 100;
             if (type === "hour") {
@@ -347,7 +338,7 @@ const getBuckets = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             dateTo,
             granularity: req.query.type,
             // @ts-ignore
-            locationId: req.params.weatherStationId,
+            locationId: req.params.locationId,
         });
         res.json(buckets);
     }

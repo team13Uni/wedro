@@ -39,7 +39,9 @@ const findLocationById = (id) => __awaiter(void 0, void 0, void 0, function* () 
 exports.findLocationById = findLocationById;
 const findLocationByNodeId = (nodeId) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.LocationModel.findOne({ nodeId }); });
 exports.findLocationByNodeId = findLocationByNodeId;
-const updateLocationById = (id, updateBody) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.LocationModel.findByIdAndUpdate(id, updateBody); });
+const updateLocationById = (id, updateBody) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield exports.LocationModel.findByIdAndUpdate(id, Object.assign(Object.assign({}, updateBody), { nodeId: updateBody.nodeId || null }));
+});
 exports.updateLocationById = updateLocationById;
 const findAllLocations = (filter) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.LocationModel.find(filter); });
 exports.findAllLocations = findAllLocations;

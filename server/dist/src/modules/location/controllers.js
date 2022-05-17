@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteLocation = exports.findOne = exports.findAll = exports.update = exports.create = void 0;
-const exceptions_1 = require("../../exceptions");
 const common_1 = require("../../helpers/common");
 const types_1 = require("../../types");
 const model_1 = require("./model");
@@ -21,17 +20,13 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json(result);
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(500).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
-        // @ts-ignore
-        // res.send(err);
+        res.status(500).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.create = create;
@@ -61,15 +56,13 @@ const update = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.send(updatedLocation);
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(500).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
+        res.status(500).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.update = update;
@@ -81,18 +74,13 @@ const findAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.send(mappedLocations);
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(500).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
-        else {
-            throw err;
-        }
+        res.status(500).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.findAll = findAll;
@@ -112,15 +100,13 @@ const findOne = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.send(Object.assign(Object.assign({}, (0, common_1.omitFrom)(location.toJSON(), "nodeId")), { weatherStation: location.nodeId }));
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(500).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
+        res.status(500).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.findOne = findOne;
@@ -150,15 +136,13 @@ const deleteLocation = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.send({ success: true });
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            res.status(500).json({
-                error: {
-                    message: err.message,
-                    status: types_1.StatusCode.SERVER_ERROR,
-                    code: types_1.ErrorCode.SERVER_ERROR,
-                },
-            });
-        }
+        res.status(500).json({
+            error: {
+                message: err.message,
+                status: types_1.StatusCode.SERVER_ERROR,
+                code: types_1.ErrorCode.SERVER_ERROR,
+            },
+        });
     }
 });
 exports.deleteLocation = deleteLocation;
