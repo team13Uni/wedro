@@ -39,6 +39,8 @@ export const create = async (
           code: ErrorCode.SERVER_ERROR,
         },
       });
+    } else {
+      throw err;
     }
   }
 };

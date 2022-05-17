@@ -217,6 +217,7 @@ export const downscaleData = async (
 
         break;
       }
+
       case "day": {
         minDate.setDate(now.getDate() - 1);
         min = minDate.toISOString();
@@ -224,6 +225,7 @@ export const downscaleData = async (
 
         break;
       }
+
       case "month": {
         minDate.setMonth(now.getMonth() - 1);
         min = minDate.toISOString();
@@ -231,6 +233,7 @@ export const downscaleData = async (
 
         break;
       }
+
       case "year":
         minDate.setFullYear(now.getFullYear() - 1);
         min = minDate.toISOString();
@@ -239,46 +242,109 @@ export const downscaleData = async (
         break;
     }
 
-    const measurements = await findAllMeasurements({
-      measuredAt: { $lte: min, $gte: now.toISOString() },
-      type,
-    });
+    const findLastHour = await findAllMeasurements(
+      { type: "hour" },
+      undefined,
+      { sort: { measuredAt: -1 }, limit: 1 }
+    );
 
-    let numbers: Record<string, TransformedDataType> = {};
-    for (const measurement of measurements) {
-      // @ts-ignore
-      const locationId = String(measurement.locationId);
+    let lastHourDate = new Date(findLastHour[0].measuredAt);
+    let nextHourDate = new Date(lastHourDate).setHours(
+      lastHourDate.getHours() + 1
+    );
 
-      if (!numbers[locationId])
-        numbers[locationId] = {
-          temperature: 0,
-          humidity: 0,
-          numberOfMeasurements: 0,
-        };
-
-      numbers[locationId].temperature += measurement.temperature;
-      numbers[locationId].humidity += measurement.humidity;
-      numbers[locationId].numberOfMeasurements += 1;
-    }
-
-    const keys = Object.keys(numbers);
     const savedMeasurements = [];
 
-    for (const key of keys) {
-      const data = numbers[key];
-
-      const newMeasurement = new MeasurementModel({
-        locationId: key,
-        type,
-        temperature: data.temperature / data.numberOfMeasurements,
-        humidity: data.humidity / data.numberOfMeasurements,
-        measuredAt: now.toISOString(),
+    while (nextHourDate <= now.getTime()) {
+      const fiveMinValues = await findAllMeasurements({
+        type: "5-minutes",
+        measuredAt: { $gt: lastHourDate, $lte: nextHourDate },
       });
-      const savedMeasurement = await newMeasurement.save();
-      savedMeasurements.push(savedMeasurement);
+
+      console.log(nextHourDate);
+      console.log(fiveMinValues);
+      console.log("-------------");
+
+      if (fiveMinValues.length > 1 && fiveMinValues.length < 13) {
+        let numbers: Record<string, TransformedDataType> = {};
+        for (const measurement of fiveMinValues) {
+          // @ts-ignore
+          const locationId = String(measurement.locationId);
+
+          if (!numbers[locationId])
+            numbers[locationId] = {
+              temperature: 0,
+              humidity: 0,
+              numberOfMeasurements: 0,
+            };
+
+          numbers[locationId].temperature += measurement.temperature;
+          numbers[locationId].humidity += measurement.humidity;
+          numbers[locationId].numberOfMeasurements += 1;
+        }
+
+        const keys = Object.keys(numbers);
+
+        for (const key of keys) {
+          const data = numbers[key];
+
+          const newMeasurement = new MeasurementModel({
+            locationId: key,
+            type,
+            temperature: data.temperature / data.numberOfMeasurements,
+            humidity: data.humidity / data.numberOfMeasurements,
+            measuredAt: now.toISOString(),
+          });
+          const savedMeasurement = await newMeasurement.save();
+          savedMeasurements.push(savedMeasurement);
+        }
+      }
+
+      nextHourDate += 60 * 60 * 1000;
     }
 
-    return savedMeasurements;
+    console.log(savedMeasurements);
+
+    // const measurements = await findAllMeasurements({
+    //   measuredAt: { $lte: min, $gte: now.toISOString() },
+    //   type,
+    // });
+    //
+    // let numbers: Record<string, TransformedDataType> = {};
+    // for (const measurement of measurements) {
+    //   // @ts-ignore
+    //   const locationId = String(measurement.locationId);
+    //
+    //   if (!numbers[locationId])
+    //     numbers[locationId] = {
+    //       temperature: 0,
+    //       humidity: 0,
+    //       numberOfMeasurements: 0,
+    //     };
+    //
+    //   numbers[locationId].temperature += measurement.temperature;
+    //   numbers[locationId].humidity += measurement.humidity;
+    //   numbers[locationId].numberOfMeasurements += 1;
+    // }
+    //
+    // const keys = Object.keys(numbers);
+    // const savedMeasurements = [];
+    //
+    // for (const key of keys) {
+    //   const data = numbers[key];
+    //
+    //   const newMeasurement = new MeasurementModel({
+    //     locationId: key,
+    //     type,
+    //     temperature: data.temperature / data.numberOfMeasurements,
+    //     humidity: data.humidity / data.numberOfMeasurements,
+    //     measuredAt: now.toISOString(),
+    //   });
+    //   const savedMeasurement = await newMeasurement.save();
+    //   savedMeasurements.push(savedMeasurement);
+    // }
+    //
+    // return savedMeasurements;
   } catch (err) {
     throw err;
   }

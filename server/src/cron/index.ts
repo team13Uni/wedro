@@ -11,7 +11,7 @@ export default function () {
 
   // every hour
   cron.schedule("0 * * * *", async () => {
-    console.log("cron day");
+    console.log("cron hour");
     const data = await downscaleData("hour");
     console.log(data);
   });

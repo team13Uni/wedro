@@ -1,4 +1,12 @@
-import { FilterQuery, model, Model, Schema } from "mongoose";
+import {
+  FilterQuery,
+  model,
+  Model,
+  ProjectionType,
+  QueryOptions,
+  QueryWithHelpers,
+  Schema,
+} from "mongoose";
 import { Types } from "mongoose";
 import type { Measurement } from "./types";
 
@@ -39,8 +47,11 @@ export const updateMeasurementById = async (
   updateBody: FilterQuery<Measurement>
 ) => await MeasurementModel.findByIdAndUpdate(id, updateBody);
 
-export const findAllMeasurements = async (filter: FilterQuery<Measurement>) =>
-  await MeasurementModel.find<Measurement>(filter);
+export const findAllMeasurements = async (
+  filter: FilterQuery<Measurement>,
+  projection?: ProjectionType<Measurement>,
+  queryOptions?: QueryOptions<Measurement>
+) => await MeasurementModel.find<Measurement>(filter, projection, queryOptions);
 
 export const deleteMeasurementById = async (id: string) =>
   await MeasurementModel.findByIdAndDelete(id);

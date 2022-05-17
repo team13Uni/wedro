@@ -6,6 +6,11 @@ const validators = {
   secret: Joi.string().max(1024),
   unavailable: Joi.boolean(),
   active: Joi.boolean(),
+  location: Joi.object({
+    coordinates: Joi.array().items(Joi.number()),
+    type: Joi.string().valid("Point"),
+  }),
+  seaLevel: Joi.number(),
 };
 
 export const createWeatherStationValidator = {
@@ -14,6 +19,8 @@ export const createWeatherStationValidator = {
     secret: validators.secret.required(),
     unavailable: validators.unavailable,
     active: validators.active,
+    location: validators.location,
+    seaLevel: validators.seaLevel,
   }),
 };
 

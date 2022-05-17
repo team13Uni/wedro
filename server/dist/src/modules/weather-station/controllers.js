@@ -30,6 +30,9 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             });
         }
+        else {
+            throw err;
+        }
     }
 });
 exports.create = create;

@@ -82,7 +82,14 @@ const validateNodeJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     try {
         const authHeader = req.headers.authorization;
         if (authHeader) {
-            const token = authHeader.split(" ")[1];
+            const [bearer, token] = authHeader.split(" ");
+            if (bearer.toLocaleLowerCase().trim() !== "bearer") {
+                return res.status(types_1.StatusCode.NOT_AUTHORIZED).send({
+                    status: 403,
+                    code: types_1.ErrorCode.NOT_AUTHORIZED,
+                    message: "You are not authorized to access this endpoint!",
+                });
+            }
             const verifiedToken = yield ((0, jsonwebtoken_1.verify)(token, process.env.JWT_SECRET));
             if (!verifiedToken.nodeId) {
                 return res.status(types_1.StatusCode.NOT_AUTHORIZED).send({
@@ -110,6 +117,7 @@ const validateNodeJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
                 message: "JWT: " + err.message,
             });
         }
+        next(err);
     }
 });
 exports.validateNodeJWT = validateNodeJWT;

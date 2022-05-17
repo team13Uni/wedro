@@ -40,7 +40,7 @@ const findMeasurementById = (id) => __awaiter(void 0, void 0, void 0, function* 
 exports.findMeasurementById = findMeasurementById;
 const updateMeasurementById = (id, updateBody) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.MeasurementModel.findByIdAndUpdate(id, updateBody); });
 exports.updateMeasurementById = updateMeasurementById;
-const findAllMeasurements = (filter) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.MeasurementModel.find(filter); });
+const findAllMeasurements = (filter, projection, queryOptions) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.MeasurementModel.find(filter, projection, queryOptions); });
 exports.findAllMeasurements = findAllMeasurements;
 const deleteMeasurementById = (id) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.MeasurementModel.findByIdAndDelete(id); });
 exports.deleteMeasurementById = deleteMeasurementById;

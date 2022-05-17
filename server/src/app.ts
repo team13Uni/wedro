@@ -6,6 +6,7 @@ import cors from "cors";
 import cron from "./cron";
 
 import { errorMiddleware } from "./middlewares";
+import { downscaleData } from "./modules/measurement";
 
 require("dotenv").config();
 
@@ -33,6 +34,9 @@ require("./routes")(app);
 // Handle 404 errors
 app.use(errorMiddleware);
 
-app.listen(app.get("port"), () => {
+app.listen(app.get("port"), async () => {
   console.log(`✅ Server is running on port ${app.get("port")}`);
+
+  const data = await downscaleData("hour");
+  console.log(data);
 });

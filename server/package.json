@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon src/app.ts",
     "start": "node dist/src/app.js",
+    "generate:admin": "node src/scripts/generateAdmin.js --username martin.foldyna@me.com",
     "postinstall": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "tsc && git add . && git commit -m \" Heroku \" && git push heroku master"
@@ -39,6 +40,7 @@
     "mongoose": "^6.2.4",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.0",
-    "ts-node": "^10.5.0"
+    "ts-node": "^10.5.0",
+    "yargs": "^17.5.1"
   }
 }
