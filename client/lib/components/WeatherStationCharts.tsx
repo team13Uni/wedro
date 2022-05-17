@@ -94,6 +94,7 @@ export const WeatherStationCharts: FC<WeatherStationChartProps> = ({ locationId 
 							border: (theme) => `1px solid ${theme.palette.divider}`,
 							borderRadius: '5px',
 							height: '100%',
+							minHeight: '150px',
 						}}
 					>
 						<ResponsiveContainer width="100%" height="100%">

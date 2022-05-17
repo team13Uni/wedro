@@ -1,16 +1,19 @@
 import { DeviceThermostat, ModeEdit, Water } from '@mui/icons-material';
-import { Box, Button, Card, CardContent, Container, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Container, Dialog, DialogContent, DialogTitle, Grid, Stack, Typography } from '@mui/material';
 import { apiClient } from '@wedro/app';
 import { Layout, Map, StatCard, WeatherStationCharts, WeatherStationData, WeatherStationStatusChip } from '@wedro/components';
+import LocationForm from '@wedro/components/form/LocationForm';
+import NodeForm from '@wedro/components/form/NodeForm';
 import { TRANSLATIONS } from '@wedro/constants';
 import { useTranslate } from '@wedro/hooks';
 import { useFormat } from '@wedro/hooks/useFormat';
 import { useNow } from '@wedro/hooks/useNow';
 import { Location, NextPageWithAuth, WedroUserRole } from '@wedro/types';
-import { isDefined, pickFrom } from '@wedro/utils';
+import { isDefined, isEmpty, pickFrom } from '@wedro/utils';
 import { GetServerSideProps } from 'next';
 import { getSession, useSession } from 'next-auth/react';
-import React, { useMemo } from 'react';
+import { useRouter } from 'next/router';
+import React, { useMemo, useState } from 'react';
 import { Popup } from 'react-mapbox-gl';
 import { Bar, BarChart, ResponsiveContainer, Tooltip } from 'recharts';
 import useSWR from 'swr';
@@ -23,6 +26,8 @@ const WeatherStationDetailPage: NextPageWithAuth<WeatherStationDetailPageProps> 
 	const { translate } = useTranslate();
 	const { data: session, status } = useSession();
 	const format = useFormat();
+	const router = useRouter();
+	const [locationDialog, setLocationDialog] = useState<string | null>(null);
 	const now = useNow();
 
 	/** get current data from API */
@@ -30,6 +35,7 @@ const WeatherStationDetailPage: NextPageWithAuth<WeatherStationDetailPageProps> 
 		data: currentData,
 		error,
 		isValidating,
+		mutate,
 	} = useSWR<{ data: WeatherStationCurrentData }>(
 		() => `/api/measurement/${location._id}/current`,
 		(url) =>
@@ -170,9 +176,9 @@ const WeatherStationDetailPage: NextPageWithAuth<WeatherStationDetailPageProps> 
 							{translate(TRANSLATIONS.WEATHER_STATION_DETAIL.title, { weatherStationName: location.name })}
 						</Typography>
 					</div>
-					{/* TODO: edit button */}
+					{/* edit button */}
 					{isDefined(session) && session.account.role === WedroUserRole.ADMIN && (
-						<Button sx={{ ml: 'auto' }} size="small" startIcon={<ModeEdit />} onClick={() => alert('TODO')}>
+						<Button sx={{ ml: 'auto' }} size="small" startIcon={<ModeEdit />} onClick={() => setLocationDialog(location._id)}>
 							{translate(TRANSLATIONS.GENERAL.edit)}
 						</Button>
 					)}
@@ -372,6 +378,27 @@ const WeatherStationDetailPage: NextPageWithAuth<WeatherStationDetailPageProps> 
 					</Box>
 				)}
 			</Container>
+
+			{/* location form */}
+			<Dialog onClose={() => setLocationDialog(null)} open={isDefined(locationDialog)} fullWidth>
+				{isDefined(locationDialog) && (
+					<>
+						<DialogTitle>
+							{translate(isEmpty(locationDialog) ? TRANSLATIONS.LOCATION_FORM.createTitle : TRANSLATIONS.LOCATION_FORM.updateTitle)}
+						</DialogTitle>
+						<DialogContent>
+							<LocationForm
+								locationId={locationDialog}
+								onSubmitted={async (topic) => {
+									setLocationDialog(null);
+									await router.replace(router.asPath);
+									await mutate();
+								}}
+							/>
+						</DialogContent>
+					</>
+				)}
+			</Dialog>
 		</Layout>
 	);
 };

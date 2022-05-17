@@ -10,4 +10,6 @@ export * from './layout/Layout';
 export * from './layout/Footer';
 export * from './layout/Header';
 export * from './form/FormikWrapper';
+export * from './form/LocationForm';
+export * from './form/NodeForm';
 export * from './form/FormikFieldMui';

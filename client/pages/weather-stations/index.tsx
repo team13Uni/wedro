@@ -1,14 +1,16 @@
 import { ModeEdit } from '@mui/icons-material';
-import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import { Box, Button, Container, Dialog, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';
 import { apiClient } from '@wedro/app';
 import { Layout, WeatherStationCard } from '@wedro/components';
+import LocationForm from '@wedro/components/form/LocationForm';
 import { TRANSLATIONS } from '@wedro/constants';
 import { useTranslate } from '@wedro/hooks';
 import { Location, NextPageWithAuth, WedroUserRole } from '@wedro/types';
-import { isDefined } from '@wedro/utils';
+import { isDefined, isEmpty } from '@wedro/utils';
 import { GetServerSideProps } from 'next';
 import { getSession, useSession } from 'next-auth/react';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 /**
  * Weather stations page
@@ -17,6 +19,8 @@ import React from 'react';
 const WeatherStationsPage: NextPageWithAuth<WeatherStationsPageProps> = ({ locations }) => {
 	const { translate } = useTranslate();
 	const { data: session, status } = useSession();
+	const router = useRouter();
+	const [locationDialog, setLocationDialog] = useState<string | null>(null);
 
 	return (
 		<Layout title={translate(TRANSLATIONS.WEATHER_STATIONS.title)}>
@@ -25,9 +29,9 @@ const WeatherStationsPage: NextPageWithAuth<WeatherStationsPageProps> = ({ locat
 					<Typography variant="h4" component="h1" gutterBottom>
 						{translate(TRANSLATIONS.WEATHER_STATIONS.title)}
 					</Typography>
-					{/* TODO: create button */}
+					{/* create button */}
 					{isDefined(session) && session.account.role === WedroUserRole.ADMIN && (
-						<Button sx={{ ml: 'auto' }} size="small" startIcon={<ModeEdit />} onClick={() => alert('TODO')}>
+						<Button sx={{ ml: 'auto' }} size="small" startIcon={<ModeEdit />} onClick={() => setLocationDialog('')}>
 							{translate(TRANSLATIONS.GENERAL.create)}
 						</Button>
 					)}
@@ -43,6 +47,26 @@ const WeatherStationsPage: NextPageWithAuth<WeatherStationsPageProps> = ({ locat
 					})}
 				</Grid>
 			</Container>
+
+			{/* location form */}
+			<Dialog onClose={() => setLocationDialog(null)} open={isDefined(locationDialog)} fullWidth>
+				{isDefined(locationDialog) && (
+					<>
+						<DialogTitle>
+							{translate(isEmpty(locationDialog) ? TRANSLATIONS.LOCATION_FORM.createTitle : TRANSLATIONS.LOCATION_FORM.updateTitle)}
+						</DialogTitle>
+						<DialogContent>
+							<LocationForm
+								locationId={locationDialog}
+								onSubmitted={async (topic) => {
+									setLocationDialog(null);
+									await router.replace(router.asPath);
+								}}
+							/>
+						</DialogContent>
+					</>
+				)}
+			</Dialog>
 		</Layout>
 	);
 };

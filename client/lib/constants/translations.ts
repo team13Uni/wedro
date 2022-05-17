@@ -5,6 +5,72 @@ export const TRANSLATIONS = {
 			en: 'Loading...',
 		},
 	},
+	LOCATION_FORM: {
+		create: {
+			cs: 'Vytvořit',
+			en: 'Create',
+		},
+		createTitle: {
+			cs: 'Vytvořit novou lokaci',
+			en: 'Create new location',
+		},
+		nodeId: {
+			cs: 'Stanice',
+			en: 'Node',
+		},
+		updateTitle: {
+			cs: 'Upravit lokaci',
+			en: 'Update location',
+		},
+		update: {
+			cs: 'Aktualizovat',
+			en: 'Update',
+		},
+		name: {
+			cs: 'Název lokace',
+			en: 'Location name',
+		},
+		lat: {
+			cs: 'Zeměpisná šířka',
+			en: 'Latitude',
+		},
+		lng: {
+			cs: 'Zeměpisná délka',
+			en: 'Longitude',
+		},
+		seaLevel: {
+			cs: 'Nadmořská výška',
+			en: 'Sea level',
+		},
+	},
+	
+	NODE_FORM: {
+		create: {
+			cs: 'Vytvořit',
+			en: 'Create',
+		},
+		secret: {
+			cs: 'Tajný klíč',
+			en: 'Secret key',
+		},
+		createTitle: {
+			cs: 'Vytvořit novou lokaci',
+			en: 'Create new location',
+		},
+		updateTitle: {
+			cs: 'Upravit lokaci',
+			en: 'Update location',
+		},
+		update: {
+			cs: 'Aktualizovat',
+			en: 'Update',
+		},
+		name: {
+			cs: 'Název stanice',
+			en: 'Station name',
+		},
+	},
+	
 	AUTH: {
 		name: {
 			cs: 'Jméno',
@@ -208,6 +274,10 @@ export const TRANSLATIONS = {
 		},
 	},
 	GENERAL: {
+		updateSuccess: {
+			cs: 'Aktualizace proběhla v pořádku',
+			en: 'Update was successful'
+		},
 		notAvailable: {
 			cs: 'N/A',
 			en: 'N/A',

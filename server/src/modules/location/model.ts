@@ -37,7 +37,10 @@ export const findLocationByNodeId = async (nodeId: ObjectId | string) =>
 export const updateLocationById = async (
   id: ObjectId | string,
   updateBody: Partial<Location>
-) => await LocationModel.findByIdAndUpdate(id, updateBody);
+) => await LocationModel.findByIdAndUpdate(id, {
+  ...updateBody,
+  nodeId: updateBody.nodeId || null,
+});
 
 export const findAllLocations = async (filter: Partial<Location>) =>
   await LocationModel.find<Location>(filter);
