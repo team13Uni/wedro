@@ -10,7 +10,7 @@
     "next/core-web-vitals"
   ],
   "rules": {
-    "prettier/prettier": "error",
+    "prettier/prettier": "warn",
     "react/display-name": "warn"
   }
 }
