@@ -20,12 +20,12 @@ const WeatherStationsPage: NextPageWithAuth<WeatherStationsPageProps> = ({ locat
 
 	return (
 		<Layout title={translate(TRANSLATIONS.WEATHER_STATIONS.title)}>
-			<Container>
+			<Container sx={{ py: 3 }}>
 				<Box display="flex" alignItems="center" justifyContent="between">
 					<Typography variant="h4" component="h1" gutterBottom>
 						{translate(TRANSLATIONS.WEATHER_STATIONS.title)}
 					</Typography>
-					{/* TODO: create button? */}
+					{/* TODO: create button */}
 					{isDefined(session) && session.account.role === WedroUserRole.ADMIN && (
 						<Button sx={{ ml: 'auto' }} size="small" startIcon={<ModeEdit />} onClick={() => alert('TODO')}>
 							{translate(TRANSLATIONS.GENERAL.create)}
