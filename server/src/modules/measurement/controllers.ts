@@ -1,4 +1,5 @@
 import { subHours } from "date-fns";
+import type { ObjectId } from "mongoose";
 import { HttpException } from "../../exceptions";
 import { daysInYear, pickFrom } from "../../helpers/common";
 import type { IdParam, RequestWithUser, ResponseWithError } from "../../types";
@@ -21,6 +22,7 @@ import type {
   CreateMeasurementResponse,
   DeleteMeasurementResponse,
   Measurement,
+  MeasurementType,
 } from "./types";
 import type { ObjectId } from "mongoose";
 import type { MeasurementType } from "./types";
@@ -362,7 +364,7 @@ export const downscaleData = async (
     while (nextDate <= now.getTime()) {
       const stepValues = await findAllMeasurements({
         type: findType,
-        measuredAt: { $gt: lastDateTime, $lte: nextDate },
+        measuredAt: { $gte: lastDateTime, $lte: nextDate },
       });
 
       let condition = stepValues.length > 1 && stepValues.length < 100;
@@ -504,7 +506,7 @@ export const upscaleData = (
  */
 export const getBuckets = async (
   req: RequestWithUser<
-    { weatherStationId: string },
+    { locationId: string },
     GetBucketsDtoOut,
     never,
     { dateFrom: string; dateTo: string; type: BucketGranularity }
@@ -521,7 +523,7 @@ export const getBuckets = async (
       dateTo,
       granularity: req.query.type,
       // @ts-ignore
-      locationId: req.params.weatherStationId,
+      locationId: req.params.locationId,
     });
 
     res.json(buckets);

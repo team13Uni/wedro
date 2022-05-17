@@ -18,7 +18,7 @@ import useSWR from 'swr';
  * @returns {JSX.Element}
  * @constructor
  */
-export const WeatherStationCharts: FC<WeatherStationChartProps> = ({ weatherStationId }) => {
+export const WeatherStationCharts: FC<WeatherStationChartProps> = ({ locationId }) => {
 	const { translate } = useTranslate();
 	const { data: session, status } = useSession();
 	const format = useFormat();
@@ -31,7 +31,7 @@ export const WeatherStationCharts: FC<WeatherStationChartProps> = ({ weatherStat
 	/** get buckets from API */
 	const { data, error, isValidating } = useSWR<{ data: WeatherStationData[] }>(
 		() =>
-			`/api/measurement/${weatherStationId}/buckets?dateFrom=${currentPeriod[0].toISOString()}&dateTo=${currentPeriod[1].toISOString()}&type=${granularity}`,
+			`/api/measurement/${locationId}/buckets?dateFrom=${currentPeriod[0].toISOString()}&dateTo=${currentPeriod[1].toISOString()}&type=${granularity}`,
 		(url) =>
 			apiClient(
 				{
@@ -218,4 +218,4 @@ export const WeatherStationCharts: FC<WeatherStationChartProps> = ({ weatherStat
  * Component props type
  * @private
  */
-type WeatherStationChartProps = { weatherStationId: string };
+type WeatherStationChartProps = { locationId: string };
