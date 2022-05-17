@@ -1,11 +1,4 @@
-import {
-  eachDayOfInterval,
-  eachHourOfInterval,
-  eachMonthOfInterval,
-  eachYearOfInterval,
-  isEqual,
-  subHours,
-} from "date-fns";
+import { subHours } from "date-fns";
 import { HttpException } from "../../exceptions";
 import { pickFrom } from "../../helpers/common";
 import type { IdParam, RequestWithUser, ResponseWithError } from "../../types";
@@ -15,6 +8,7 @@ import {
   findWeatherStationById,
   updateWeatherStationById,
 } from "../weather-station/model";
+import { BucketGranularity, getBucketsForStation } from "./helpers";
 import {
   deleteMeasurementById,
   findAllMeasurements,
@@ -26,9 +20,11 @@ import type {
   CreateMeasurementResponse,
   DeleteMeasurementResponse,
   Measurement,
-  MeasurementType,
 } from "./types";
 
+/**
+ * Creates a new measurement.
+ */
 export const create = async (
   req: RequestWithNodeId<
     Record<string, string>,
@@ -93,6 +89,9 @@ export const create = async (
   }
 };
 
+/**
+ * Returns all measurements
+ */
 export const findAll = async (
   req: RequestWithUser<
     Record<string, string>,
@@ -117,6 +116,9 @@ export const findAll = async (
   }
 };
 
+/**
+ * Returns one measurement by its ID
+ */
 export const findOne = async (
   req: RequestWithUser<IdParam, Measurement, undefined>,
   res: ResponseWithError<Measurement>
@@ -148,6 +150,9 @@ export const findOne = async (
   }
 };
 
+/**
+ * Deletes a measurement
+ */
 export const deleteMeasurement = async (
   req: RequestWithUser<IdParam, DeleteMeasurementResponse, undefined>,
   res: ResponseWithError<DeleteMeasurementResponse>
@@ -194,127 +199,6 @@ export const deleteMeasurement = async (
   }
 };
 
-type TransformedDataType = {
-  temperature: number;
-  humidity: number;
-  numberOfMeasurements: number;
-};
-
-export const downscaleData = async (
-  type: Exclude<MeasurementType, "5-minutes">
-) => {
-  try {
-    const now = new Date();
-    const minDate = new Date();
-    let min;
-    let findType: MeasurementType;
-
-    switch (type) {
-      case "hour": {
-        minDate.setHours(now.getHours() - 1);
-        min = minDate.toISOString();
-        findType = "5-minutes";
-
-        break;
-      }
-      case "day": {
-        minDate.setDate(now.getDate() - 1);
-        min = minDate.toISOString();
-        findType = "hour";
-
-        break;
-      }
-      case "month": {
-        minDate.setMonth(now.getMonth() - 1);
-        min = minDate.toISOString();
-        findType = "day";
-
-        break;
-      }
-      case "year":
-        minDate.setFullYear(now.getFullYear() - 1);
-        min = minDate.toISOString();
-        findType = "month";
-
-        break;
-    }
-
-    const measurements = await findAllMeasurements({
-      measuredAt: { $lte: min, $gte: now.toISOString() },
-      type,
-    });
-
-    let numbers: Record<string, TransformedDataType> = {};
-    for (const measurement of measurements) {
-      // @ts-ignore
-      const locationId = String(measurement.locationId);
-
-      if (!numbers[locationId])
-        numbers[locationId] = {
-          temperature: 0,
-          humidity: 0,
-          numberOfMeasurements: 0,
-        };
-
-      numbers[locationId].temperature += measurement.temperature;
-      numbers[locationId].humidity += measurement.humidity;
-      numbers[locationId].numberOfMeasurements += 1;
-    }
-
-    const keys = Object.keys(numbers);
-    const savedMeasurements = [];
-
-    for (const key of keys) {
-      const data = numbers[key];
-
-      const newMeasurement = new MeasurementModel({
-        locationId: key,
-        type,
-        temperature: data.temperature / data.numberOfMeasurements,
-        humidity: data.humidity / data.numberOfMeasurements,
-        measuredAt: now.toISOString(),
-      });
-      const savedMeasurement = await newMeasurement.save();
-      savedMeasurements.push(savedMeasurement);
-    }
-
-    return savedMeasurements;
-  } catch (err) {
-    throw err;
-  }
-};
-
-const tenHours = 600;
-
-export const upscaleData = (
-  timeFrom: number,
-  timeTo: number,
-  lowValue: number,
-  highValue: number,
-  byMinutes: number
-) => {
-  const delta = timeTo - timeFrom;
-
-  if (delta > tenHours && byMinutes < 5) return [];
-
-  let step = timeFrom + byMinutes * 60;
-  const result = [];
-
-  while (step < timeTo) {
-    const stepResult =
-      lowValue +
-      (step - timeFrom) * ((highValue - lowValue) / (timeTo - timeFrom));
-
-    const date = new Date(step);
-
-    result.push({ value: stepResult, measuredAt: date.toISOString() });
-
-    step += byMinutes * 60;
-  }
-
-  return result;
-};
-
 /**
  * Returns buckets with temperature and humidity data for specified date range and granularity (type)
  */
@@ -323,7 +207,7 @@ export const getBuckets = async (
     { weatherStationId: string },
     GetBucketsDtoOut,
     never,
-    { dateFrom: string; dateTo: string; type: MeasurementType }
+    { dateFrom: string; dateTo: string; type: BucketGranularity }
   >,
   res: ResponseWithError<GetBucketsDtoOut>
 ) => {
@@ -335,7 +219,7 @@ export const getBuckets = async (
     const buckets = await getBucketsForStation({
       dateFrom,
       dateTo,
-      type: req.query.type,
+      granularity: req.query.type,
       weatherStationId: req.params.weatherStationId,
     });
 
@@ -353,97 +237,10 @@ export const getBuckets = async (
   }
 };
 type GetBucketsDtoOut = Array<{
-  date: string;
-  temperature: number;
-  humidity: number;
+  date: Date;
+  temperature: number | null;
+  humidity: number | null;
 }>;
-
-/**
- * Helper function to get buckets for weather station in specified date interval and granularity
- * @author filipditrich
- */
-const getBucketsForStation = async ({
-  dateFrom,
-  dateTo,
-  type,
-  weatherStationId,
-}: {
-  dateFrom: Date;
-  dateTo: Date;
-  type: MeasurementType;
-  weatherStationId: string;
-}) => {
-  const measurements = await MeasurementModel.find({
-    nodeId: weatherStationId,
-    measuredAt: { $gte: dateFrom, $lte: dateTo },
-    type: type,
-  });
-
-  let buckets: Date[] = [];
-  switch (type) {
-    case "hour":
-      buckets = eachHourOfInterval({ start: dateFrom, end: dateTo });
-      break;
-    case "day":
-      buckets = eachDayOfInterval({ start: dateFrom, end: dateTo });
-      break;
-    case "month":
-      buckets = eachMonthOfInterval({ start: dateFrom, end: dateTo });
-      break;
-    case "year":
-      buckets = eachYearOfInterval({ start: dateFrom, end: dateTo });
-      break;
-  }
-
-  const data = buckets.map((bucketDate, index, mappedBuckets) => {
-    const measurement = measurements.find((m) =>
-      isEqual(new Date(m.toJSON().measuredAt), bucketDate)
-    );
-
-    /** no measurement for the bucket, return empty bucket */
-    if (!measurement) {
-      return {
-        date: bucketDate.toISOString(),
-        temperature: null,
-        humidity: null,
-      };
-    }
-
-    return {
-      date: bucketDate.toISOString(),
-      temperature: measurement.temperature,
-      humidity: measurement.humidity,
-    };
-  });
-
-  /** TODO: find a more performant way of doing so */
-  /** fill empty buckets */
-  const dataWithFilledBuckets = data.map((bucket, index) => {
-    if (!bucket.humidity || !bucket.temperature) {
-      const previousBucketWithTemp = data
-        .slice(0, index)
-        .reverse()
-        .find((b) => b.temperature);
-      const previousBucketWithHum = previousBucketWithTemp?.humidity
-        ? previousBucketWithTemp
-        : data
-            .slice(0, index)
-            .reverse()
-            .find((b) => b.humidity);
-      return {
-        date: bucket.date,
-        temperature:
-          bucket.temperature ?? previousBucketWithTemp?.temperature ?? 0,
-        humidity: bucket.humidity ?? previousBucketWithHum?.humidity ?? 0,
-      };
-    }
-
-    return bucket;
-  });
-
-  /** send the data */
-  return dataWithFilledBuckets;
-};
 
 /**
  * Returns current (last measured) temperature and humidity for specified weather station
@@ -478,7 +275,7 @@ export const getCurrent = async (
     const todayBuckets = await getBucketsForStation({
       dateFrom: subHours(now, 24),
       dateTo: now,
-      type: "hour",
+      granularity: "hour",
       weatherStationId: req.params.weatherStationId,
     });
 
