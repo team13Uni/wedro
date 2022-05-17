@@ -24,8 +24,6 @@ import type {
   Measurement,
   MeasurementType,
 } from "./types";
-import type { ObjectId } from "mongoose";
-import type { MeasurementType } from "./types";
 
 /**
  * Creates a new measurement.
@@ -79,18 +77,14 @@ export const create = async (
     const lastSentItem = body[body.length - 1];
 
     res.json(lastSentItem);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    } else {
-      res.status(StatusCode.SERVER_ERROR);
-    }
+  } catch (err: HttpException | any) {
+    res.status(err.status).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -108,16 +102,14 @@ export const findAll = async (
   try {
     const measurements = await findAllMeasurements(req.body);
     res.send(measurements);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(err.status).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -142,16 +134,14 @@ export const findOne = async (
     }
 
     res.send(measurement);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(err.status).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
