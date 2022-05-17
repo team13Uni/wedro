@@ -9,6 +9,7 @@ export type Measurement = {
   nodeId: ObjectId;
   locationId: ObjectId;
   type: MeasurementType;
+  locationId: ObjectId;
 };
 
 type RequestMeasurement = {

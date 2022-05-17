@@ -25,6 +25,14 @@ exports.locationSchema = new mongoose_1.Schema({
         default: "active",
         enum: ["active", "inactive"],
     },
+    seaLevel: {
+        type: Number,
+        required: true,
+    },
+    coordinates: {
+        type: [Number],
+        required: true,
+    },
 });
 exports.LocationModel = (0, mongoose_1.model)("location", exports.locationSchema);
 const findLocationById = (id) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.LocationModel.findById(id); });

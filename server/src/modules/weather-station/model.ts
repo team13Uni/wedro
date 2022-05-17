@@ -2,19 +2,6 @@ import { model, Schema } from "mongoose";
 import type { ObjectId, FilterQuery } from "mongoose";
 import { WeatherStation } from "./types";
 
-/** TODO: move elsewhere? */
-const pointSchema = new Schema({
-  type: {
-    type: String,
-    enum: ['Point'],
-    required: true
-  },
-  coordinates: {
-    type: [Number],
-    required: true
-  }
-});
-
 export const weatherStationSchema = new Schema<WeatherStation>({
   name: {
     type: String,
@@ -35,15 +22,6 @@ export const weatherStationSchema = new Schema<WeatherStation>({
   lastActiveAt: {
     type: Date,
   },
-  seaLevel: {
-    type: Number,
-    required: true,
-  },
-  // @ts-ignore
-  location: {
-    type: pointSchema as any,
-    required: true
-  }
 });
 
 export const WeatherStationModel = model<WeatherStation>(
@@ -64,7 +42,7 @@ export const findWeatherStationById = async (id: string | ObjectId) =>
   await WeatherStationModel.findById<WeatherStation>(id).select("-secret");
 
 export const findWeatherStationBySecret = async (secret: string) =>
-    await WeatherStationModel.findOne({ secret });
+  await WeatherStationModel.findOne({ secret });
 
 export const findAllWeatherStations = async (
   filter: FilterQuery<WeatherStation>

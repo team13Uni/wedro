@@ -23,7 +23,7 @@ function default_1() {
     }));
     // every hour
     node_cron_1.default.schedule("0 * * * *", () => __awaiter(this, void 0, void 0, function* () {
-        console.log("cron day");
+        console.log("cron hour");
         const data = yield (0, measurement_1.downscaleData)("hour");
         console.log(data);
     }));

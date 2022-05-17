@@ -1,6 +1,6 @@
 import { subHours } from "date-fns";
 import { HttpException } from "../../exceptions";
-import { pickFrom } from "../../helpers/common";
+import { daysInYear, pickFrom } from "../../helpers/common";
 import type { IdParam, RequestWithUser, ResponseWithError } from "../../types";
 import { ErrorCode, RequestWithNodeId, StatusCode } from "../../types";
 import { findLocationByNodeId } from "../location/model";
@@ -11,6 +11,7 @@ import {
 import { BucketGranularity, getBucketsForStation } from "./helpers";
 import {
   deleteMeasurementById,
+  deleteMeasurementByMultipleIds,
   findAllMeasurements,
   findMeasurementById,
   MeasurementModel,
@@ -21,6 +22,7 @@ import type {
   DeleteMeasurementResponse,
   Measurement,
 } from "./types";
+import type { ObjectId } from "mongoose";
 
 /**
  * Creates a new measurement.
@@ -200,6 +202,303 @@ export const deleteMeasurement = async (
   }
 };
 
+type TransformedDataType = {
+  temperature: number;
+  humidity: number;
+  numberOfMeasurements: number;
+  nodeId: ObjectId | undefined;
+};
+
+export const downscaleData = async (
+  type: Exclude<MeasurementType, "5-minutes">,
+  debug?: boolean
+) => {
+  try {
+    const now = new Date();
+    let findType: MeasurementType;
+    let incrementBy;
+
+    let lastDate;
+    let lastDateTime;
+    let nextDate;
+
+    const queryOptions = { sort: { measuredAt: -1 }, limit: 1 };
+    const fallbackQueryOptions = { sort: { measuredAt: 1 }, limit: 1 };
+
+    switch (type) {
+      case "hour": {
+        findType = "5-minutes";
+        incrementBy = 60 * 60 * 1000;
+
+        let findLastHour = await findAllMeasurements(
+          { type: "hour" },
+          undefined,
+          queryOptions
+        );
+
+        if (findLastHour?.length === 0) {
+          findLastHour = await findAllMeasurements(
+            { type: "5-minutes" },
+            undefined,
+            fallbackQueryOptions
+          );
+        }
+
+        lastDate = new Date(findLastHour[0].measuredAt);
+        lastDateTime = lastDate.getTime();
+
+        nextDate = new Date(lastDate).setHours(lastDate.getHours() + 1);
+
+        break;
+      }
+
+      case "day": {
+        findType = "hour";
+        incrementBy = 24 * 60 * 60 * 1000;
+
+        let findLastDay = await findAllMeasurements(
+          { type: "day" },
+          undefined,
+          queryOptions
+        );
+
+        if (findLastDay?.length === 0) {
+          findLastDay = await findAllMeasurements(
+            { type: "hour" },
+            undefined,
+            fallbackQueryOptions
+          );
+        }
+
+        lastDate = new Date(findLastDay[0].measuredAt);
+        lastDateTime = lastDate.getTime();
+
+        nextDate = new Date(lastDate).setDate(lastDate.getDate() + 1);
+
+        break;
+      }
+
+      case "month": {
+        findType = "day";
+
+        let findLastMonth = await findAllMeasurements(
+          { type: "month" },
+          undefined,
+          queryOptions
+        );
+        if (findLastMonth?.length === 0) {
+          findLastMonth = await findAllMeasurements(
+            { type: "day" },
+            undefined,
+            fallbackQueryOptions
+          );
+        }
+
+        if (findLastMonth?.length === 0) {
+          findLastMonth = await findAllMeasurements(
+            { type: "hour" },
+            undefined,
+            fallbackQueryOptions
+          );
+        }
+
+        lastDate = new Date(findLastMonth[0].measuredAt);
+        lastDate.setDate(1);
+        if (findLastMonth[0].type === "month") {
+          lastDateTime = lastDate.setMonth(lastDate.getMonth() + 1);
+        } else {
+          lastDateTime = lastDate.getTime();
+        }
+
+        nextDate = new Date(lastDate).setMonth(lastDate.getMonth() + 1);
+
+        break;
+      }
+
+      case "year": {
+        findType = "month";
+
+        let findLastYear = await findAllMeasurements(
+          { type: "year" },
+          undefined,
+          queryOptions
+        );
+
+        if (findLastYear?.length === 0) {
+          findLastYear = await findAllMeasurements(
+            { type: "month" },
+            undefined,
+            queryOptions
+          );
+        }
+
+        if (findLastYear?.length === 0) {
+          findLastYear = await findAllMeasurements(
+            { type: "day" },
+            undefined,
+            queryOptions
+          );
+        }
+
+        if (findLastYear?.length === 0) {
+          findLastYear = await findAllMeasurements(
+            { type: "hour" },
+            undefined,
+            queryOptions
+          );
+        }
+
+        lastDate = new Date(findLastYear[0].measuredAt);
+        lastDateTime = lastDate.getTime();
+
+        nextDate = new Date(lastDate).setFullYear(lastDate.getFullYear() + 1);
+
+        break;
+      }
+    }
+
+    const savedMeasurements = [];
+
+    while (nextDate <= now.getTime()) {
+      const stepValues = await findAllMeasurements({
+        type: findType,
+        measuredAt: { $gte: lastDateTime, $lte: nextDate },
+      });
+
+      let condition = stepValues.length > 1 && stepValues.length < 100;
+
+      if (type === "hour") {
+        condition = stepValues.length === 11;
+      }
+
+      if (condition) {
+        let numbers: Record<string, TransformedDataType> = {};
+        for (const measurement of stepValues) {
+          // @ts-ignore
+          const locationId = String(measurement.locationId);
+
+          if (!numbers[locationId])
+            numbers[locationId] = {
+              temperature: 0,
+              humidity: 0,
+              numberOfMeasurements: 0,
+              nodeId: undefined,
+            };
+
+          numbers[locationId].temperature += measurement.temperature;
+          numbers[locationId].humidity += measurement.humidity;
+          numbers[locationId].numberOfMeasurements += 1;
+          numbers[locationId].nodeId = measurement.nodeId;
+        }
+
+        const keys = Object.keys(numbers);
+
+        for (const key of keys) {
+          const data = numbers[key];
+
+          let measuredAt = new Date(nextDate);
+
+          if (type === "day") {
+            measuredAt.setHours(0);
+            measuredAt.setMinutes(0);
+            measuredAt.setSeconds(0);
+          }
+
+          if (type === "month") {
+            measuredAt = new Date(lastDate);
+            measuredAt.setHours(12);
+          }
+
+          const newMeasurement = new MeasurementModel({
+            locationId: key,
+            type,
+            temperature: data.temperature / data.numberOfMeasurements,
+            humidity: data.humidity / data.numberOfMeasurements,
+            measuredAt: measuredAt.toISOString(),
+            nodeId: data.nodeId,
+          });
+
+          const savedMeasurement = await newMeasurement.save();
+          savedMeasurements.push(savedMeasurement);
+        }
+      }
+
+      // Remove all saved and unsaved 5-minutes measurements
+      if (findType === "5-minutes" && condition) {
+        await deleteMeasurementByMultipleIds(
+          // @ts-ignore
+          stepValues.map((value) => String(value._id))
+        );
+      }
+
+      lastDateTime = nextDate;
+
+      switch (type) {
+        case "hour":
+        case "day":
+          // @ts-ignore
+          nextDate += incrementBy;
+          break;
+
+        case "month": {
+          const nextDateDate = new Date(nextDate);
+
+          const numberOfDays = new Date(
+            nextDateDate.getFullYear(),
+            nextDateDate.getMonth() + 1,
+            0
+          ).getDate();
+
+          nextDate += numberOfDays * 24 * 60 * 60 * 1000;
+          break;
+        }
+        case "year": {
+          const nextDateDate = new Date(nextDate);
+
+          const numberOfDays = daysInYear(nextDateDate.getFullYear() + 1);
+
+          nextDate += numberOfDays * 24 * 60 * 60 * 1000;
+        }
+      }
+    }
+
+    console.log(savedMeasurements);
+  } catch (err) {
+    throw err;
+  }
+};
+
+const tenHours = 600;
+
+export const upscaleData = (
+  timeFrom: number,
+  timeTo: number,
+  lowValue: number,
+  highValue: number,
+  byMinutes: number
+) => {
+  const delta = timeTo - timeFrom;
+
+  if (delta > tenHours && byMinutes < 5) return [];
+
+  let step = timeFrom + byMinutes * 60;
+  const result = [];
+
+  while (step < timeTo) {
+    const stepResult =
+      lowValue +
+      (step - timeFrom) * ((highValue - lowValue) / (timeTo - timeFrom));
+
+    const date = new Date(step);
+
+    result.push({ value: stepResult, measuredAt: date.toISOString() });
+
+    step += byMinutes * 60;
+  }
+
+  return result;
+};
+
 /**
  * Returns buckets with temperature and humidity data for specified date range and granularity (type)
  */
@@ -278,8 +577,10 @@ export const getCurrent = async (
       locationId: req.params.locationId,
     });
 
+    // @ts-ignore
     res.json({
       date: measurement.measuredAt.toISOString(),
+      // @ts-ignore
       ...pickFrom(measurement.toJSON(), "temperature", "humidity"),
       todayBuckets,
     });

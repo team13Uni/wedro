@@ -11,18 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteWeatherStationById = exports.findAllWeatherStations = exports.findWeatherStationBySecret = exports.findWeatherStationById = exports.updateWeatherStationById = exports.WeatherStationModel = exports.weatherStationSchema = void 0;
 const mongoose_1 = require("mongoose");
-/** TODO: move elsewhere? */
-const pointSchema = new mongoose_1.Schema({
-    type: {
-        type: String,
-        enum: ['Point'],
-        required: true
-    },
-    coordinates: {
-        type: [Number],
-        required: true
-    }
-});
 exports.weatherStationSchema = new mongoose_1.Schema({
     name: {
         type: String,
@@ -43,15 +31,6 @@ exports.weatherStationSchema = new mongoose_1.Schema({
     lastActiveAt: {
         type: Date,
     },
-    seaLevel: {
-        type: Number,
-        required: true,
-    },
-    // @ts-ignore
-    location: {
-        type: pointSchema,
-        required: true
-    }
 });
 exports.WeatherStationModel = (0, mongoose_1.model)("weather-station", exports.weatherStationSchema);
 const updateWeatherStationById = (id, updateBody, options) => __awaiter(void 0, void 0, void 0, function* () {

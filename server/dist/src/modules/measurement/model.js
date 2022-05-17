@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMeasurementById = exports.findAllMeasurements = exports.updateMeasurementById = exports.findMeasurementById = exports.MeasurementModel = exports.measurementSchema = void 0;
+exports.deleteMeasurementByMultipleIds = exports.deleteMeasurementById = exports.findAllMeasurements = exports.updateMeasurementById = exports.findMeasurementById = exports.MeasurementModel = exports.measurementSchema = void 0;
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("mongoose");
 exports.measurementSchema = new mongoose_1.Schema({
@@ -40,7 +40,15 @@ const findMeasurementById = (id) => __awaiter(void 0, void 0, void 0, function* 
 exports.findMeasurementById = findMeasurementById;
 const updateMeasurementById = (id, updateBody) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.MeasurementModel.findByIdAndUpdate(id, updateBody); });
 exports.updateMeasurementById = updateMeasurementById;
-const findAllMeasurements = (filter) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.MeasurementModel.find(filter); });
+const findAllMeasurements = (filter, projection, queryOptions) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.MeasurementModel.find(filter, projection, queryOptions); });
 exports.findAllMeasurements = findAllMeasurements;
 const deleteMeasurementById = (id) => __awaiter(void 0, void 0, void 0, function* () { return yield exports.MeasurementModel.findByIdAndDelete(id); });
 exports.deleteMeasurementById = deleteMeasurementById;
+const deleteMeasurementByMultipleIds = (idArray) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield exports.MeasurementModel.deleteMany({
+        _id: {
+            $in: idArray,
+        },
+    });
+});
+exports.deleteMeasurementByMultipleIds = deleteMeasurementByMultipleIds;

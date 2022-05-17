@@ -39,6 +39,8 @@ export const create = async (
           code: ErrorCode.SERVER_ERROR,
         },
       });
+    } else {
+      throw err;
     }
   }
 };
@@ -210,7 +212,7 @@ export const authorizeWeatherStation = async (
         { nodeId: station.id },
         process.env.JWT_SECRET as string,
         {
-          expiresIn: 120, // in two hours
+          expiresIn: 7200, // in two hours
         }
       );
 

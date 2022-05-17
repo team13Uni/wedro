@@ -86,3 +86,8 @@ export type SortOptions = {
 };
 
 type Primitive = string | number | null | undefined | boolean | bigint;
+
+// Calculates number of days in year
+export function daysInYear(year: number) {
+  return (year % 4 === 0 && year % 100 > 0) || year % 400 == 0 ? 366 : 365;
+}

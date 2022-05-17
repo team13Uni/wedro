@@ -14,7 +14,7 @@ const app = express();
 cron();
 app.set("port", process.env.PORT);
 app.use(morgan("combined"));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
@@ -33,6 +33,6 @@ require("./routes")(app);
 // Handle 404 errors
 app.use(errorMiddleware);
 
-app.listen(app.get("port"), () => {
+app.listen(app.get("port"), async () => {
   console.log(`✅ Server is running on port ${app.get("port")}`);
 });

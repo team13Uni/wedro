@@ -89,7 +89,15 @@ export const validateNodeJWT = async (
     const authHeader = req.headers.authorization;
 
     if (authHeader) {
-      const token = authHeader.split(" ")[1];
+      const [bearer, token] = authHeader.split(" ");
+
+      if (bearer.toLocaleLowerCase().trim() !== "bearer") {
+        return res.status(StatusCode.NOT_AUTHORIZED).send({
+          status: 403,
+          code: ErrorCode.NOT_AUTHORIZED,
+          message: "You are not authorized to access this endpoint!",
+        });
+      }
 
       const verifiedToken = await (<{ nodeId: string }>(
         verify(token, process.env.JWT_SECRET as Secret)

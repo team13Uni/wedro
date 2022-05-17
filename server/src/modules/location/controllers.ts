@@ -1,5 +1,5 @@
 import { HttpException } from "../../exceptions";
-import { omitFrom } from '../../helpers/common';
+import { omitFrom } from "../../helpers/common";
 import {
   ErrorCode,
   IdParam,
@@ -108,8 +108,9 @@ export const findAll = async (
     const locations = await LocationModel.find().populate<{
       nodeId: WeatherStation;
     }>("nodeId");
+    // @ts-ignore
     const mappedLocations: FindAllDtoOut[] = locations.map((location) => ({
-      ...omitFrom(location.toJSON(), 'nodeId'),
+      ...omitFrom(location.toJSON(), "nodeId"),
       weatherStation: location.nodeId,
     }));
     res.send(mappedLocations);
@@ -150,7 +151,11 @@ export const findOne = async (
       });
     }
 
-    res.send({ ...omitFrom(location.toJSON(), 'nodeId'), weatherStation: location.nodeId });
+    // @ts-ignore
+    res.send({
+      ...omitFrom(location.toJSON(), "nodeId"),
+      weatherStation: location.nodeId,
+    });
   } catch (err) {
     if (err instanceof HttpException) {
       res.status(500).json({
