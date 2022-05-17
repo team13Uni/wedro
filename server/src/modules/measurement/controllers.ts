@@ -4,10 +4,13 @@ import {
   eachMonthOfInterval,
   eachYearOfInterval,
   isEqual,
+  subHours,
 } from "date-fns";
 import { HttpException } from "../../exceptions";
+import { pickFrom } from "../../helpers/common";
 import type { IdParam, RequestWithUser, ResponseWithError } from "../../types";
 import { ErrorCode, RequestWithNodeId, StatusCode } from "../../types";
+import { findLocationByNodeId } from "../location/model";
 import {
   findWeatherStationById,
   updateWeatherStationById,
@@ -25,7 +28,6 @@ import type {
   Measurement,
   MeasurementType,
 } from "./types";
-import { findLocationByNodeId } from "../location/model";
 
 export const create = async (
   req: RequestWithNodeId<
@@ -328,76 +330,16 @@ export const getBuckets = async (
   try {
     const dateFrom = new Date(req.query.dateFrom);
     const dateTo = new Date(req.query.dateTo);
-    const measurements = await MeasurementModel.find({
-      nodeId: req.params.weatherStationId,
-      measuredAt: { $gte: dateFrom, $lte: dateTo },
+
+    /** get buckets */
+    const buckets = await getBucketsForStation({
+      dateFrom,
+      dateTo,
       type: req.query.type,
+      weatherStationId: req.params.weatherStationId,
     });
 
-    let buckets: Date[] = [];
-    switch (req.query.type) {
-      case "hour":
-        buckets = eachHourOfInterval({ start: dateFrom, end: dateTo });
-        break;
-      case "day":
-        buckets = eachDayOfInterval({ start: dateFrom, end: dateTo });
-        break;
-      case "month":
-        buckets = eachMonthOfInterval({ start: dateFrom, end: dateTo });
-        break;
-      case "year":
-        buckets = eachYearOfInterval({ start: dateFrom, end: dateTo });
-        break;
-    }
-
-    const data = buckets.map((bucketDate, index, mappedBuckets) => {
-      const measurement = measurements.find((m) =>
-        isEqual(new Date(m.toJSON().measuredAt), bucketDate)
-      );
-
-      /** no measurement for the bucket, return empty bucket */
-      if (!measurement) {
-        return {
-          date: bucketDate.toISOString(),
-          temperature: null,
-          humidity: null,
-        };
-      }
-
-      return {
-        date: bucketDate.toISOString(),
-        temperature: measurement.temperature,
-        humidity: measurement.humidity,
-      };
-    });
-
-    /** TODO: find a more performant way of doing so */
-    /** fill empty buckets */
-    const dataWithFilledBuckets = data.map((bucket, index) => {
-      if (!bucket.humidity || !bucket.temperature) {
-        const previousBucketWithTemp = data
-          .slice(0, index)
-          .reverse()
-          .find((b) => b.temperature);
-        const previousBucketWithHum = previousBucketWithTemp?.humidity
-          ? previousBucketWithTemp
-          : data
-              .slice(0, index)
-              .reverse()
-              .find((b) => b.humidity);
-        return {
-          date: bucket.date,
-          temperature:
-            bucket.temperature ?? previousBucketWithTemp?.temperature ?? 0,
-          humidity: bucket.humidity ?? previousBucketWithHum?.humidity ?? 0,
-        };
-      }
-
-      return bucket;
-    });
-
-    /** send the data */
-    res.send(dataWithFilledBuckets as GetBucketsDtoOut);
+    res.json(buckets);
   } catch (err) {
     if (err instanceof HttpException) {
       res.status(err.status).json({
@@ -415,3 +357,151 @@ type GetBucketsDtoOut = Array<{
   temperature: number;
   humidity: number;
 }>;
+
+/**
+ * Helper function to get buckets for weather station in specified date interval and granularity
+ * @author filipditrich
+ */
+const getBucketsForStation = async ({
+  dateFrom,
+  dateTo,
+  type,
+  weatherStationId,
+}: {
+  dateFrom: Date;
+  dateTo: Date;
+  type: MeasurementType;
+  weatherStationId: string;
+}) => {
+  const measurements = await MeasurementModel.find({
+    nodeId: weatherStationId,
+    measuredAt: { $gte: dateFrom, $lte: dateTo },
+    type: type,
+  });
+
+  let buckets: Date[] = [];
+  switch (type) {
+    case "hour":
+      buckets = eachHourOfInterval({ start: dateFrom, end: dateTo });
+      break;
+    case "day":
+      buckets = eachDayOfInterval({ start: dateFrom, end: dateTo });
+      break;
+    case "month":
+      buckets = eachMonthOfInterval({ start: dateFrom, end: dateTo });
+      break;
+    case "year":
+      buckets = eachYearOfInterval({ start: dateFrom, end: dateTo });
+      break;
+  }
+
+  const data = buckets.map((bucketDate, index, mappedBuckets) => {
+    const measurement = measurements.find((m) =>
+      isEqual(new Date(m.toJSON().measuredAt), bucketDate)
+    );
+
+    /** no measurement for the bucket, return empty bucket */
+    if (!measurement) {
+      return {
+        date: bucketDate.toISOString(),
+        temperature: null,
+        humidity: null,
+      };
+    }
+
+    return {
+      date: bucketDate.toISOString(),
+      temperature: measurement.temperature,
+      humidity: measurement.humidity,
+    };
+  });
+
+  /** TODO: find a more performant way of doing so */
+  /** fill empty buckets */
+  const dataWithFilledBuckets = data.map((bucket, index) => {
+    if (!bucket.humidity || !bucket.temperature) {
+      const previousBucketWithTemp = data
+        .slice(0, index)
+        .reverse()
+        .find((b) => b.temperature);
+      const previousBucketWithHum = previousBucketWithTemp?.humidity
+        ? previousBucketWithTemp
+        : data
+            .slice(0, index)
+            .reverse()
+            .find((b) => b.humidity);
+      return {
+        date: bucket.date,
+        temperature:
+          bucket.temperature ?? previousBucketWithTemp?.temperature ?? 0,
+        humidity: bucket.humidity ?? previousBucketWithHum?.humidity ?? 0,
+      };
+    }
+
+    return bucket;
+  });
+
+  /** send the data */
+  return dataWithFilledBuckets;
+};
+
+/**
+ * Returns current (last measured) temperature and humidity for specified weather station
+ */
+export const getCurrent = async (
+  req: RequestWithUser<
+    { weatherStationId: string },
+    GetCurrentDtoOut,
+    never,
+    never
+  >,
+  res: ResponseWithError<GetCurrentDtoOut>
+) => {
+  try {
+    /** find most recent weather station measurement */
+    const measurement = await MeasurementModel.findOne({
+      nodeId: req.params.weatherStationId,
+    }).sort({ measuredAt: -1 });
+
+    /** return null as data since no measurement for the given weather station was found */
+    if (!measurement) {
+      return res.json({
+        date: new Date().toISOString(),
+        temperature: null,
+        humidity: null,
+        todayBuckets: [],
+      });
+    }
+
+    /** find today's highs/lows from buckets */
+    const now = new Date();
+    const todayBuckets = await getBucketsForStation({
+      dateFrom: subHours(now, 24),
+      dateTo: now,
+      type: "hour",
+      weatherStationId: req.params.weatherStationId,
+    });
+
+    res.json({
+      date: measurement.measuredAt.toISOString(),
+      ...pickFrom(measurement.toJSON(), "temperature", "humidity"),
+      todayBuckets,
+    });
+  } catch (err) {
+    if (err instanceof HttpException) {
+      res.status(err.status).json({
+        error: {
+          message: err.message,
+          status: StatusCode.SERVER_ERROR,
+          code: ErrorCode.SERVER_ERROR,
+        },
+      });
+    }
+  }
+};
+type GetCurrentDtoOut = {
+  date: string;
+  temperature: number | null;
+  humidity: number | null;
+  todayBuckets: GetBucketsDtoOut;
+};

@@ -31,6 +31,13 @@ router.get(
 /** TODO: validate params and query */
 router.get("/:weatherStationId/buckets", validateJWT, Controllers.getBuckets);
 
+/** TODO: validate params and query */
+router.get(
+    "/:weatherStationId/current",
+    validateJWT,
+    Controllers.getCurrent
+);
+
 router.delete(
   "/:id",
   validateAdminJWT,
