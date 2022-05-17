@@ -202,11 +202,11 @@ export const TRANSLATIONS = {
 	GENERAL: {
 		notAvailable: {
 			cs: 'N/A',
-			en: 'N/A'
+			en: 'N/A',
 		},
 		high: {
 			cs: 'Hi {value}',
-			en: 'Hi {value}'
+			en: 'Hi {value}',
 		},
 		low: {
 			cs: 'Lo {value}',

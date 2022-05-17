@@ -28,8 +28,8 @@ export const theme = createTheme({
 			styleOverrides: {
 				rectangular: {
 					borderRadius: '5px',
-				}
-			}
-		}
+				},
+			},
+		},
 	},
 });
