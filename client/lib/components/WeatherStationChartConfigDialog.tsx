@@ -82,7 +82,7 @@ export const WeatherStationChartsConfigDialog: FC<WeatherStationChartsConfigDial
 						</Typography>
 						<ToggleButtonGroup color="primary" value={granularity} exclusive onChange={(e, v) => setGranularity(v)}>
 							{Object.entries(possibleGranularityTypes).map(([value, allowed]) => (
-								<ToggleButton sx={{ flexGrow: 1 }} value={value} disabled={!allowed}>
+								<ToggleButton key={value} sx={{ flexGrow: 1 }} value={value} disabled={!allowed}>
 									{translate(TRANSLATIONS.WEATHER_STATION_DETAIL.configDialog.granularityType[value as GranularityType])}
 								</ToggleButton>
 							))}
