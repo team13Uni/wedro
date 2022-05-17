@@ -19,6 +19,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const cron_1 = __importDefault(require("./cron"));
 const middlewares_1 = require("./middlewares");
+const measurement_1 = require("./modules/measurement");
 require("dotenv").config();
 const app = (0, express_1.default)();
 (0, cron_1.default)();
@@ -39,4 +40,6 @@ require("./routes")(app);
 app.use(middlewares_1.errorMiddleware);
 app.listen(app.get("port"), () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`✅ Server is running on port ${app.get("port")}`);
+    const data = yield (0, measurement_1.downscaleData)("hour");
+    console.log(data);
 }));

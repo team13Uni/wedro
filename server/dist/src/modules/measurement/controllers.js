@@ -158,7 +158,7 @@ const deleteMeasurement = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.deleteMeasurement = deleteMeasurement;
-const downscaleData = (type, debug) => __awaiter(void 0, void 0, void 0, function* () {
+const downscaleData = (type) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const now = new Date();
         let findType;
@@ -235,11 +235,11 @@ const downscaleData = (type, debug) => __awaiter(void 0, void 0, void 0, functio
         while (nextDate <= now.getTime()) {
             const stepValues = yield (0, model_3.findAllMeasurements)({
                 type: findType,
-                measuredAt: { $gte: lastDateTime, $lte: nextDate },
+                measuredAt: { $gt: lastDateTime, $lte: nextDate },
             });
             let condition = stepValues.length > 1 && stepValues.length < 100;
             if (type === "hour") {
-                condition = stepValues.length === 11;
+                condition = stepValues.length === 12;
             }
             if (condition) {
                 let numbers = {};
