@@ -163,7 +163,7 @@ const authorizeWeatherStation = (req, res) => __awaiter(void 0, void 0, void 0, 
         const station = yield (0, model_1.findWeatherStationBySecret)(secret);
         if (station) {
             const token = (0, jsonwebtoken_1.sign)({ nodeId: station.id }, process.env.JWT_SECRET, {
-                expiresIn: 120, // in two hours
+                expiresIn: 7200, // in two hours
             });
             return res.status(200).json({
                 token,

@@ -76,7 +76,8 @@ exports.update = update;
 const findAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const locations = yield model_1.LocationModel.find().populate("nodeId");
-        const mappedLocations = locations.map((location) => (Object.assign(Object.assign({}, (0, common_1.omitFrom)(location.toJSON(), 'nodeId')), { weatherStation: location.nodeId })));
+        // @ts-ignore
+        const mappedLocations = locations.map((location) => (Object.assign(Object.assign({}, (0, common_1.omitFrom)(location.toJSON(), "nodeId")), { weatherStation: location.nodeId })));
         res.send(mappedLocations);
     }
     catch (err) {
@@ -107,7 +108,8 @@ const findOne = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             });
         }
-        res.send(Object.assign(Object.assign({}, (0, common_1.omitFrom)(location.toJSON(), 'nodeId')), { weatherStation: location.nodeId }));
+        // @ts-ignore
+        res.send(Object.assign(Object.assign({}, (0, common_1.omitFrom)(location.toJSON(), "nodeId")), { weatherStation: location.nodeId }));
     }
     catch (err) {
         if (err instanceof exceptions_1.HttpException) {

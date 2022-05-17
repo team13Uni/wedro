@@ -482,8 +482,10 @@ export const getCurrent = async (
       weatherStationId: req.params.weatherStationId,
     });
 
+    // @ts-ignore
     res.json({
       date: measurement.measuredAt.toISOString(),
+      // @ts-ignore
       ...pickFrom(measurement.toJSON(), "temperature", "humidity"),
       todayBuckets,
     });
