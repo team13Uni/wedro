@@ -211,8 +211,7 @@ type TransformedDataType = {
 };
 
 export const downscaleData = async (
-  type: Exclude<MeasurementType, "5-minutes">,
-  debug?: boolean
+  type: Exclude<MeasurementType, "5-minutes">
 ) => {
   try {
     const now = new Date();
@@ -363,13 +362,13 @@ export const downscaleData = async (
     while (nextDate <= now.getTime()) {
       const stepValues = await findAllMeasurements({
         type: findType,
-        measuredAt: { $gte: lastDateTime, $lte: nextDate },
+        measuredAt: { $gt: lastDateTime, $lte: nextDate },
       });
 
       let condition = stepValues.length > 1 && stepValues.length < 100;
 
       if (type === "hour") {
-        condition = stepValues.length === 11;
+        condition = stepValues.length === 12;
       }
 
       if (condition) {
