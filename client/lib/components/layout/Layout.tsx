@@ -63,7 +63,7 @@ export const Layout: React.FC<LayoutProps> = ({
 					display: 'flex',
 					flexDirection: 'column',
 					borderRadius: '0',
-					py: ({ spacing }) => spacing(2),
+					// py: ({ spacing }) => spacing(2),
 					...PaperProps.sx,
 				}}
 			>
