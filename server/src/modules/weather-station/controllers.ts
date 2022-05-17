@@ -30,18 +30,14 @@ export const create = async (
     const newWeatherStation = new WeatherStationModel(req.body);
     const result = await newWeatherStation.save();
     res.json(result);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    } else {
-      throw err;
-    }
+  } catch (err: HttpException | any) {
+    res.status(err.status).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -129,16 +125,14 @@ export const update = async (
     }
 
     res.send(updatedStation);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(err.status).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -175,16 +169,14 @@ export const deleteWeatherStation = async (
     }
 
     res.send({ success: true });
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(err.status).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -222,17 +214,14 @@ export const authorizeWeatherStation = async (
         },
       });
     }
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
-    throw err;
+  } catch (err: HttpException | any) {
+    res.status(err.status).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -261,7 +250,7 @@ export const wellnessCheck = async () => {
     }
 
     return updatedStations;
-  } catch (err) {
+  } catch (err: HttpException | any) {
     throw err;
   }
 };
