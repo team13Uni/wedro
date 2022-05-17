@@ -1,11 +1,4 @@
-import {
-  eachDayOfInterval,
-  eachHourOfInterval,
-  eachMonthOfInterval,
-  eachYearOfInterval,
-  isEqual,
-  subHours,
-} from "date-fns";
+import { subHours } from "date-fns";
 import { HttpException } from "../../exceptions";
 import { daysInYear, pickFrom } from "../../helpers/common";
 import type { IdParam, RequestWithUser, ResponseWithError } from "../../types";
@@ -15,6 +8,7 @@ import {
   findWeatherStationById,
   updateWeatherStationById,
 } from "../weather-station/model";
+import { BucketGranularity, getBucketsForStation } from "./helpers";
 import {
   deleteMeasurementById,
   deleteMeasurementByMultipleIds,
@@ -27,10 +21,12 @@ import type {
   CreateMeasurementResponse,
   DeleteMeasurementResponse,
   Measurement,
-  MeasurementType,
 } from "./types";
 import type { ObjectId } from "mongoose";
 
+/**
+ * Creates a new measurement.
+ */
 export const create = async (
   req: RequestWithNodeId<
     Record<string, string>,
@@ -95,6 +91,9 @@ export const create = async (
   }
 };
 
+/**
+ * Returns all measurements
+ */
 export const findAll = async (
   req: RequestWithUser<
     Record<string, string>,
@@ -119,6 +118,9 @@ export const findAll = async (
   }
 };
 
+/**
+ * Returns one measurement by its ID
+ */
 export const findOne = async (
   req: RequestWithUser<IdParam, Measurement, undefined>,
   res: ResponseWithError<Measurement>
@@ -150,6 +152,9 @@ export const findOne = async (
   }
 };
 
+/**
+ * Deletes a measurement
+ */
 export const deleteMeasurement = async (
   req: RequestWithUser<IdParam, DeleteMeasurementResponse, undefined>,
   res: ResponseWithError<DeleteMeasurementResponse>
@@ -184,6 +189,7 @@ export const deleteMeasurement = async (
 
     res.send({ success: true });
   } catch (err) {
+    // FIXME: errors are not handled
     if (err instanceof HttpException) {
       res.status(err.status).json({
         error: {
@@ -501,7 +507,7 @@ export const getBuckets = async (
     { weatherStationId: string },
     GetBucketsDtoOut,
     never,
-    { dateFrom: string; dateTo: string; type: MeasurementType }
+    { dateFrom: string; dateTo: string; type: BucketGranularity }
   >,
   res: ResponseWithError<GetBucketsDtoOut>
 ) => {
@@ -513,115 +519,26 @@ export const getBuckets = async (
     const buckets = await getBucketsForStation({
       dateFrom,
       dateTo,
-      type: req.query.type,
+      granularity: req.query.type,
       weatherStationId: req.params.weatherStationId,
     });
 
     res.json(buckets);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(err?.status ?? 500).json({
+      error: {
+        message: err?.message || "Unknown error",
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 type GetBucketsDtoOut = Array<{
-  date: string;
-  temperature: number;
-  humidity: number;
+  date: Date;
+  temperature: number | null;
+  humidity: number | null;
 }>;
-
-/**
- * Helper function to get buckets for weather station in specified date interval and granularity
- * @author filipditrich
- */
-const getBucketsForStation = async ({
-  dateFrom,
-  dateTo,
-  type,
-  weatherStationId,
-}: {
-  dateFrom: Date;
-  dateTo: Date;
-  type: MeasurementType;
-  weatherStationId: string;
-}) => {
-  const measurements = await MeasurementModel.find({
-    nodeId: weatherStationId,
-    measuredAt: { $gte: dateFrom, $lte: dateTo },
-    type: type,
-  });
-
-  let buckets: Date[] = [];
-  switch (type) {
-    case "hour":
-      buckets = eachHourOfInterval({ start: dateFrom, end: dateTo });
-      break;
-    case "day":
-      buckets = eachDayOfInterval({ start: dateFrom, end: dateTo });
-      break;
-    case "month":
-      buckets = eachMonthOfInterval({ start: dateFrom, end: dateTo });
-      break;
-    case "year":
-      buckets = eachYearOfInterval({ start: dateFrom, end: dateTo });
-      break;
-  }
-
-  const data = buckets.map((bucketDate, index, mappedBuckets) => {
-    const measurement = measurements.find((m) =>
-      isEqual(new Date(m.toJSON().measuredAt), bucketDate)
-    );
-
-    /** no measurement for the bucket, return empty bucket */
-    if (!measurement) {
-      return {
-        date: bucketDate.toISOString(),
-        temperature: null,
-        humidity: null,
-      };
-    }
-
-    return {
-      date: bucketDate.toISOString(),
-      temperature: measurement.temperature,
-      humidity: measurement.humidity,
-    };
-  });
-
-  /** TODO: find a more performant way of doing so */
-  /** fill empty buckets */
-  const dataWithFilledBuckets = data.map((bucket, index) => {
-    if (!bucket.humidity || !bucket.temperature) {
-      const previousBucketWithTemp = data
-        .slice(0, index)
-        .reverse()
-        .find((b) => b.temperature);
-      const previousBucketWithHum = previousBucketWithTemp?.humidity
-        ? previousBucketWithTemp
-        : data
-            .slice(0, index)
-            .reverse()
-            .find((b) => b.humidity);
-      return {
-        date: bucket.date,
-        temperature:
-          bucket.temperature ?? previousBucketWithTemp?.temperature ?? 0,
-        humidity: bucket.humidity ?? previousBucketWithHum?.humidity ?? 0,
-      };
-    }
-
-    return bucket;
-  });
-
-  /** send the data */
-  return dataWithFilledBuckets;
-};
 
 /**
  * Returns current (last measured) temperature and humidity for specified weather station
@@ -656,7 +573,7 @@ export const getCurrent = async (
     const todayBuckets = await getBucketsForStation({
       dateFrom: subHours(now, 24),
       dateTo: now,
-      type: "hour",
+      granularity: "hour",
       weatherStationId: req.params.weatherStationId,
     });
 
@@ -667,16 +584,14 @@ export const getCurrent = async (
       ...pickFrom(measurement.toJSON(), "temperature", "humidity"),
       todayBuckets,
     });
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(err?.status ?? 500).json({
+      error: {
+        message: err?.message || "Unknown error",
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 type GetCurrentDtoOut = {

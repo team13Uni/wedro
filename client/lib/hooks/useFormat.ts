@@ -62,7 +62,7 @@ export const useFormat = () => {
 	 * @return {any}
 	 */
 	const formatPercent = (value: number, settings?: Intl.NumberFormatOptions) =>
-		formatNumberUtil(value / 100, language, {
+		formatNumberUtil(value, language, {
 			maximumFractionDigits: 2,
 			...settings,
 			style: 'percent',

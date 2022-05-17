@@ -27,13 +27,73 @@ export const TRANSLATIONS = {
 		title: {
 			cs: 'Měřící stanice',
 			en: 'Weather stations',
-		}
+		},
 	},
 	WEATHER_STATION_DETAIL: {
 		title: {
 			cs: 'Měřící stanice {weatherStationName}',
 			en: 'Weather station {weatherStationName}',
-		}
+		},
+		chartTitle: {
+			cs: 'Graf v čase',
+			en: 'Chart in time',
+		},
+		chartConfig: {
+			cs: 'Nastavení grafu',
+			en: 'Graph configuration',
+		},
+		configDialog: {
+			title: {
+				cs: 'Nastavení grafu měřící stanice',
+				en: 'Chart configuration of weather station',
+			},
+			description: {
+				cs: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. A animi assumenda cupiditate deserunt ea eum illum iusto neque quasi, quibusdam.',
+				en: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. A animi assumenda cupiditate deserunt ea eum illum iusto neque quasi, quibusdam.',
+			},
+			dateFrom: {
+				cs: 'Od',
+				en: 'From',
+			},
+			dateTo: {
+				cs: 'Do',
+				en: 'To',
+			},
+			cancel: {
+				cs: 'Zrušit',
+				en: 'Cancel',
+			},
+			save: {
+				cs: 'Uložit',
+				en: 'Save',
+			},
+			granularity: {
+				cs: 'Granularita',
+				en: 'Granularity',
+			},
+			granularityType: {
+				minute: {
+					cs: 'Minuta',
+					en: 'Minute',
+				},
+				'5-minutes': {
+					cs: '5 minut',
+					en: '5 minutes',
+				},
+				hour: {
+					cs: 'Hodina',
+					en: 'Hour',
+				},
+				day: {
+					cs: 'Den',
+					en: 'Day',
+				},
+				month: {
+					cs: 'Měsíc',
+					en: 'Month',
+				},
+			},
+		},
 	},
 	LOGIN: {
 		title: {
@@ -50,7 +110,7 @@ export const TRANSLATIONS = {
 		},
 		registerCta: {
 			cs: 'Ještě nemáte účet?',
-			en: 'Don\' have an account yet?',
+			en: "Don' have an account yet?",
 		},
 	},
 	WEATHER_STATION_CARD: {
@@ -140,6 +200,22 @@ export const TRANSLATIONS = {
 		},
 	},
 	GENERAL: {
+		notAvailable: {
+			cs: 'N/A',
+			en: 'N/A',
+		},
+		high: {
+			cs: 'Hi {value}',
+			en: 'Hi {value}',
+		},
+		low: {
+			cs: 'Lo {value}',
+			en: 'Lo {value}',
+		},
+		measuredAt: {
+			cs: 'Naměřeno {date}',
+			en: 'Measured on {date}',
+		},
 		seaLevel: {
 			cs: '{seaLevel} m n.m.',
 			en: '{seaLevel} m above sea level',
@@ -167,12 +243,12 @@ export const TRANSLATIONS = {
 		role: {
 			user: {
 				cs: 'Uživatel',
-				en: 'User'
+				en: 'User',
 			},
 			admin: {
 				cs: 'Administrátor',
-				en: 'Admin'
-			}
+				en: 'Admin',
+			},
 		},
 		phone: {
 			cs: 'Telefon',

@@ -1,13 +1,13 @@
+import type { NextFunction, Response } from "express";
 import { Secret, verify } from "jsonwebtoken";
+import { HttpException } from "../exceptions";
 import { User, UserRole } from "../modules/user";
-import type { NextFunction, Request, Response } from "express";
 import {
   ErrorCode,
   RequestWithNodeId,
   RequestWithUser,
   StatusCode,
 } from "../types";
-import { HttpException } from "../exceptions";
 
 export const validateJWT = async (
   req: RequestWithUser,
@@ -30,14 +30,12 @@ export const validateJWT = async (
         message: "You are not authorized to access this endpoint!",
       });
     }
-  } catch (err) {
-    if (err instanceof HttpException) {
-      return res.status(403).send({
-        message: "JWT: " + err.message,
-        code: ErrorCode.NOT_AUTHORIZED,
-        status: 403,
-      });
-    }
+  } catch (err: HttpException | any) {
+    return res.status(403).send({
+      message: "JWT: " + err?.message || "Invalid token",
+      code: ErrorCode.NOT_AUTHORIZED,
+      status: 403,
+    });
   }
 };
 
@@ -73,14 +71,12 @@ export const validateAdminJWT = async (
         message: "You are not authorized to access this endpoint!",
       });
     }
-  } catch (err) {
-    if (err instanceof Error) {
-      return res.status(StatusCode.NOT_AUTHORIZED).send({
-        status: StatusCode.NOT_AUTHORIZED,
-        code: ErrorCode.NOT_AUTHORIZED,
-        message: "JWT: " + err.message,
-      });
-    }
+  } catch (err: Error | any) {
+    return res.status(StatusCode.NOT_AUTHORIZED).send({
+      status: StatusCode.NOT_AUTHORIZED,
+      code: ErrorCode.NOT_AUTHORIZED,
+      message: "JWT: " + err?.message || "Invalid token",
+    });
   }
 };
 
@@ -123,14 +119,11 @@ export const validateNodeJWT = async (
         message: "You are not authorized to access this endpoint!",
       });
     }
-  } catch (err) {
-    if (err instanceof Error) {
-      return res.status(StatusCode.NOT_AUTHORIZED).send({
-        status: StatusCode.NOT_AUTHORIZED,
-        code: ErrorCode.NOT_AUTHORIZED,
-        message: "JWT: " + err.message,
-      });
-    }
-    next(err);
+  } catch (err: Error | any) {
+    return res.status(StatusCode.NOT_AUTHORIZED).send({
+      status: StatusCode.NOT_AUTHORIZED,
+      code: ErrorCode.NOT_AUTHORIZED,
+      message: "JWT: " + err?.message || "Invalid token",
+    });
   }
 };

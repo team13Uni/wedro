@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import { wellnessCheck } from "../modules/weather-station/controllers";
-import { downscaleData } from "../modules/measurement";
+import { downscaleData } from "../modules/measurement/helpers";
 
 export default function () {
   cron.schedule("*/10 * * * *", async () => {
