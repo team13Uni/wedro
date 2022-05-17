@@ -7,12 +7,16 @@ const validators = {
     name: express_validation_1.Joi.string().max(512),
     nodeId: JoiObjectId_1.JoiObjectId.objectId(),
     state: express_validation_1.Joi.string().valid("active", ""),
+    coordinates: express_validation_1.Joi.array().items(express_validation_1.Joi.number()),
+    seaLevel: express_validation_1.Joi.number(),
 };
 exports.createLocationValidator = {
     body: express_validation_1.Joi.object({
         name: validators.name.required(),
         nodeId: validators.nodeId.required(),
         state: validators.state,
+        coordinates: validators.coordinates,
+        seaLevel: validators.seaLevel,
     }),
 };
 exports.updateLocationValidator = {
@@ -23,5 +27,7 @@ exports.updateLocationValidator = {
         name: validators.name,
         nodeId: validators.nodeId,
         state: validators.state,
+        coordinates: validators.coordinates,
+        seaLevel: validators.seaLevel,
     }),
 };

@@ -6,7 +6,6 @@ import cors from "cors";
 import cron from "./cron";
 
 import { errorMiddleware } from "./middlewares";
-import { downscaleData } from "./modules/measurement";
 
 require("dotenv").config();
 
@@ -15,7 +14,7 @@ const app = express();
 cron();
 app.set("port", process.env.PORT);
 app.use(morgan("combined"));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
@@ -36,7 +35,4 @@ app.use(errorMiddleware);
 
 app.listen(app.get("port"), async () => {
   console.log(`✅ Server is running on port ${app.get("port")}`);
-
-  const data = await downscaleData("hour");
-  console.log(data);
 });

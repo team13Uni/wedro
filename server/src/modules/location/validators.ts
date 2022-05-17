@@ -5,6 +5,8 @@ const validators = {
   name: Joi.string().max(512),
   nodeId: JoiObjectId.objectId(),
   state: Joi.string().valid("active", ""),
+  coordinates: Joi.array().items(Joi.number()),
+  seaLevel: Joi.number(),
 };
 
 export const createLocationValidator = {
@@ -12,6 +14,8 @@ export const createLocationValidator = {
     name: validators.name.required(),
     nodeId: validators.nodeId.required(),
     state: validators.state,
+    coordinates: validators.coordinates,
+    seaLevel: validators.seaLevel,
   }),
 };
 
@@ -23,5 +27,7 @@ export const updateLocationValidator = {
     name: validators.name,
     nodeId: validators.nodeId,
     state: validators.state,
+    coordinates: validators.coordinates,
+    seaLevel: validators.seaLevel,
   }),
 };

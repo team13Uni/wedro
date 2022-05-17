@@ -16,6 +16,14 @@ export const locationSchema = new Schema<Location>({
     default: "active",
     enum: ["active", "inactive"],
   },
+  seaLevel: {
+    type: Number,
+    required: true,
+  },
+  coordinates: {
+    type: [Number],
+    required: true,
+  },
 });
 
 export const LocationModel = model<Location>("location", locationSchema);

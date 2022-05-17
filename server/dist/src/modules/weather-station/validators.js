@@ -8,11 +8,6 @@ const validators = {
     secret: express_validation_1.Joi.string().max(1024),
     unavailable: express_validation_1.Joi.boolean(),
     active: express_validation_1.Joi.boolean(),
-    location: express_validation_1.Joi.object({
-        coordinates: express_validation_1.Joi.array().items(express_validation_1.Joi.number()),
-        type: express_validation_1.Joi.string().valid("Point"),
-    }),
-    seaLevel: express_validation_1.Joi.number(),
 };
 exports.createWeatherStationValidator = {
     body: express_validation_1.Joi.object({
@@ -20,8 +15,6 @@ exports.createWeatherStationValidator = {
         secret: validators.secret.required(),
         unavailable: validators.unavailable,
         active: validators.active,
-        location: validators.location,
-        seaLevel: validators.seaLevel,
     }),
 };
 exports.updateWeatherStationValidator = {

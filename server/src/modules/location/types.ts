@@ -5,12 +5,16 @@ export type Location = {
   name: string;
   nodeId: ObjectId;
   state: "active" | "inactive";
+  coordinates: number[];
+  seaLevel: number;
 };
 
 export type CreateLocationRequestBody = {
   name: Location["name"];
   nodeId: Location["nodeId"];
   state?: Location["state"];
+  coordinates?: Location["coordinates"];
+  seaLevel?: Location["seaLevel"];
 };
 
 export type DeleteLocationResponse = {

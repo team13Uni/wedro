@@ -7,7 +7,7 @@ import {
   subHours,
 } from "date-fns";
 import { HttpException } from "../../exceptions";
-import { pickFrom } from "../../helpers/common";
+import { daysInYear, pickFrom } from "../../helpers/common";
 import type { IdParam, RequestWithUser, ResponseWithError } from "../../types";
 import { ErrorCode, RequestWithNodeId, StatusCode } from "../../types";
 import { findLocationByNodeId } from "../location/model";
@@ -17,6 +17,7 @@ import {
 } from "../weather-station/model";
 import {
   deleteMeasurementById,
+  deleteMeasurementByMultipleIds,
   findAllMeasurements,
   findMeasurementById,
   MeasurementModel,
@@ -28,6 +29,7 @@ import type {
   Measurement,
   MeasurementType,
 } from "./types";
+import type { ObjectId } from "mongoose";
 
 export const create = async (
   req: RequestWithNodeId<
@@ -198,76 +200,174 @@ type TransformedDataType = {
   temperature: number;
   humidity: number;
   numberOfMeasurements: number;
+  nodeId: ObjectId | undefined;
 };
 
 export const downscaleData = async (
-  type: Exclude<MeasurementType, "5-minutes">
+  type: Exclude<MeasurementType, "5-minutes">,
+  debug?: boolean
 ) => {
   try {
     const now = new Date();
-    const minDate = new Date();
-    let min;
     let findType: MeasurementType;
+    let incrementBy;
+
+    let lastDate;
+    let lastDateTime;
+    let nextDate;
+
+    const queryOptions = { sort: { measuredAt: -1 }, limit: 1 };
+    const fallbackQueryOptions = { sort: { measuredAt: 1 }, limit: 1 };
 
     switch (type) {
       case "hour": {
-        minDate.setHours(now.getHours() - 1);
-        min = minDate.toISOString();
         findType = "5-minutes";
+        incrementBy = 60 * 60 * 1000;
+
+        let findLastHour = await findAllMeasurements(
+          { type: "hour" },
+          undefined,
+          queryOptions
+        );
+
+        if (findLastHour?.length === 0) {
+          findLastHour = await findAllMeasurements(
+            { type: "5-minutes" },
+            undefined,
+            fallbackQueryOptions
+          );
+        }
+
+        lastDate = new Date(findLastHour[0].measuredAt);
+        lastDateTime = lastDate.getTime();
+
+        nextDate = new Date(lastDate).setHours(lastDate.getHours() + 1);
 
         break;
       }
 
       case "day": {
-        minDate.setDate(now.getDate() - 1);
-        min = minDate.toISOString();
         findType = "hour";
+        incrementBy = 24 * 60 * 60 * 1000;
+
+        let findLastDay = await findAllMeasurements(
+          { type: "day" },
+          undefined,
+          queryOptions
+        );
+
+        if (findLastDay?.length === 0) {
+          findLastDay = await findAllMeasurements(
+            { type: "hour" },
+            undefined,
+            fallbackQueryOptions
+          );
+        }
+
+        lastDate = new Date(findLastDay[0].measuredAt);
+        lastDateTime = lastDate.getTime();
+
+        nextDate = new Date(lastDate).setDate(lastDate.getDate() + 1);
 
         break;
       }
 
       case "month": {
-        minDate.setMonth(now.getMonth() - 1);
-        min = minDate.toISOString();
         findType = "day";
+
+        let findLastMonth = await findAllMeasurements(
+          { type: "month" },
+          undefined,
+          queryOptions
+        );
+        if (findLastMonth?.length === 0) {
+          findLastMonth = await findAllMeasurements(
+            { type: "day" },
+            undefined,
+            fallbackQueryOptions
+          );
+        }
+
+        if (findLastMonth?.length === 0) {
+          findLastMonth = await findAllMeasurements(
+            { type: "hour" },
+            undefined,
+            fallbackQueryOptions
+          );
+        }
+
+        lastDate = new Date(findLastMonth[0].measuredAt);
+        lastDate.setDate(1);
+        if (findLastMonth[0].type === "month") {
+          lastDateTime = lastDate.setMonth(lastDate.getMonth() + 1);
+        } else {
+          lastDateTime = lastDate.getTime();
+        }
+
+        nextDate = new Date(lastDate).setMonth(lastDate.getMonth() + 1);
 
         break;
       }
 
-      case "year":
-        minDate.setFullYear(now.getFullYear() - 1);
-        min = minDate.toISOString();
+      case "year": {
         findType = "month";
 
+        let findLastYear = await findAllMeasurements(
+          { type: "year" },
+          undefined,
+          queryOptions
+        );
+
+        if (findLastYear?.length === 0) {
+          findLastYear = await findAllMeasurements(
+            { type: "month" },
+            undefined,
+            queryOptions
+          );
+        }
+
+        if (findLastYear?.length === 0) {
+          findLastYear = await findAllMeasurements(
+            { type: "day" },
+            undefined,
+            queryOptions
+          );
+        }
+
+        if (findLastYear?.length === 0) {
+          findLastYear = await findAllMeasurements(
+            { type: "hour" },
+            undefined,
+            queryOptions
+          );
+        }
+
+        lastDate = new Date(findLastYear[0].measuredAt);
+        lastDateTime = lastDate.getTime();
+
+        nextDate = new Date(lastDate).setFullYear(lastDate.getFullYear() + 1);
+
         break;
+      }
     }
-
-    const findLastHour = await findAllMeasurements(
-      { type: "hour" },
-      undefined,
-      { sort: { measuredAt: -1 }, limit: 1 }
-    );
-
-    let lastHourDate = new Date(findLastHour[0].measuredAt);
-    let nextHourDate = new Date(lastHourDate).setHours(
-      lastHourDate.getHours() + 1
-    );
 
     const savedMeasurements = [];
 
-    while (nextHourDate <= now.getTime()) {
-      const fiveMinValues = await findAllMeasurements({
-        type: "5-minutes",
-        measuredAt: { $gt: lastHourDate, $lte: nextHourDate },
+    while (nextDate <= now.getTime()) {
+      const stepValues = await findAllMeasurements({
+        type: findType,
+        measuredAt: { $gte: lastDateTime, $lte: nextDate },
       });
 
-      console.log(nextHourDate);
-      console.log(fiveMinValues);
-      console.log("-------------");
+      let condition = stepValues.length > 1 && stepValues.length < 100;
 
-      if (fiveMinValues.length > 1 && fiveMinValues.length < 13) {
+      if (type === "hour") {
+        condition = stepValues.length === 11;
+      }
+
+      if (condition) {
         let numbers: Record<string, TransformedDataType> = {};
-        for (const measurement of fiveMinValues) {
+        for (const measurement of stepValues) {
           // @ts-ignore
           const locationId = String(measurement.locationId);
 
@@ -276,11 +376,13 @@ export const downscaleData = async (
               temperature: 0,
               humidity: 0,
               numberOfMeasurements: 0,
+              nodeId: undefined,
             };
 
           numbers[locationId].temperature += measurement.temperature;
           numbers[locationId].humidity += measurement.humidity;
           numbers[locationId].numberOfMeasurements += 1;
+          numbers[locationId].nodeId = measurement.nodeId;
         }
 
         const keys = Object.keys(numbers);
@@ -288,63 +390,73 @@ export const downscaleData = async (
         for (const key of keys) {
           const data = numbers[key];
 
+          let measuredAt = new Date(nextDate);
+
+          if (type === "day") {
+            measuredAt.setHours(0);
+            measuredAt.setMinutes(0);
+            measuredAt.setSeconds(0);
+          }
+
+          if (type === "month") {
+            measuredAt = new Date(lastDate);
+            measuredAt.setHours(12);
+          }
+
           const newMeasurement = new MeasurementModel({
             locationId: key,
             type,
             temperature: data.temperature / data.numberOfMeasurements,
             humidity: data.humidity / data.numberOfMeasurements,
-            measuredAt: now.toISOString(),
+            measuredAt: measuredAt.toISOString(),
+            nodeId: data.nodeId,
           });
+
           const savedMeasurement = await newMeasurement.save();
           savedMeasurements.push(savedMeasurement);
         }
       }
 
-      nextHourDate += 60 * 60 * 1000;
+      // Remove all saved and unsaved 5-minutes measurements
+      if (findType === "5-minutes" && condition) {
+        await deleteMeasurementByMultipleIds(
+          // @ts-ignore
+          stepValues.map((value) => String(value._id))
+        );
+      }
+
+      lastDateTime = nextDate;
+
+      switch (type) {
+        case "hour":
+        case "day":
+          // @ts-ignore
+          nextDate += incrementBy;
+          break;
+
+        case "month": {
+          const nextDateDate = new Date(nextDate);
+
+          const numberOfDays = new Date(
+            nextDateDate.getFullYear(),
+            nextDateDate.getMonth() + 1,
+            0
+          ).getDate();
+
+          nextDate += numberOfDays * 24 * 60 * 60 * 1000;
+          break;
+        }
+        case "year": {
+          const nextDateDate = new Date(nextDate);
+
+          const numberOfDays = daysInYear(nextDateDate.getFullYear() + 1);
+
+          nextDate += numberOfDays * 24 * 60 * 60 * 1000;
+        }
+      }
     }
 
     console.log(savedMeasurements);
-
-    // const measurements = await findAllMeasurements({
-    //   measuredAt: { $lte: min, $gte: now.toISOString() },
-    //   type,
-    // });
-    //
-    // let numbers: Record<string, TransformedDataType> = {};
-    // for (const measurement of measurements) {
-    //   // @ts-ignore
-    //   const locationId = String(measurement.locationId);
-    //
-    //   if (!numbers[locationId])
-    //     numbers[locationId] = {
-    //       temperature: 0,
-    //       humidity: 0,
-    //       numberOfMeasurements: 0,
-    //     };
-    //
-    //   numbers[locationId].temperature += measurement.temperature;
-    //   numbers[locationId].humidity += measurement.humidity;
-    //   numbers[locationId].numberOfMeasurements += 1;
-    // }
-    //
-    // const keys = Object.keys(numbers);
-    // const savedMeasurements = [];
-    //
-    // for (const key of keys) {
-    //   const data = numbers[key];
-    //
-    //   const newMeasurement = new MeasurementModel({
-    //     locationId: key,
-    //     type,
-    //     temperature: data.temperature / data.numberOfMeasurements,
-    //     humidity: data.humidity / data.numberOfMeasurements,
-    //     measuredAt: now.toISOString(),
-    //   });
-    //   const savedMeasurement = await newMeasurement.save();
-    //   savedMeasurements.push(savedMeasurement);
-    // }
-    //
-    // return savedMeasurements;
   } catch (err) {
     throw err;
   }

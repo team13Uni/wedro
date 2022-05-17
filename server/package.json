@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "nodemon src/app.ts",
     "start": "node dist/src/app.js",
-    "generate:admin": "node src/scripts/generateAdmin.js --username martin.foldyna@me.com",
     "postinstall": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "tsc && git add . && git commit -m \" Heroku \" && git push heroku master"

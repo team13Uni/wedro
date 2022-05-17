@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.omitFrom = exports.pickFrom = void 0;
+exports.daysInYear = exports.omitFrom = exports.pickFrom = void 0;
 /**
  * Picks specified props from provided object
  * @param {T} base
@@ -25,3 +25,8 @@ const omitFrom = (base, ...keys) => {
     return Object.fromEntries(entries);
 };
 exports.omitFrom = omitFrom;
+// Calculates number of days in year
+function daysInYear(year) {
+    return (year % 4 === 0 && year % 100 > 0) || year % 400 == 0 ? 366 : 365;
+}
+exports.daysInYear = daysInYear;
