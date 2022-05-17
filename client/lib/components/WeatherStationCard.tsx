@@ -278,7 +278,7 @@ type WeatherStationCardProps = {
  * @export
  */
 export type WeatherStationData = {
-	date: Date;
+	date: string;
 	temperature: number;
 	humidity: number;
 };
