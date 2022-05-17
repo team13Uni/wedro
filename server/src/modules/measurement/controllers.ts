@@ -187,6 +187,7 @@ export const deleteMeasurement = async (
 
     res.send({ success: true });
   } catch (err) {
+    // FIXME: errors are not handled
     if (err instanceof HttpException) {
       res.status(err.status).json({
         error: {
@@ -224,16 +225,14 @@ export const getBuckets = async (
     });
 
     res.json(buckets);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(err?.status ?? 500).json({
+      error: {
+        message: err?.message || "Unknown error",
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 type GetBucketsDtoOut = Array<{
@@ -284,16 +283,14 @@ export const getCurrent = async (
       ...pickFrom(measurement.toJSON(), "temperature", "humidity"),
       todayBuckets,
     });
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(err.status).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(err?.status ?? 500).json({
+      error: {
+        message: err?.message || "Unknown error",
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 type GetCurrentDtoOut = {

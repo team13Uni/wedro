@@ -4,7 +4,7 @@ import {
   eachMonthOfInterval,
   isEqual,
 } from "date-fns";
-import { isDefined } from "../../helpers/common";
+import { isDefined, sortBy } from "../../helpers/common";
 import { findAllMeasurements, MeasurementModel } from "./model";
 import { MeasurementType } from "./types";
 
@@ -20,23 +20,18 @@ const upscaleDataBetweenBuckets = ({
   rightBucket,
   granularity,
 }: UpscaleDataBetweenBucketsOptions): BucketData[] => {
+  /** granularity of time `minute` and `5-minutes` are currently supported for data up scaling */
+  if (!(["minute", "5-minutes"] as BucketGranularity[]).includes(granularity)) {
+    return [leftBucket, rightBucket];
+  }
+
   /** check measurement type equality */
   if (leftBucket.type !== rightBucket.type)
     throw new Error("Buckets must have the same type");
 
   /** check required data */
-  if (
-    !isDefined(leftBucket.humidity) ||
-    !isDefined(rightBucket.humidity) ||
-    !isDefined(leftBucket.temperature) ||
-    !isDefined(rightBucket.temperature)
-  )
-    throw new Error("Buckets must have temperature and humidity.");
-
-  /** granularity of time `minute` and `5-minutes` are currently supported for data up scaling */
-  if (!(["minute", "5-minutes"] as BucketGranularity[]).includes(granularity)) {
-    return [leftBucket, rightBucket];
-  }
+  // if (!isDefined(rightBucket.humidity) || !isDefined(rightBucket.temperature))
+  //   throw new Error("Right bucket must have temperature and humidity.");
 
   const result: BucketData[] = [];
   const minuteStep = granularity === "5-minutes" ? 5 : 1;
@@ -57,20 +52,25 @@ const upscaleDataBetweenBuckets = ({
   let step = leftDateTime + minuteStep;
   while (step < rightDateTime) {
     const temperatureStepRes =
-      leftBucket.temperature +
-      (step - leftDateTime) *
-        ((rightBucket.temperature - leftBucket.temperature) /
-          (rightDateTime - leftDateTime));
+      isDefined(leftBucket.temperature) && isDefined(rightBucket.temperature)
+        ? leftBucket.temperature +
+          (step - leftDateTime) *
+            ((rightBucket.temperature - leftBucket.temperature) /
+              (rightDateTime - leftDateTime))
+        : null;
     const humidityStepRes =
-      leftBucket.humidity +
-      (step - leftDateTime) *
-        ((rightBucket.humidity - leftBucket.humidity) /
-          (rightDateTime - leftDateTime));
+      isDefined(leftBucket.humidity) && isDefined(rightBucket.humidity)
+        ? leftBucket.humidity +
+          (step - leftDateTime) *
+            ((rightBucket.humidity - leftBucket.humidity) /
+              (rightDateTime - leftDateTime))
+        : null;
 
     result.push({
       humidity: humidityStepRes,
       temperature: temperatureStepRes,
       date: new Date(step * 60 * 1000),
+      isCalculated: true,
     });
     step += minuteStep;
   }
@@ -86,6 +86,7 @@ export type BucketData = {
   date: Date;
   temperature: number | null;
   humidity: number | null;
+  isCalculated?: boolean;
 };
 
 /**
@@ -177,70 +178,51 @@ export const getBucketsForStation = async ({
         isEqual(new Date(m.toJSON().measuredAt), bucketDate)
       );
 
-      /** no measurement for the bucket, return empty bucket */
-      if (!measurement) {
-        return [
-          ...acc,
-          {
-            date: bucketDate,
-            temperature: null,
-            humidity: null,
-          },
-        ];
-      }
-
       /** upscale missing data if requested */
       if (shouldMeasurementsBeUpScaled) {
         const previousBucketWithMeasurement = acc
           .reverse()
-          .find((b) => b.temperature !== null && b.humidity !== null);
+          .find((b) => !b.isCalculated);
 
-        /** previous bucket found, upscale is possible */
-        if (previousBucketWithMeasurement) {
-          const test = upscaleDataBetweenBuckets({
-            leftBucket: {
-              date: previousBucketWithMeasurement.date,
-              temperature: previousBucketWithMeasurement.temperature ?? 0,
-              humidity: previousBucketWithMeasurement.humidity ?? 0,
-              type: measurementTypeByGranularity,
-            },
-            rightBucket: {
-              date: bucketDate,
-              temperature: measurement.temperature ?? 0,
-              humidity: measurement.humidity ?? 0,
-              type: measurementTypeByGranularity,
-            },
-            granularity,
-          });
-          return [
-            ...acc,
-            ...test,
-            {
-              date: bucketDate,
-              temperature: measurement.temperature,
-              humidity: measurement.humidity,
-            },
-          ];
-        } else {
-          /** no previous bucket found, upscaling is not possible */
-          return [
-            ...acc,
-            {
-              date: bucketDate,
-              temperature: measurement.temperature,
-              humidity: measurement.humidity,
-            },
-          ];
-        }
+        /** upscale data with previous bucket */
+        const upScaledData = previousBucketWithMeasurement
+          ? upscaleDataBetweenBuckets({
+              leftBucket: {
+                date: previousBucketWithMeasurement.date,
+                temperature: previousBucketWithMeasurement?.temperature || null,
+                humidity: previousBucketWithMeasurement?.humidity || null,
+                type: measurementTypeByGranularity,
+              },
+              rightBucket: {
+                date: bucketDate,
+                temperature: measurement?.temperature || null,
+                humidity: measurement?.humidity || null,
+                type: measurementTypeByGranularity,
+              },
+              granularity,
+            })
+          : [];
+
+        return [
+          ...acc,
+          /** return up scaled data */
+          ...upScaledData,
+          /** return current bucket */
+          {
+            date: bucketDate,
+            temperature: measurement?.temperature || null,
+            humidity: measurement?.humidity || null,
+          },
+        ];
       }
 
-      /**  */
+      /** return current/empty bucket */
       return [
         ...acc,
         {
           date: bucketDate,
-          temperature: measurement.temperature,
-          humidity: measurement.humidity,
+          temperature: measurement?.temperature || null,
+          humidity: measurement?.humidity || null,
         },
       ];
     },
@@ -248,7 +230,7 @@ export const getBucketsForStation = async ({
   );
 
   /** send the data */
-  return bucketsWithMeasurements;
+  return bucketsWithMeasurements.sort(sortBy("date", { direction: "desc" }));
 };
 
 // =============================================================================
