@@ -56,18 +56,14 @@ export const findAll = async (
   try {
     const locations = await findAllWeatherStations(req.body);
     res.send(locations);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(500).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    } else {
-      throw err;
-    }
+  } catch (err: HttpException | any) {
+    res.status(500).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -89,16 +85,14 @@ export const findOne = async (
     }
 
     res.send(location);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(500).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(500).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 

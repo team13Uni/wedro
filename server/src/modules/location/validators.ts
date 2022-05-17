@@ -12,10 +12,10 @@ const validators = {
 export const createLocationValidator = {
   body: Joi.object({
     name: validators.name.required(),
-    nodeId: validators.nodeId.required(),
+    nodeId: validators.nodeId,
     state: validators.state,
-    coordinates: validators.coordinates,
-    seaLevel: validators.seaLevel,
+    coordinates: validators.coordinates.required(),
+    seaLevel: validators.seaLevel.required(),
   }),
 };
 

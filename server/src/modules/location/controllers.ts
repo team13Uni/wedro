@@ -32,18 +32,14 @@ export const create = async (
     const newLocation = new LocationModel(req.body);
     const result = await newLocation.save();
     res.json(result);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(500).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
-    // @ts-ignore
-    // res.send(err);
+  } catch (err: HttpException | any) {
+    res.status(500).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -80,16 +76,14 @@ export const update = async (
     }
 
     res.send(updatedLocation);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(500).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(500).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -114,18 +108,14 @@ export const findAll = async (
       weatherStation: location.nodeId,
     }));
     res.send(mappedLocations);
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(500).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    } else {
-      throw err;
-    }
+  } catch (err: HttpException | any) {
+    res.status(500).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -156,16 +146,14 @@ export const findOne = async (
       ...omitFrom(location.toJSON(), "nodeId"),
       weatherStation: location.nodeId,
     });
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(500).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(500).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };
 
@@ -202,15 +190,13 @@ export const deleteLocation = async (
     }
 
     res.send({ success: true });
-  } catch (err) {
-    if (err instanceof HttpException) {
-      res.status(500).json({
-        error: {
-          message: err.message,
-          status: StatusCode.SERVER_ERROR,
-          code: ErrorCode.SERVER_ERROR,
-        },
-      });
-    }
+  } catch (err: HttpException | any) {
+    res.status(500).json({
+      error: {
+        message: err.message,
+        status: StatusCode.SERVER_ERROR,
+        code: ErrorCode.SERVER_ERROR,
+      },
+    });
   }
 };

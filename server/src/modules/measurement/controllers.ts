@@ -181,7 +181,7 @@ export const deleteMeasurement = async (
     }
 
     res.send({ success: true });
-  } catch (err) {
+  } catch (err: HttpException | any) {
     // FIXME: errors are not handled
     if (err instanceof HttpException) {
       res.status(err.status).json({
@@ -455,7 +455,7 @@ export const downscaleData = async (
     }
 
     console.log(savedMeasurements);
-  } catch (err) {
+  } catch (err: HttpException | any) {
     throw err;
   }
 };
