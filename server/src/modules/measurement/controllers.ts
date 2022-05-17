@@ -282,6 +282,37 @@ export const downscaleData = async (
   }
 };
 
+const tenHours = 600;
+
+export const upscaleData = (
+  timeFrom: number,
+  timeTo: number,
+  lowValue: number,
+  highValue: number,
+  byMinutes: number
+) => {
+  const delta = timeTo - timeFrom;
+
+  if (delta > tenHours && byMinutes < 5) return [];
+
+  let step = timeFrom + byMinutes * 60;
+  const result = [];
+
+  while (step < timeTo) {
+    const stepResult =
+      lowValue +
+      (step - timeFrom) * ((highValue - lowValue) / (timeTo - timeFrom));
+
+    const date = new Date(step);
+
+    result.push({ value: stepResult, measuredAt: date.toISOString() });
+
+    step += byMinutes * 60;
+  }
+
+  return result;
+};
+
 /**
  * Returns buckets with temperature and humidity data for specified date range and granularity (type)
  */
