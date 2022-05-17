@@ -394,7 +394,7 @@ export type WeatherStationDetailPageProps = {
  * Weather station current data type
  * @private
  */
-type WeatherStationCurrentData = {
+export type WeatherStationCurrentData = {
 	date: string;
 	temperature: number | null;
 	humidity: number | null;
