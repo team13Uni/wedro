@@ -41,13 +41,7 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, model_1.updateWeatherStationById)(req.nodeId, {
             lastActiveAt: lastActiveAtDate,
         });
-        let lastSentItem;
-        if (body.length > 1) {
-            lastSentItem = body[body.length - 2];
-        }
-        else {
-            lastSentItem = body[body.length - 1];
-        }
+        const lastSentItem = body[body.length - 1];
         res.json(lastSentItem);
     }
     catch (err) {
