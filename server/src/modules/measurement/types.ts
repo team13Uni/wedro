@@ -8,6 +8,7 @@ export type Measurement = {
   measuredAt: Date;
   nodeId: ObjectId;
   type: MeasurementType;
+  locationId: ObjectId;
 };
 
 type RequestMeasurement = {

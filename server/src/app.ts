@@ -36,7 +36,4 @@ app.use(errorMiddleware);
 
 app.listen(app.get("port"), async () => {
   console.log(`✅ Server is running on port ${app.get("port")}`);
-
-  const data = await downscaleData("hour");
-  console.log(data);
 });

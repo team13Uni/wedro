@@ -17,6 +17,7 @@ import {
 } from "./model";
 import { HttpException } from "../../exceptions";
 import { sign } from "jsonwebtoken";
+import { findLocationByNodeId } from "../location/model";
 
 export const create = async (
   req: RequestWithUser<
@@ -41,17 +42,32 @@ export const create = async (
   }
 };
 
+type WeatherStationWithHasLocation = WeatherStation & { hasLocation?: boolean };
+
 export const findAll = async (
   req: RequestWithUser<
     Record<string, string>,
     WeatherStation[],
     Partial<WeatherStation>
   >,
-  res: ResponseWithError<WeatherStation[]>
+  res: ResponseWithError<WeatherStationWithHasLocation[]>
 ) => {
   try {
-    const locations = await findAllWeatherStations(req.body);
-    res.send(locations);
+    const weatherStations = await findAllWeatherStations(req.body);
+
+    const finalWeatherStations: WeatherStationWithHasLocation[] = [];
+
+    for (const weatherStation of weatherStations) {
+      const location = await findLocationByNodeId(weatherStation.id);
+
+      finalWeatherStations.push({
+        // @ts-ignore
+        ...weatherStation.toObject(),
+        hasLocation: Boolean(location),
+      });
+    }
+
+    res.send(finalWeatherStations);
   } catch (err: HttpException | any) {
     res.status(500).json({
       error: {
