@@ -31,7 +31,7 @@ const WeatherStationDetailPage: NextPageWithAuth<WeatherStationDetailPageProps> 
 		error,
 		isValidating,
 	} = useSWR<{ data: WeatherStationCurrentData }>(
-		() => (isDefined(location.weatherStation) ? `/api/measurement/${location.weatherStation._id}/current` : null),
+		() => `/api/measurement/${location._id}/current`,
 		(url) =>
 			apiClient(
 				{
@@ -118,27 +118,25 @@ const WeatherStationDetailPage: NextPageWithAuth<WeatherStationDetailPageProps> 
 						height: '400px',
 						width: '100%',
 					}}
-					center={location.weatherStation?.coordinates || [0, 0]}
+					center={location.coordinates}
 					zoom={[15]}
 				>
-					<React.Fragment>
-						{isDefined(location.weatherStation) ? (
-							<Popup coordinates={location.weatherStation.coordinates}>
-								{/* station name */}
-								<Typography color="text.primary" sx={{ fontWeight: 'bold' }}>
-									{location.weatherStation.name}
-								</Typography>
-								{/* sea level */}
-								<Typography sx={{ fontSize: 14 }} color="text.secondary" mb={2}>
-									{translate(TRANSLATIONS.GENERAL.seaLevel, {
-										seaLevel: location.weatherStation.seaLevel,
-									})}
-								</Typography>
-								{/* status */}
-								<WeatherStationStatusChip size="small" {...pickFrom(location.weatherStation, 'unavailable', 'lastActiveAt')} />
-							</Popup>
-						) : null}
-					</React.Fragment>
+					<Popup coordinates={location.coordinates}>
+						{/* station name */}
+						<Typography color="text.primary" sx={{ fontWeight: 'bold' }}>
+							{location.name}
+						</Typography>
+						{/* sea level */}
+						<Typography sx={{ fontSize: 14 }} color="text.secondary" mb={2}>
+							{translate(TRANSLATIONS.GENERAL.seaLevel, {
+								seaLevel: location.seaLevel,
+							})}
+						</Typography>
+						{/* status */}
+						{isDefined(location.weatherStation) && (
+							<WeatherStationStatusChip size="small" {...pickFrom(location.weatherStation, 'unavailable', 'lastActiveAt')} />
+						)}
+					</Popup>
 				</Map>
 				<Box
 					sx={{
@@ -361,13 +359,13 @@ const WeatherStationDetailPage: NextPageWithAuth<WeatherStationDetailPageProps> 
 
 						{/* main charts */}
 						<Grid item xs={12} sx={{ '&.MuiGrid-root': { flexGrow: '1 !important', display: 'flex !important' } }}>
-							<WeatherStationCharts weatherStationId={location.weatherStation._id} />
+							<WeatherStationCharts locationId={location._id} />
 						</Grid>
 					</Stack>
 				) : (
 					<Box>
 						<Card variant="outlined" sx={{ height: '100%' }}>
-							<CardContent>
+							<CardContent sx={{ padding: '5rem !important', textAlign: 'center' }}>
 								<Typography variant="body2">{translate(TRANSLATIONS.WEATHER_STATION_DETAIL.noNode)}</Typography>
 							</CardContent>
 						</Card>

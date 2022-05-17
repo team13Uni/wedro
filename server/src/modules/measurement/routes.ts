@@ -29,11 +29,11 @@ router.get(
 );
 
 /** TODO: validate params and query */
-router.get("/:weatherStationId/buckets", validateJWT, Controllers.getBuckets);
+router.get("/:locationId/buckets", validateJWT, Controllers.getBuckets);
 
 /** TODO: validate params and query */
 router.get(
-    "/:weatherStationId/current",
+    "/:locationId/current",
     validateJWT,
     Controllers.getCurrent
 );

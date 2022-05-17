@@ -1,5 +1,5 @@
-import { ArrowRightAlt, DeviceThermostat, Water } from '@mui/icons-material';
-import { Box, Button, Card, CardContent, Stack, Typography, useTheme } from '@mui/material';
+import { ArrowRightAlt, DeviceThermostat, SignalWifiStatusbarConnectedNoInternet4, Water } from '@mui/icons-material';
+import { Box, Button, Card, CardContent, Chip, Stack, Typography, useTheme } from '@mui/material';
 import { apiClient } from '@wedro/app';
 import { WeatherStationStatusChip } from '@wedro/components/WeatherStationStatusChip';
 import { TRANSLATIONS } from '@wedro/constants';
@@ -35,7 +35,7 @@ export const WeatherStationCard: FC<WeatherStationCardProps> = ({ location }) =>
 		error,
 		isValidating,
 	} = useSWR<{ data: WeatherStationCurrentData }>(
-		() => `/api/measurement/${location.weatherStation._id}/current`,
+		() => `/api/measurement/${location._id}/current`,
 		(url) =>
 			apiClient(
 				{
@@ -52,13 +52,17 @@ export const WeatherStationCard: FC<WeatherStationCardProps> = ({ location }) =>
 				<Stack sx={{ w: '100%' }} spacing={2} direction="row" justifyContent="space-between" alignItems="center">
 					<div>
 						<Typography sx={{ fontSize: 14 }} color="text.secondary">
-							{location.name}
+							{isDefined(location.weatherStation) ? location.weatherStation.name : translate(TRANSLATIONS.WEATHER_STATION_CARD.noNode)}
 						</Typography>
 						<Typography variant="h5" gutterBottom>
-							{location.weatherStation.name}
+							{location.name}
 						</Typography>
 						<Box mb={1.5}>
-							<WeatherStationStatusChip {...pickFrom(location.weatherStation, 'unavailable', 'lastActiveAt')} />
+							{isDefined(location.weatherStation) ? (
+								<WeatherStationStatusChip {...pickFrom(location.weatherStation, 'unavailable', 'lastActiveAt')} />
+							) : (
+								<Chip label={translate(TRANSLATIONS.WEATHER_STATION_CARD.noNode)} icon={<SignalWifiStatusbarConnectedNoInternet4 />} />
+							)}
 						</Box>
 					</div>
 
@@ -78,7 +82,7 @@ export const WeatherStationCard: FC<WeatherStationCardProps> = ({ location }) =>
 							<Typography sx={{ fontSize: 14 }} color="text.secondary" mb={2}>
 								{translate(TRANSLATIONS.WEATHER_STATION_CARD.currentTemperature)}
 							</Typography>
-							{isDefined(currentData?.data.date) && (
+							{isDefined(currentData?.data.temperature) && (
 								<Typography
 									sx={{ fontSize: 14 }}
 									color={Math.abs(differenceInMinutes(new Date(currentData!.data.date), now)) > 60 ? theme.palette.warning.main : 'text.secondary'}
@@ -108,7 +112,7 @@ export const WeatherStationCard: FC<WeatherStationCardProps> = ({ location }) =>
 							<Typography sx={{ fontSize: 14 }} color="text.secondary" mb={2}>
 								{translate(TRANSLATIONS.WEATHER_STATION_CARD.currentHumidity)}
 							</Typography>
-							{isDefined(currentData?.data.date) && (
+							{isDefined(currentData?.data.humidity) && (
 								<Typography
 									sx={{ fontSize: 14 }}
 									color={Math.abs(differenceInMinutes(new Date(currentData!.data.date), now)) > 60 ? theme.palette.warning.main : 'text.secondary'}

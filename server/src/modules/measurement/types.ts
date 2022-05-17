@@ -7,7 +7,6 @@ export type Measurement = {
   humidity: number;
   measuredAt: Date;
   nodeId: ObjectId;
-  locationId: ObjectId;
   type: MeasurementType;
   locationId: ObjectId;
 };

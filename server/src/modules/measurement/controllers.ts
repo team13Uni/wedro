@@ -1,4 +1,5 @@
 import { subHours } from "date-fns";
+import type { ObjectId } from "mongoose";
 import { HttpException } from "../../exceptions";
 import { daysInYear, pickFrom } from "../../helpers/common";
 import type { IdParam, RequestWithUser, ResponseWithError } from "../../types";
@@ -21,8 +22,8 @@ import type {
   CreateMeasurementResponse,
   DeleteMeasurementResponse,
   Measurement,
+  MeasurementType,
 } from "./types";
-import type { ObjectId } from "mongoose";
 
 /**
  * Creates a new measurement.
@@ -504,7 +505,7 @@ export const upscaleData = (
  */
 export const getBuckets = async (
   req: RequestWithUser<
-    { weatherStationId: string },
+    { locationId: string },
     GetBucketsDtoOut,
     never,
     { dateFrom: string; dateTo: string; type: BucketGranularity }
@@ -520,7 +521,7 @@ export const getBuckets = async (
       dateFrom,
       dateTo,
       granularity: req.query.type,
-      locationId: req.params.weatherStationId,
+      locationId: req.params.locationId,
     });
 
     res.json(buckets);
@@ -544,12 +545,7 @@ type GetBucketsDtoOut = Array<{
  * Returns current (last measured) temperature and humidity for specified weather station
  */
 export const getCurrent = async (
-  req: RequestWithUser<
-    { locationId: string },
-    GetCurrentDtoOut,
-    never,
-    never
-  >,
+  req: RequestWithUser<{ locationId: string }, GetCurrentDtoOut, never, never>,
   res: ResponseWithError<GetCurrentDtoOut>
 ) => {
   try {

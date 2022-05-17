@@ -25,8 +25,8 @@ export const TRANSLATIONS = {
 	},
 	WEATHER_STATIONS: {
 		title: {
-			cs: 'Měřící stanice',
-			en: 'Weather stations',
+			cs: 'Měřící místa',
+			en: 'Weather locations',
 		},
 	},
 	WEATHER_STATION_DETAIL: {
@@ -121,6 +121,10 @@ export const TRANSLATIONS = {
 		available: {
 			cs: 'Dostupná',
 			en: 'Available',
+		},
+		noNode: {
+			cs: 'Bez měřící stanice',
+			en: 'No weather station',
 		},
 		unavailable: {
 			cs: 'Nedostupná',
