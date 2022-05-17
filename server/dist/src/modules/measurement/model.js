@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteMeasurementByMultipleIds = exports.deleteMeasurementById = exports.findAllMeasurements = exports.updateMeasurementById = exports.findMeasurementById = exports.MeasurementModel = exports.measurementSchema = void 0;
 const mongoose_1 = require("mongoose");
-const mongoose_2 = require("mongoose");
 exports.measurementSchema = new mongoose_1.Schema({
     temperature: {
         type: Number,
@@ -31,8 +30,14 @@ exports.measurementSchema = new mongoose_1.Schema({
         enum: ["5-minutes", "hour", "day", "month", "year"],
     },
     nodeId: {
-        type: mongoose_2.Types.ObjectId,
+        type: mongoose_1.Types.ObjectId,
+        required: true,
         ref: "weather-station",
+    },
+    locationId: {
+        type: mongoose_1.Types.ObjectId,
+        required: true,
+        ref: "location",
     },
 });
 exports.MeasurementModel = (0, mongoose_1.model)("measurement", exports.measurementSchema);

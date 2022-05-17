@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const node_cron_1 = __importDefault(require("node-cron"));
 const controllers_1 = require("../modules/weather-station/controllers");
-const measurement_1 = require("../modules/measurement");
+const helpers_1 = require("../modules/measurement/helpers");
 function default_1() {
     node_cron_1.default.schedule("*/10 * * * *", () => __awaiter(this, void 0, void 0, function* () {
         console.log("cron every 10 minutes");
@@ -24,25 +24,25 @@ function default_1() {
     // every hour
     node_cron_1.default.schedule("0 * * * *", () => __awaiter(this, void 0, void 0, function* () {
         console.log("cron hour");
-        const data = yield (0, measurement_1.downscaleData)("hour");
+        const data = yield (0, helpers_1.downscaleData)("hour");
         console.log(data);
     }));
     // every day
     node_cron_1.default.schedule("0 0 * * *", () => __awaiter(this, void 0, void 0, function* () {
         console.log("cron day");
-        const data = yield (0, measurement_1.downscaleData)("day");
+        const data = yield (0, helpers_1.downscaleData)("day");
         console.log(data);
     }));
     // every month
     node_cron_1.default.schedule("0 0 1 */1 *", () => __awaiter(this, void 0, void 0, function* () {
         console.log("cron month");
-        const data = yield (0, measurement_1.downscaleData)("month");
+        const data = yield (0, helpers_1.downscaleData)("month");
         console.log(data);
     }));
     // every year
     node_cron_1.default.schedule("0 0 0 1 */12 *", () => __awaiter(this, void 0, void 0, function* () {
         console.log("cron year");
-        const data = yield (0, measurement_1.downscaleData)("year");
+        const data = yield (0, helpers_1.downscaleData)("year");
         console.log(data);
     }));
 }

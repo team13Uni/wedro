@@ -23,6 +23,7 @@ import type {
   Measurement,
 } from "./types";
 import type { ObjectId } from "mongoose";
+import type { MeasurementType } from "./types";
 
 /**
  * Creates a new measurement.
@@ -520,6 +521,7 @@ export const getBuckets = async (
       dateFrom,
       dateTo,
       granularity: req.query.type,
+      // @ts-ignore
       locationId: req.params.weatherStationId,
     });
 
@@ -544,12 +546,7 @@ type GetBucketsDtoOut = Array<{
  * Returns current (last measured) temperature and humidity for specified weather station
  */
 export const getCurrent = async (
-  req: RequestWithUser<
-    { locationId: string },
-    GetCurrentDtoOut,
-    never,
-    never
-  >,
+  req: RequestWithUser<{ locationId: string }, GetCurrentDtoOut, never, never>,
   res: ResponseWithError<GetCurrentDtoOut>
 ) => {
   try {
@@ -574,6 +571,7 @@ export const getCurrent = async (
       dateFrom: subHours(now, 24),
       dateTo: now,
       granularity: "hour",
+      // @ts-ignore
       locationId: req.params.locationId,
     });
 

@@ -13,7 +13,6 @@ exports.validateNodeJWT = exports.validateAdminJWT = exports.validateJWT = void 
 const jsonwebtoken_1 = require("jsonwebtoken");
 const user_1 = require("../modules/user");
 const types_1 = require("../types");
-const exceptions_1 = require("../exceptions");
 const validateJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const authHeader = req.headers.authorization;
@@ -31,13 +30,11 @@ const validateJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         }
     }
     catch (err) {
-        if (err instanceof exceptions_1.HttpException) {
-            return res.status(403).send({
-                message: "JWT: " + err.message,
-                code: types_1.ErrorCode.NOT_AUTHORIZED,
-                status: 403,
-            });
-        }
+        return res.status(403).send({
+            message: "JWT: " + (err === null || err === void 0 ? void 0 : err.message) || "Invalid token",
+            code: types_1.ErrorCode.NOT_AUTHORIZED,
+            status: 403,
+        });
     }
 });
 exports.validateJWT = validateJWT;
@@ -68,13 +65,11 @@ const validateAdminJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         }
     }
     catch (err) {
-        if (err instanceof Error) {
-            return res.status(types_1.StatusCode.NOT_AUTHORIZED).send({
-                status: types_1.StatusCode.NOT_AUTHORIZED,
-                code: types_1.ErrorCode.NOT_AUTHORIZED,
-                message: "JWT: " + err.message,
-            });
-        }
+        return res.status(types_1.StatusCode.NOT_AUTHORIZED).send({
+            status: types_1.StatusCode.NOT_AUTHORIZED,
+            code: types_1.ErrorCode.NOT_AUTHORIZED,
+            message: "JWT: " + (err === null || err === void 0 ? void 0 : err.message) || "Invalid token",
+        });
     }
 });
 exports.validateAdminJWT = validateAdminJWT;
@@ -110,14 +105,11 @@ const validateNodeJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         }
     }
     catch (err) {
-        if (err instanceof Error) {
-            return res.status(types_1.StatusCode.NOT_AUTHORIZED).send({
-                status: types_1.StatusCode.NOT_AUTHORIZED,
-                code: types_1.ErrorCode.NOT_AUTHORIZED,
-                message: "JWT: " + err.message,
-            });
-        }
-        next(err);
+        return res.status(types_1.StatusCode.NOT_AUTHORIZED).send({
+            status: types_1.StatusCode.NOT_AUTHORIZED,
+            code: types_1.ErrorCode.NOT_AUTHORIZED,
+            message: "JWT: " + (err === null || err === void 0 ? void 0 : err.message) || "Invalid token",
+        });
     }
 });
 exports.validateNodeJWT = validateNodeJWT;
