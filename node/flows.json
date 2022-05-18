@@ -1,0 +1,787 @@
+[
+    {
+        "id": "1cfbc17a33440ce4",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ca7857eb0c0c1698",
+        "type": "serial in",
+        "z": "1cfbc17a33440ce4",
+        "name": "Weatherstation",
+        "serial": "0efea94b17d2911a",
+        "x": 380,
+        "y": 280,
+        "wires": [
+            [
+                "5e8c9503b7d30f50"
+            ]
+        ]
+    },
+    {
+        "id": "fd83b9d0680f3312",
+        "type": "ui_gauge",
+        "z": "1cfbc17a33440ce4",
+        "name": "Temperature",
+        "group": "dac702bea7d1b8f0",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "˚C",
+        "format": "{{msg.payload.temperature}}",
+        "min": "-40",
+        "max": "80",
+        "colors": [
+            "#1100ff",
+            "#00e60f",
+            "#ff0000"
+        ],
+        "seg1": "10",
+        "seg2": "30",
+        "className": "",
+        "x": 670,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "5e8c9503b7d30f50",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "Separating function",
+        "func": "const payloadArr = msg.payload.split(',')\nmsg.payload = ({humidity : payloadArr[0], temperature: payloadArr[1].slice(0,-2)});\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 340,
+        "wires": [
+            [
+                "fd83b9d0680f3312",
+                "79c2221083408c46",
+                "3dc4afcee2cfd25d",
+                "d0e483eec4edbe80"
+            ]
+        ]
+    },
+    {
+        "id": "79c2221083408c46",
+        "type": "ui_gauge",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "group": "dac702bea7d1b8f0",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{msg.payload.humidity}}",
+        "min": "0",
+        "max": "100",
+        "colors": [
+            "#006eb3",
+            "#006eb3",
+            "#006eb3"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 680,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "3dc4afcee2cfd25d",
+        "type": "batch",
+        "z": "1cfbc17a33440ce4",
+        "name": "Aggregation timer",
+        "mode": "interval",
+        "count": 10,
+        "overlap": 0,
+        "interval": "300",
+        "allowEmptySequence": true,
+        "topics": [],
+        "x": 530,
+        "y": 400,
+        "wires": [
+            [
+                "90666413a9c12e6c"
+            ]
+        ]
+    },
+    {
+        "id": "90666413a9c12e6c",
+        "type": "join",
+        "z": "1cfbc17a33440ce4",
+        "name": "Array join",
+        "mode": "auto",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 580,
+        "y": 460,
+        "wires": [
+            [
+                "ae3a2f3673ed74bf"
+            ]
+        ]
+    },
+    {
+        "id": "ae3a2f3673ed74bf",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "Get average",
+        "func": "const count = msg.payload.length;\nlet humAvg = 0;\nlet temAvg = 0;\nfor(let i = 0; i < count; i++){\n    if(msg.payload[i] !== null){\n        if(msg.payload[i].humidity !== null){\n            humAvg += parseFloat(msg.payload[i].humidity);\n        }\n        if(msg.payload[i].Temperature !== null){\n            temAvg += parseFloat(msg.payload[i].temperature);\n        }\n    }\n    else return [null, null, null]\n}\nhumAvg = humAvg / count;\nhumAvg = humAvg/100;\ntemAvg = temAvg / count;\nmsg.payload = {\n    humidity: humAvg,\n    temperature: temAvg,\n    measuredAt: Date.now()\n}\nlet removeBefore = msg.payload.measuredAt - 210000000000;\nlet msgRemove = { payload: { measuredAt: { $lt: removeBefore} }};\nlet newMsg = { payload: {} };\nreturn [msg, , newMsg];",
+        "outputs": 3,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 520,
+        "wires": [
+            [
+                "ed65aeb9be887967"
+            ],
+            [
+                "99867cbb190e5216"
+            ],
+            [
+                "ee6ea4dc684d6acb"
+            ]
+        ]
+    },
+    {
+        "id": "31cb7383a0ffa9a9",
+        "type": "http request",
+        "z": "1cfbc17a33440ce4",
+        "name": "Send data to Wedro",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://wedro-api.herokuapp.com/api/measurement",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1300,
+        "y": 940,
+        "wires": [
+            [
+                "d514e892a9019741",
+                "3f770e34521ef7f6"
+            ]
+        ]
+    },
+    {
+        "id": "d514e892a9019741",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "Check success",
+        "func": "if (msg.statusCode === 200)\n{\n    const measurement = JSON.parse(msg.payload)\n    const lastSuccessful = measurement.measuredAt;\n    let removeBefore = lastSuccessful - 3600000;\n    let msgRemove = { payload: { measuredAt: { $lt: removeBefore} }};\n    let msgUpdate = { query: { _id: '62829d91089ccdaec34e30e9'}, payload:{ measuredAt: measurement.measuredAt}}\n    return [null, msgRemove, msgUpdate]\n}\nelse if(msg.statusCode === 403){\n    msg.payload = {}\n    return[msg,null,null]\n}\nelse\n{\n    return null\n}",
+        "outputs": 3,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1380,
+        "y": 1020,
+        "wires": [
+            [
+                "3b83c05dfccf9964"
+            ],
+            [
+                "246d7cb8b43e941a"
+            ],
+            [
+                "ceb9d7360ac32092",
+                "fe7d9fbbf68a1811"
+            ]
+        ]
+    },
+    {
+        "id": "3f770e34521ef7f6",
+        "type": "debug",
+        "z": "1cfbc17a33440ce4",
+        "name": "Debug message",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1520,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "ed65aeb9be887967",
+        "type": "mongodb out",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "49bb41529d5570fa",
+        "name": "Save measurement to DB",
+        "collection": "measurements",
+        "payonly": true,
+        "upsert": false,
+        "multi": false,
+        "operation": "insert",
+        "x": 890,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "ceb9d7360ac32092",
+        "type": "mongodb out",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "49bb41529d5570fa",
+        "name": "Save lastSuccessful to DB",
+        "collection": "lastSuccessful",
+        "payonly": false,
+        "upsert": false,
+        "multi": false,
+        "operation": "update",
+        "x": 1640,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "3c90d1218ebfbb55",
+        "type": "mongodb in",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "49bb41529d5570fa",
+        "name": "Find all unsuccessful",
+        "collection": "measurements",
+        "operation": "find",
+        "x": 860,
+        "y": 700,
+        "wires": [
+            [
+                "d4f7f28eab519d7d"
+            ]
+        ]
+    },
+    {
+        "id": "ee6ea4dc684d6acb",
+        "type": "mongodb in",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "49bb41529d5570fa",
+        "name": "Find lastSuccessful",
+        "collection": "lastSuccessful",
+        "operation": "find",
+        "x": 710,
+        "y": 580,
+        "wires": [
+            [
+                "fa3402e52c307af4"
+            ]
+        ]
+    },
+    {
+        "id": "fa3402e52c307af4",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "Create query",
+        "func": "msg.payload = {  measuredAt: { $gt: msg.payload[0].measuredAt } };\nmsg.projection = { _id:0};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 640,
+        "wires": [
+            [
+                "3c90d1218ebfbb55"
+            ]
+        ]
+    },
+    {
+        "id": "246d7cb8b43e941a",
+        "type": "mongodb out",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "49bb41529d5570fa",
+        "name": "remove before last hour",
+        "collection": "measurements",
+        "payonly": false,
+        "upsert": false,
+        "multi": false,
+        "operation": "delete",
+        "x": 1630,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "d4f7f28eab519d7d",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "Get token",
+        "func": "msg.data = msg.payload\nmsg.payload = {}\nif(msg.data.length>0){\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 760,
+        "wires": [
+            [
+                "32265ac6dbcac81b"
+            ]
+        ]
+    },
+    {
+        "id": "10ec24efb04a8f12",
+        "type": "http request",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "body",
+        "url": "https://wedro-api.herokuapp.com/api/weather-station/authorize",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1590,
+        "y": 740,
+        "wires": [
+            [
+                "76b89d3caf09d0ed"
+            ]
+        ]
+    },
+    {
+        "id": "20ffff7416988186",
+        "type": "inject",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{}",
+        "payloadType": "json",
+        "x": 1430,
+        "y": 600,
+        "wires": [
+            [
+                "3b83c05dfccf9964"
+            ]
+        ]
+    },
+    {
+        "id": "240a89c4a9ea2ed1",
+        "type": "mongodb out",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "49bb41529d5570fa",
+        "name": "Save token to DB",
+        "collection": "token",
+        "payonly": false,
+        "upsert": false,
+        "multi": false,
+        "operation": "update",
+        "x": 1850,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "76b89d3caf09d0ed",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "func": "if(msg.statusCode === 200){\n    msg.query = { _id: '62829dac089ccdaec34e312a'};\n    return [null,msg];\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1660,
+        "y": 800,
+        "wires": [
+            [],
+            [
+                "240a89c4a9ea2ed1"
+            ]
+        ]
+    },
+    {
+        "id": "32265ac6dbcac81b",
+        "type": "mongodb in",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "49bb41529d5570fa",
+        "name": "Find token",
+        "collection": "token",
+        "operation": "find",
+        "x": 1050,
+        "y": 820,
+        "wires": [
+            [
+                "021fc925814054e0"
+            ]
+        ]
+    },
+    {
+        "id": "021fc925814054e0",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "Create request",
+        "func": "msg.headers = {}\nmsg.headers[\"Authorization\"] = \"Bearer \" + msg.payload[0].token\nmsg.payload = msg.data\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 880,
+        "wires": [
+            [
+                "31cb7383a0ffa9a9"
+            ]
+        ]
+    },
+    {
+        "id": "3b83c05dfccf9964",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "Add secret",
+        "func": "msg.payload = {\"secret\": \"Test123\"}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1490,
+        "y": 660,
+        "wires": [
+            [
+                "10ec24efb04a8f12"
+            ]
+        ]
+    },
+    {
+        "id": "7d0fedac89141f08",
+        "type": "ui_text",
+        "z": "1cfbc17a33440ce4",
+        "group": "dac702bea7d1b8f0",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Last successful upload",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 660,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "54367ec789b4a8f3",
+        "type": "inject",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{}",
+        "payloadType": "json",
+        "x": 230,
+        "y": 1040,
+        "wires": [
+            [
+                "1d47b8b9acd11960"
+            ]
+        ]
+    },
+    {
+        "id": "e6f4c3605f54b96b",
+        "type": "ui_gauge",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "group": "dac702bea7d1b8f0",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Measurements in storage",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "min": 0,
+        "max": "700000",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 710,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "99867cbb190e5216",
+        "type": "mongodb out",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "49bb41529d5570fa",
+        "name": "remove before last 700k measurements",
+        "collection": "measurements",
+        "payonly": false,
+        "upsert": false,
+        "multi": false,
+        "operation": "delete",
+        "x": 940,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "fe7d9fbbf68a1811",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "func": "msg.payload = new Date(msg.payload.measuredAt);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 980,
+        "wires": [
+            [
+                "7d0fedac89141f08"
+            ]
+        ]
+    },
+    {
+        "id": "1d47b8b9acd11960",
+        "type": "mongodb in",
+        "z": "1cfbc17a33440ce4",
+        "mongodb": "4ab2646e1004e927",
+        "name": "Get count of measurements",
+        "collection": "measurements",
+        "operation": "count",
+        "x": 440,
+        "y": 1040,
+        "wires": [
+            [
+                "e6f4c3605f54b96b"
+            ]
+        ]
+    },
+    {
+        "id": "1ccba9b0fcee7bde",
+        "type": "ui_chart",
+        "z": "1cfbc17a33440ce4",
+        "name": "Temperature",
+        "group": "7918353cc990e2a5",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 650,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d0e483eec4edbe80",
+        "type": "function",
+        "z": "1cfbc17a33440ce4",
+        "name": "",
+        "func": "let data = msg.payload;\nlet tem = {topic:\"temperature\", payload: data.temperature};\nlet hum = {topic:\"humidity\", payload: data.humidity}\nreturn [tem, hum];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 120,
+        "wires": [
+            [
+                "1ccba9b0fcee7bde"
+            ],
+            [
+                "475116188dd1cfbd"
+            ]
+        ]
+    },
+    {
+        "id": "475116188dd1cfbd",
+        "type": "ui_chart",
+        "z": "1cfbc17a33440ce4",
+        "name": "Humidity",
+        "group": "7918353cc990e2a5",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "Humidity",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 640,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0efea94b17d2911a",
+        "type": "serial-port",
+        "serialport": "/dev/ttyACM0",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    },
+    {
+        "id": "dac702bea7d1b8f0",
+        "type": "ui_group",
+        "name": "Live measurements",
+        "tab": "5544be34f66a3d62",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "49bb41529d5570fa",
+        "type": "mongodb",
+        "hostname": "127.0.0.1",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "gatewayDB",
+        "name": ""
+    },
+    {
+        "id": "4ab2646e1004e927",
+        "type": "mongodb",
+        "hostname": "127.0.0.1",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "gatewayDB",
+        "name": ""
+    },
+    {
+        "id": "7918353cc990e2a5",
+        "type": "ui_group",
+        "name": "Charts",
+        "tab": "5544be34f66a3d62",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5544be34f66a3d62",
+        "type": "ui_tab",
+        "name": "Weather Station",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
