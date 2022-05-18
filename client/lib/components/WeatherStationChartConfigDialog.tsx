@@ -120,9 +120,9 @@ export type GranularityType = 'minute' | '5-minutes' | 'hour' | 'day' | 'month';
 export const getPossibleGranularityTypes = (dateFrom: Date, dateTo: Date): Record<GranularityType, boolean> => {
 	const minDiff = Math.abs(differenceInMinutes(dateFrom, dateTo));
 	return {
-		minute: true, // max 12 hours
-		'5-minutes': true, // max 24 hours
-		hour: true, // max 7 days
+		minute: minDiff <= 24 * 60, // max 12 hours
+		'5-minutes': minDiff <= 24 * 60, // max 24 hours
+		hour: minDiff <= 7 * 24 * 60, // max 7 days
 		day: minDiff <= 6 * 30 * 24 * 60, // max 6 months
 		month: minDiff <= 6 * 12 * 30 * 24 * 60, // max 6 years
 	};

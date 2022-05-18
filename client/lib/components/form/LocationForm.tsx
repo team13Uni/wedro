@@ -196,7 +196,7 @@ const LocationForm: FunctionComponent<LocationFormProps> = ({ locationId, onSubm
 									getOptionLabel={(option) => option.name}
 									options={nodes || []}
 									loading={nodeValidating}
-									getOptionDisabled={(option) => option.hasLocation}
+									getOptionDisabled={(option) => option.hasLocation && option._id !== data?.data?.weatherStation?._id}
 									/* @ts-ignore */
 									value={nodes?.find(({ _id }) => values.nodeId === _id)}
 									onChange={(_, guarantor) => setFieldValue('nodeId', guarantor?._id)}
